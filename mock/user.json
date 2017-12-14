@@ -1,0 +1,120 @@
+{
+  "userInfo":{
+    "id": "1",
+    "img": "http://www.72bike.com/img/72-logo.png",
+    "nickName":"隔壁王叔叔",
+    "phone":"18721454587",
+    "sex":"男",
+    "age":"26",
+    "birthday":"1992-10-03",
+    "email":"97213665@qq.com",
+    "userRaceVoteList":[
+      {
+        "race_id": 298,
+        "sponsor": "\u5e7f\u4e1c\u7701\u4f53\u80b2\u5c40",
+        "title": "2017\u73af\u73e0\u4e09\u89d2\u81ea\u884c\u8f66\u8054\u8d5b\u00b7\u6df1\u5733\u7ad9",
+        "poster": "https:\/\/c4.biketo.com\/racegood-com\/race_cover\/201711\/c84f9c26d992216935b3896a825acb61.jpg",
+        "address": "\u6df1\u5733\u5e02\u9f99\u5c97\u4f53\u80b2\u4e2d\u5fc3",
+        "status": "signup",
+        "signup_start_time": 1510279200,
+        "signup_end_time": 1513224000,
+        "start_time": 1513468800,
+        "end_time": 1513504800,
+        "limit_num": "500",
+        "register_count": "337",
+        "collect_num": "21",
+        "is_collected": 1,
+        "views_num": 15854
+      },
+      {
+        "race_id": 298,
+        "sponsor": "\u5e7f\u4e1c\u7701\u4f53\u80b2\u5c40",
+        "title": "2017\u73af\u73e0\u4e09\u89d2\u81ea\u884c\u8f66\u8054\u8d5b\u00b7\u6df1\u5733\u7ad9",
+        "poster": "https:\/\/c4.biketo.com\/racegood-com\/race_cover\/201711\/c84f9c26d992216935b3896a825acb61.jpg",
+        "address": "\u6df1\u5733\u5e02\u9f99\u5c97\u4f53\u80b2\u4e2d\u5fc3",
+        "status": "signup",
+        "signup_start_time": 1510279200,
+        "signup_end_time": 1513224000,
+        "start_time": 1513468800,
+        "end_time": 1513504800,
+        "limit_num": "500",
+        "register_count": "337",
+        "collect_num": "21",
+        "is_collected": 1,
+        "views_num": 15854
+      },
+      {
+        "race_id": 298,
+        "sponsor": "\u5e7f\u4e1c\u7701\u4f53\u80b2\u5c40",
+        "title": "2017\u73af\u73e0\u4e09\u89d2\u81ea\u884c\u8f66\u8054\u8d5b\u00b7\u6df1\u5733\u7ad9",
+        "poster": "https:\/\/c4.biketo.com\/racegood-com\/race_cover\/201711\/c84f9c26d992216935b3896a825acb61.jpg",
+        "address": "\u6df1\u5733\u5e02\u9f99\u5c97\u4f53\u80b2\u4e2d\u5fc3",
+        "status": "signup",
+        "signup_start_time": 1510279200,
+        "signup_end_time": 1513224000,
+        "start_time": 1513468800,
+        "end_time": 1513504800,
+        "limit_num": "500",
+        "register_count": "337",
+        "collect_num": "21",
+        "is_collected": 1,
+        "views_num": 15854
+      }
+    ],
+    "userCollectionRaceList":[
+      {
+        "race_id": 298,
+        "sponsor": "\u5e7f\u4e1c\u7701\u4f53\u80b2\u5c40",
+        "title": "2017\u73af\u73e0\u4e09\u89d2\u81ea\u884c\u8f66\u8054\u8d5b\u00b7\u6df1\u5733\u7ad9",
+        "poster": "https:\/\/c4.biketo.com\/racegood-com\/race_cover\/201711\/c84f9c26d992216935b3896a825acb61.jpg",
+        "address": "\u6df1\u5733\u5e02\u9f99\u5c97\u4f53\u80b2\u4e2d\u5fc3",
+        "status": "signup",
+        "signup_start_time": 1510279200,
+        "signup_end_time": 1513224000,
+        "start_time": 1513468800,
+        "end_time": 1513504800,
+        "limit_num": "500",
+        "register_count": "337",
+        "collect_num": "21",
+        "is_collected": 1,
+        "views_num": 15854
+      },
+      {
+        "race_id": 298,
+        "sponsor": "\u5e7f\u4e1c\u7701\u4f53\u80b2\u5c40",
+        "title": "2017\u73af\u73e0\u4e09\u89d2\u81ea\u884c\u8f66\u8054\u8d5b\u00b7\u6df1\u5733\u7ad9",
+        "poster": "https:\/\/c4.biketo.com\/racegood-com\/race_cover\/201711\/c84f9c26d992216935b3896a825acb61.jpg",
+        "address": "\u6df1\u5733\u5e02\u9f99\u5c97\u4f53\u80b2\u4e2d\u5fc3",
+        "status": "signup",
+        "signup_start_time": 1510279200,
+        "signup_end_time": 1513224000,
+        "start_time": 1513468800,
+        "end_time": 1513504800,
+        "limit_num": "500",
+        "register_count": "337",
+        "collect_num": "21",
+        "is_collected": 1,
+        "views_num": 15854
+      }
+    ],
+    "userRaceList":[
+      {
+        "race_id": 298,
+        "sponsor": "\u5e7f\u4e1c\u7701\u4f53\u80b2\u5c40",
+        "title": "2017\u73af\u73e0\u4e09\u89d2\u81ea\u884c\u8f66\u8054\u8d5b\u00b7\u6df1\u5733\u7ad9",
+        "poster": "https:\/\/c4.biketo.com\/racegood-com\/race_cover\/201711\/c84f9c26d992216935b3896a825acb61.jpg",
+        "address": "\u6df1\u5733\u5e02\u9f99\u5c97\u4f53\u80b2\u4e2d\u5fc3",
+        "status": "signup",
+        "signup_start_time": 1510279200,
+        "signup_end_time": 1513224000,
+        "start_time": 1513468800,
+        "end_time": 1513504800,
+        "limit_num": "500",
+        "register_count": "337",
+        "collect_num": "21",
+        "is_collected": 1,
+        "views_num": 15854
+      }
+    ]
+  }
+}

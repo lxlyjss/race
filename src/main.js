@@ -8,9 +8,10 @@ import store from './store'
 
 import jQuery from "@/assets/js/jquery-1.8.3.min.js"
 
-import mintUI from 'mint-ui'
-import 'mint-ui/lib/style.css'
-Vue.use(mintUI)
+import { Header, Button } from 'mint-ui';
+Vue.component(Header.name, Header);
+Vue.component(Button.name, Button);
+
 
 Vue.prototype.$http = axios;
 

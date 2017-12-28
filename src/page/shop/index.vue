@@ -10,15 +10,9 @@
       }
     },
     methods:{
-      change() {
-        this.$store.commit("changeFooter",2)
-      }
     },
     components:{
     },
-    created() {
-      this.change();
-    }
   }
 </script>
 <style>

@@ -2,9 +2,10 @@
   "userInfo":{
     "id": "1",
     "img": "http://www.72bike.com/img/72-logo.png",
-    "nickName":"隔壁王叔叔",
+    "userName":"用户名",
+    "name":"李丹",
     "phone":"18721454587",
-    "sex":"男",
+    "sex":2,
     "age":"26",
     "birthday":"1992-10-03",
     "email":"97213665@qq.com",

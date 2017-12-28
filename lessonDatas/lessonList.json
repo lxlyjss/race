@@ -1,0 +1,196 @@
+{
+  "status": 0,
+  "message": "",
+  "data":{
+    "list":[
+      {
+        "level":"初级班",
+        "levelId": 1,
+        "page": 1,
+        "pageSize": 10,
+        "totalCount": 15,
+        "pageCount": 2,
+        "list":[
+          {
+            "id": 1,
+            "title":"滑步车课程初级班一期",
+            "status":"0",
+            "type":"滑步车初级课程",
+            "typeId": 1,
+            "date": "2017.12.13-2018.02.25",
+            "school":"北京是朝阳区来广营西路26号",
+            "totalCount":"12",
+            "currentCount":"5",
+            "price":"297200",
+            "minAge":"2",
+            "maxAge":"6",
+            "imgUrl":"http://www.72bike.com/img/activitys/a1/2.jpg",
+            "longitude": "223.122335",
+            "latitude":"212.232355",
+            "signList":[
+              "http://lxlin.top/test/img/1.jpg",
+              "http://lxlin.top/test/img/2.jpg",
+              "http://lxlin.top/test/img/3.jpg"
+            ],
+            "desc":"课程介绍",
+            "notice":"注意事项"
+          },
+          {
+            "id": 1,
+            "title":"滑步车课程初级班二期",
+            "status":"1",
+            "type":"滑步车初级课程",
+            "typeId": 1,
+            "date": "2017.12.13-2018.02.25",
+            "school":"北京是朝阳区来广营西路26号",
+            "totalCount":"12",
+            "currentCount":"5",
+            "price":"297200",
+            "minAge":"2",
+            "maxAge":"6",
+            "imgUrl":"http://www.72bike.com/img/activitys/a1/3.jpg",
+            "longitude": "223.122335",
+            "latitude":"212.232355",
+            "signList":[
+              "http://lxlin.top/test/img/1.jpg",
+              "http://lxlin.top/test/img/2.jpg",
+              "http://lxlin.top/test/img/3.jpg"
+            ],
+            "desc":"课程介绍",
+            "notice":"注意事项"
+          },
+          {
+            "id": 1,
+            "title":"滑步车课程初级班三期",
+            "status":"2",
+            "type":"滑步车初级课程",
+            "typeId": 1,
+            "date": "2017.12.13-2018.02.25",
+            "school":"北京是朝阳区来广营西路26号",
+            "totalCount":"12",
+            "currentCount":"5",
+            "price":"297200",
+            "minAge":"2",
+            "maxAge":"6",
+            "imgUrl":"http://www.72bike.com/img/activitys/a1/4.jpg",
+            "longitude": "223.122335",
+            "latitude":"212.232355",
+            "signList":[
+              "http://lxlin.top/test/img/1.jpg",
+              "http://lxlin.top/test/img/2.jpg",
+              "http://lxlin.top/test/img/3.jpg"
+            ],
+            "desc":"课程介绍",
+            "notice":"注意事项"
+          },
+          {
+            "id": 1,
+            "title":"滑步车课程初级班一期",
+            "status":"0",
+            "type":"滑步车初级课程",
+            "typeId": 1,
+            "date": "2017.12.13-2018.02.25",
+            "school":"北京是朝阳区来广营西路26号",
+            "totalCount":"12",
+            "currentCount":"5",
+            "price":"297200",
+            "minAge":"2",
+            "maxAge":"6",
+            "imgUrl":"http://www.72bike.com/img/activitys/a1/5.jpg",
+            "longitude": "223.122335",
+            "latitude":"212.232355",
+            "signList":[
+              "http://lxlin.top/test/img/1.jpg",
+              "http://lxlin.top/test/img/2.jpg",
+              "http://lxlin.top/test/img/3.jpg"
+            ],
+            "desc":"课程介绍",
+            "notice":"注意事项"
+          }
+        ]
+      },
+      {
+        "level":"晋级班",
+        "levelId": 2,
+        "page": 1,
+        "pageSize": 10,
+        "totalCount": 15,
+        "pageCount": 2,
+        "list":[
+          {
+            "id": 1,
+            "title":"滑步车课程晋级班一期",
+            "status":"0",
+            "type":"滑步车晋级课程",
+            "typeId": 1,
+            "date": "2017.12.13-2018.02.25",
+            "school":"北京是朝阳区来广营西路26号",
+            "totalCount":"12",
+            "currentCount":"5",
+            "price":"297200",
+            "minAge":"2",
+            "maxAge":"6",
+            "imgUrl":"http://www.72bike.com/img/activitys/a1/2.jpg",
+            "longitude": "223.122335",
+            "latitude":"212.232355",
+            "signList":[
+              "http://lxlin.top/test/img/1.jpg",
+              "http://lxlin.top/test/img/2.jpg",
+              "http://lxlin.top/test/img/3.jpg"
+            ],
+            "desc":"课程介绍",
+            "notice":"注意事项"
+          },
+          {
+            "id": 1,
+            "title":"滑步车课程晋级班二期",
+            "status":"1",
+            "type":"滑步车晋级课程",
+            "typeId": 1,
+            "date": "2017.12.13-2018.02.25",
+            "school":"北京是朝阳区来广营西路26号",
+            "totalCount":"12",
+            "currentCount":"5",
+            "price":"297200",
+            "minAge":"2",
+            "maxAge":"6",
+            "imgUrl":"http://www.72bike.com/img/activitys/a1/3.jpg",
+            "longitude": "223.122335",
+            "latitude":"212.232355",
+            "signList":[
+              "http://lxlin.top/test/img/1.jpg",
+              "http://lxlin.top/test/img/2.jpg",
+              "http://lxlin.top/test/img/3.jpg"
+            ],
+            "desc":"课程介绍",
+            "notice":"注意事项"
+          },
+          {
+            "id": 1,
+            "title":"滑步车课程晋级班三期",
+            "status":"2",
+            "type":"滑步车晋级课程",
+            "typeId": 1,
+            "date": "2017.12.13-2018.02.25",
+            "school":"北京是朝阳区来广营西路26号",
+            "totalCount":"12",
+            "currentCount":"5",
+            "price":"297200",
+            "minAge":"2",
+            "maxAge":"6",
+            "imgUrl":"http://www.72bike.com/img/activitys/a1/5.jpg",
+            "longitude": "223.122335",
+            "latitude":"212.232355",
+            "signList":[
+              "http://lxlin.top/test/img/1.jpg",
+              "http://lxlin.top/test/img/2.jpg",
+              "http://lxlin.top/test/img/3.jpg"
+            ],
+            "desc":"课程介绍",
+            "notice":"注意事项"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,12 +1,12 @@
 <template>
   <div id="footer">
     <ul class="nav-bar">
-      <li class="nav-item"  v-for="item in footer.tabList" @click="selectFn(item.limit)">
+      <li class="nav-item" v-for="(item,k) in footer.tabList" @click="selectFn(item.limit)">
         <router-link :to="{path: item.path}">
           <div class="item-icon">
-            <img :src="footer.nowTab===item.limit?item.imgUrl_a:item.imgUrl" alt="">
+            <i class="iconfont" :class="item.icon"></i>
           </div>
-          <p :class="footer.nowTab===item.limit?'active':''">
+          <p class="text">
             {{item.name}}
           </p>
         </router-link>
@@ -53,22 +53,31 @@
           width: 100%;
           height: 100%;
           text-align: center;
-          div{
+          .item-icon{
             height: 20px;
             padding-top: 5px;
-            img{
-              width: 0.6rem;
-              vertical-align: 20%;
+            .iconfont{
+              font-size: 24px;
+            }
+            .icon-ren{
+              font-size: 20px;
+            }
+            .icon-icon{
+              font-size: 23px;
             }
           }
-
           p{
             font-size: 14px;
             line-height: 24px;
           }
-          .active{
-            color: red;
-          }
+        }
+      }
+      .router-link-active{
+        .iconfont{
+          color: #d81e06;
+        }
+        .text{
+          color: #d81e06;
         }
       }
     }

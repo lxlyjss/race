@@ -1,0 +1,17 @@
+{
+  "status":"0",
+  "message":"",
+  "data":{
+    "totalCount":"2",
+    "list":[
+      {
+        "id": "1",
+        "imgUrl": "http://lxlin.top/test/img/2.jpg",
+        "title":"滑步车晋级班抵扣券",
+        "price":"17200",
+        "type":0,
+        "code":"245452353535323"
+      }
+    ]
+  }
+}

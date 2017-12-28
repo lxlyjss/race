@@ -8,7 +8,7 @@
         </div>
         <div class="user-text">
           <p class="txt-dian">隔壁老王叔叔</p>
-          <p><u><img src="../../assets/images/edit.png" style="vertical-align: middle;" width="16">个人信息></u></p>
+          <p @click="$router.push('/user/userInfo')"><u><img src="../../assets/images/edit.png" style="vertical-align: middle;" width="16">个人信息></u></p>
         </div>
       </div>
     </div>
@@ -136,16 +136,12 @@
       }
     },
     methods:{
-      ...mapActions(['getUserInfo']),
-      change() {
-        this.$store.commit("changeFooter",3)
-      },
+      ...mapActions(['getUserInfo'])
     },
     computed:{
       ...mapState(['userInfo'])
     },
     created() {
-      this.change();
       this.getUserInfo();
       $(window).scrollTop(0);
     }
@@ -156,7 +152,7 @@
     width: 100%;
     .user-info{
       position: relative;
-      background: #48d825;
+      background: #43942f;
       padding: 30px 0;
       .user-box{
         width: 4.1rem;

@@ -46,9 +46,6 @@
     methods:{
       ...mapActions(["getBanner","getRacelist"]),
       ...mapMutations(["setDate"]),
-      change() {
-        this.$store.commit("changeFooter",0)
-      },
       setDate(time){
         var temp = new Date();
         temp.setTime(time*1000);
@@ -64,7 +61,6 @@
     components:{
     },
     created() {
-      this.change();
       this.getBanner();
       this.getRacelist();
     }

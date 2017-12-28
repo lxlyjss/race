@@ -61,8 +61,8 @@
           <div class="circle-text fl">支付成功</div>
         </div>
         <div class="group-btn">
-          <p @click="$router.push('/index/lesson')">查看订单</p>
-          <p @click="$router.push('/index/lesson')">返回首页</p>
+          <p @click="$router.push('/race/voteList')">查看订单</p>
+          <p @click="$router.push('/index/race')">返回首页</p>
         </div>
       </div>
     </div>

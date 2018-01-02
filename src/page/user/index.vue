@@ -1,129 +1,64 @@
 <template>
   <div id="user">
-    <div class="user-info">
-      <div class="user-box">
-        <div class="img-box">
-          <div class="user-img" :style="{backgroundImage: 'url('+userImg+')'}">
-          </div>
-        </div>
+    <div class="user-info" :style="{backgroundImage:`url(${userImg})`}">
+      <div class="black"></div>
+      <div class="user-box" >
         <div class="user-text">
-          <p class="txt-dian">隔壁老王叔叔</p>
-          <p @click="$router.push('/user/userInfo')"><u><img src="../../assets/images/edit.png" style="vertical-align: middle;" width="16">个人信息></u></p>
+          <p class="txt-dian">{{userInfo.nickName}}</p>
+          <div class="user-img" @click="$router.push('/user/userInfo')" :style="{backgroundImage: 'url('+userInfo.headImg+')'}">
+            <i class="iconfont icon-edit"></i>
+          </div>
         </div>
       </div>
     </div>
-    <section class="my-race">
-      <p class="title">我的赛事</p>
-      <ul class="group-content">
-        <li class="group-list" @click="$router.push('/race/myRaceVote')">
-          <div class="img-icon">
-            <img src="../../assets/images/vote.png" width="26">
-          </div>
-          <p>订单</p>
-        </li>
-        <li class="group-list" @click="$router.push('/race/myCollectionRace')">
-          <div class="img-icon">
-            <img src="../../assets/images/collection.png" width="30">
-          </div>
-          <p>收藏</p>
-        </li>
-        <li class="group-list">
-          <div class="img-icon">
-            <img src="../../assets/images/event.png" width="30">
-          </div>
-          <p>我的赛事</p>
-        </li>
-        <li class="group-list">
-          <div class="img-icon">
-            <img src="../../assets/images/qiandao.png" width="30">
-          </div>
-          <p>签到</p>
-        </li>
-      </ul>
-    </section>
+    <p class="title">
+      <i class="iconfont icon-lesson1"></i>
+      <span>我的课程</span>
+      <i class="iconfont icon-arrow fr"></i>
+    </p>
     <section class="my-lesson">
-      <p class="title">我的课程</p>
       <ul class="group-content">
-        <li class="group-list">
+        <li class="group-list" @click="$router.push({path:'/lesson/myLesson',query:{userId: userInfo.id}})">
           <div class="img-icon">
-            <img src="../../assets/images/vote.png" width="30">
-          </div>
-          <p>订单</p>
-        </li>
-        <li class="group-list">
-          <div class="img-icon">
-            <img src="../../assets/images/collection.png" width="30">
-          </div>
-          <p>收藏</p>
-        </li>
-        <li class="group-list">
-          <div class="img-icon">
-            <img src="../../assets/images/lessons.png" width="30">
+            <i class="iconfont icon-riqi"></i>
           </div>
           <p>我的课程</p>
         </li>
         <li class="group-list">
           <div class="img-icon">
-            <img src="../../assets/images/qiandao.png" width="30">
+            <i class="iconfont icon-liebiao9"></i>
           </div>
-          <p>签到</p>
+          <p>我的订单</p>
+        </li>
+        <li class="group-list" @click="$router.push({path:'/user/myBaby',query:{userId: userInfo.id}})">
+          <div class="img-icon">
+            <i class="iconfont icon-baobaoyi"></i>
+          </div>
+          <p>我的宝宝</p>
+        </li>
+        <li class="group-list">
+          <div class="img-icon">
+            <i class="iconfont icon-quan_3"></i>
+          </div>
+          <p>我的优惠券</p>
         </li>
       </ul>
     </section>
+    <p class="title" style="color: #ccc;">
+      <i class="iconfont icon-yinliang"></i>
+      <span>我的赛事</span>
+      <i class="iconfont icon-arrow fr"></i>
+    </p>
+    <section class="my-race">
+
+    </section>
+    <p class="title" style="color: #ccc;">
+      <i class="iconfont icon-gouwu"></i>
+      <span>我的商品</span>
+      <i class="iconfont icon-arrow fr"></i>
+    </p>
     <section class="my-shop">
-      <p class="title">我的商品</p>
-      <ul class="group-content">
-        <li class="group-list">
-          <div class="img-icon">
-            <img src="../../assets/images/vote.png" width="30">
-          </div>
-          <p>订单</p>
-        </li>
-        <li class="group-list">
-          <div class="img-icon">
-            <img src="../../assets/images/collection.png" width="30">
-          </div>
-          <p>收藏</p>
-        </li>
-        <li class="group-list">
-          <div class="img-icon">
-            <img src="../../assets/images/event.png" width="30">
-          </div>
-          <p>我的赛事</p>
-        </li>
-        <li class="group-list">
-          <div class="img-icon">
-            <img src="../../assets/images/qiandao.png" width="30">
-          </div>
-          <p>签到</p>
-        </li>
-      </ul>
-      <ul class="group-content">
-        <li class="group-list">
-          <div class="img-icon">
-            <img src="../../assets/images/goods.png" width="30">
-          </div>
-          <p>代发货</p>
-        </li>
-        <li class="group-list">
-          <div class="img-icon">
-            <img src="../../assets/images/goods.png" width="30">
-          </div>
-          <p>待收货</p>
-        </li>
-        <li class="group-list">
-          <div class="img-icon">
-            <img src="../../assets/images/comment.png" width="30">
-          </div>
-          <p>待评价</p>
-        </li>
-        <li class="group-list">
-          <div class="img-icon">
-            <img src="../../assets/images/tool.png" width="30">
-          </div>
-          <p>退款/售后</p>
-        </li>
-      </ul>
+
     </section>
   </div>
 </template>
@@ -132,76 +67,103 @@
   export default {
     data() {
       return {
-        userImg:require("../../assets/images/user.jpg")
+        userImg:require("../../assets/images/userImg.jpg")
       }
     },
     methods:{
-      ...mapActions(['getUserInfo'])
+      ...mapActions("user",['getUserInfo'])
     },
     computed:{
-      ...mapState(['userInfo'])
+      ...mapState("user",['userInfo'])
     },
     created() {
       this.getUserInfo();
-      $(window).scrollTop(0);
     }
   }
 </script>
 <style lang="stylus">
   #user{
     width: 100%;
+    background: #f7f7f7;
     .user-info{
+      height: 180px;
       position: relative;
-      background: #43942f;
-      padding: 30px 0;
-      .user-box{
-        width: 4.1rem;
-        margin: 0 auto;
-        display: flex;
-        display: -webkit-flex;
-        .img-box{
-          margin-right: 10px;
-          flex: 1 1 auto;
-          .user-img{
-            width: 1.2rem;
-            height: 1.2rem;
-            background-size: cover;
-            -webkit-border-radius: 50%;
-            -moz-border-radius: 50%;
-            border-radius: 50%;
-          }
+      background: #000;
+      background-size: cover;
+    }
+    .black{
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: rgba(0,0,0,.7);
+    }
+    .user-box{
+      width: 4.1rem;
+      margin: 0 auto;
+      padding: 20px 0;
+      position: relative;
+
+      .user-img{
+        width: 2rem;
+        height: 2rem;
+        margin: 20px auto;
+        background-position: center;
+        background-size: cover;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        position: relative;
+        .icon-edit{
+          color: #fff;
+          background: #d81e06;
+          position: absolute;
+          bottom: -5px;
+          right: -5px;
+          -webkit-border-radius: 50%;
+          -moz-border-radius: 50%;
+          border-radius: 50%;
+          padding: 5px;
+          font-size: 12px;
         }
-        .user-text{
-          width: 100%;
-          flex: 2 1 auto;
-          p{
-            width: 3rem;
-            color: #fff;
-            line-height: .6rem;
-            font-size: 12px;
-          }
+      }
+      .user-text{
+        width: 100%;
+        p{
+          color: #fff;
+          line-height: .6rem;
+          font-size: 16px;
+          text-align: center;
         }
       }
     }
-    section{
-      .title{
-        font-size: 16px;
-        color: #666;
-        padding: 10px 10px 0;
+    .title{
+      background: #fff;
+      font-size: 16px;
+      color: #666;
+      padding: 10px;
+      margin: 5px 0;
+      .icon-arrow{
+        float: right;
       }
+    }
+    section{
       width: 100%;
       background: #fff;
       .group-content{
         width: 100%;
         display: flex;
         display: -webkit-flex;
-        padding: 10px 0;
+        padding: 20px 0;
         .group-list{
           cursor: pointer;
           flex: 1 1 0;
-          border: 1px solid #ccc;
+          border: 1px solid #ddd;
+          border-top: none;
+          border-bottom: none;
           border-left: none;
-          padding: 10px 0;
+          color: #777;
           .img-icon{
             width: 0.6rem;
             height: auto;

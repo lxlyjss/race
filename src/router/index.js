@@ -18,10 +18,17 @@ import lessonSign from '@/page/lesson/sign'
 import lessonPay from '@/page/lesson/pay'
 import payResult from '@/page/lesson/payResult'
 import classInfo from '@/page/lesson/classInfo'
+import myLesson from '@/page/lesson/myLesson'
+import search from '@/page/lesson/search'
 
 import shopDetial from '@/page/shop/detial'
 
 import userInfo from '@/page/user/userInfo'
+import myBaby from '@/page/user/myBaby'
+import addBaby from '@/page/user/addBaby'
+import login from '@/page/user/login'
+import register from '@/page/user/register'
+import findPw from '@/page/user/findPw'
 
 Router.prototype.goBack = function (){
   this.isBack = true;
@@ -32,7 +39,7 @@ Vue.use(Router)
 let raceRoute = [
   {
     path: '/',
-    redirect: '/index'
+    redirect: '/index/lesson'
   },
   {
     path: '/index',
@@ -41,7 +48,7 @@ let raceRoute = [
     children:[
       {
         path: '/index',
-        redirect: '/index/race'
+        redirect: '/index/lesson'
       },
       {
         path: '/index/race',
@@ -121,6 +128,16 @@ let lessonRoute = [
     path: '/lesson/classInfo',
     name: 'classInfo',
     component: classInfo
+  },
+  {
+    path: '/lesson/myLesson',
+    name: 'myLesson',
+    component: myLesson
+  },
+  {
+    path: '/lesson/search',
+    name: 'search',
+    component: search
   }
 ];
 let shopRoute = [
@@ -135,6 +152,31 @@ let userRoute = [
     path: '/user/userInfo',
     name: 'userInfo',
     component: userInfo
+  },
+  {
+    path: '/user/login',
+    name: 'login',
+    component: login
+  },
+  {
+    path: '/user/register',
+    name: 'register',
+    component: register
+  },
+  {
+    path: '/user/findPw',
+    name: 'findPw',
+    component: findPw
+  },
+  {
+    path: '/user/myBaby',
+    name: 'myBaby',
+    component: myBaby
+  },
+  {
+    path: '/user/addBaby',
+    name: 'addBaby',
+    component: addBaby
   }
 ];
 let allRoute = raceRoute.concat(lessonRoute,shopRoute,userRoute)

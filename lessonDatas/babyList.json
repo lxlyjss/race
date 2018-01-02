@@ -6,10 +6,30 @@
     "list":[
       {
         "id": "1",
+        "headImg": "http://lxlin.top/test/img/1.jpg",
+        "name":"张三",
+        "smallName":"小三",
+        "sex":0,
+        "birthday":"1992-10-03",
+        "c_type": 1,
+        "c_number":"245452353535323"
+      },
+      {
+        "id": "1",
         "headImg": "http://lxlin.top/test/img/2.jpg",
         "name":"张三",
         "smallName":"小三",
-        "sex":2,
+        "sex":1,
+        "birthday":"1992-10-03",
+        "c_type": 1,
+        "c_number":"245452353535323"
+      },
+      {
+        "id": "1",
+        "headImg": "http://lxlin.top/test/img/3.jpg",
+        "name":"张三",
+        "smallName":"小三",
+        "sex":0,
         "birthday":"1992-10-03",
         "c_type": 1,
         "c_number":"245452353535323"

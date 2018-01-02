@@ -14,12 +14,19 @@
             <span class="title fl"><i class="iconfont icon-xingming"></i>头像</span>
             <i class="iconfont icon-arrow-right fr" style="margin-left: 10px;"></i>
             <span class="header-img fr" :style="{backgroundImage: 'url('+userInfo.headImg+')'}"></span>
-
           </p>
         </li>
         <li class="item">
           <p class="clear">
             <span class="title fl"><i class="iconfont icon-biaoqian"></i>姓名</span>
+            <span class="fr">
+              <input type="text" v-model="userInfo.nickName" >
+            </span>
+          </p>
+        </li>
+        <li class="item">
+          <p class="clear">
+            <span class="title fl"><i class="iconfont icon-biaoqian"></i>小名</span>
             <span class="fr">
               <input type="text" v-model="userInfo.nickName" >
             </span>
@@ -47,9 +54,24 @@
         </li>
         <li class="item">
           <p class="clear">
-            <span class="title fl"><i class="iconfont icon-shouji"></i>手机号码</span>
-            <i class="iconfont icon-arrow-right fr" style="margin-left: 10px;"></i>
-            <span class="fr" style="width: auto;">{{userInfo.phone}}</span></p>
+            <span class="title fl"><i class="iconfont icon-xingbie"></i>证件类型</span>
+            <span class="fr" style="text-align:right;">
+              <select name="sex" v-model="userInfo.sex" id="c_type" style="direction: rtl">
+                <option value="0">身份证</option>
+                <option value="1">护照</option>
+                <option value="2">港澳通行证</option>
+                <option value="3">台湾通行证</option>
+              </select>
+            </span>
+          </p>
+        </li>
+        <li class="item">
+          <p class="clear">
+            <span class="title fl"><i class="iconfont icon-shouji"></i>证件号码</span>
+            <span class="fr">
+              <input type="text" v-model="userInfo.nickName" />
+            </span>
+          </p>
         </li>
       </ul>
     </div>

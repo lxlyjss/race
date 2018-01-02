@@ -6,7 +6,7 @@
         <span class="fr"><img src="../../assets/images/sanjiao.png" width="10"></span>
       </div>
       <div class="search-btn">
-        <div class="search-box">
+        <div class="search-box" @click="$router.push('/lesson/search')">
           <span class="fl">搜索</span>
           <i class="fr iconfont icon-sousuo"></i>
         </div>
@@ -14,18 +14,21 @@
     </div>
     <div class="swiper-w">
       <mt-swipe :auto="2000">
-        <mt-swipe-item v-if="banner.list" v-for="item in banner.list" :style="{backgroundImage:`url(${item.imgUrl})`,backgroundSize:'cover'}" :key="item.lessonid"></mt-swipe-item>
+        <mt-swipe-item v-if="banner.list" v-for="item in banner.list"
+                       :style="{backgroundImage:`url(${item.imgUrl})`,backgroundSize:'cover'}"
+                       :key="item.lessonid"></mt-swipe-item>
       </mt-swipe>
     </div>
     <div class="nav-tab">
       <ul class="nav-group dflex">
-        <li class="nav-list tc" :class="lessonType.index==k?'active':''" v-for="(item,k) in lessonList.list" @click="changeTab(k)" :key="item.levelId">
+        <li class="nav-list tc" :class="lessonType.index==k?'active':''" v-for="(item,k) in lessonList.list"
+            @click="changeTab(k)" :key="item.levelId">
           <i class="iconfont icon-liebiao9"></i> {{item.level}}
         </li>
       </ul>
     </div>
     <div class="tab-container">
-      <mt-tab-container v-model="lessonType.active" swipeable="swipeable">
+      <mt-tab-container v-model="lessonType.active" :swipeable="true">
         <mt-tab-container-item :id="'tab-container'+key" v-for="(item,key) in lessonList.list" :key="key">
           <div class="list-container">
             <ul class="lesson-list">
@@ -33,9 +36,9 @@
                 <div class="item-img" :style="{backgroundImage:`url(${item1.imgUrl})`}"></div>
                 <div class="item-detial">
                   <h2 class="fw">{{item1.title}}</h2>
-                  <p>开课: {{item1.date}}</p>
-                  <p>年龄: {{item1.minAge}}-{{item1.maxAge}}岁</p>
-                  <p class="fl">￥<span class="item-price">{{item1.price/100}}</span>起</p>
+                  <p><i class="iconfont icon-icon"></i>课程时间: {{item1.date}}</p>
+                  <p><i class="iconfont icon-ren"></i>适用年龄: {{item1.minAge}}-{{item1.maxAge}}岁</p>
+                  <p class="fl">￥<span class="item-price">{{item1.price / 100}}</span>起</p>
                   <p class="fr item-status finish" v-show="item1.status==0">已结束</p>
                   <p class="fr item-status doing" v-show="item1.status==1">进行中</p>
                   <p class="fr item-status signing" v-show="item1.status==2">报名中</p>
@@ -58,9 +61,10 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import {mapState, mapActions,mapMutations,mapGetters} from 'vuex'
-  import { Swipe, SwipeItem,TabContainer, TabContainerItem,Popup,Picker } from 'mint-ui';
+  import {mapState, mapActions, mapMutations, mapGetters} from 'vuex'
+  import {Swipe, SwipeItem, TabContainer, TabContainerItem, Popup, Picker} from 'mint-ui';
   import Vue from 'vue';
+
   Vue.component(Swipe.name, Swipe);
   Vue.component(SwipeItem.name, SwipeItem);
   Vue.component(TabContainer.name, TabContainer);
@@ -71,8 +75,9 @@
   export default {
     data() {
       return {
-        lessonType:{
-          active:"",
+        transitionName: "slide-right",
+        lessonType: {
+          active: "",
           index: 0
         },
         cityBox: false,
@@ -85,7 +90,7 @@
           {
             flex: 1,
             defaultIndex: 1,
-            values: ['南通','北京',  '武汉', '长春', '青岛', '廊坊'],
+            values: ['南通', '北京', '武汉', '长春', '青岛', '廊坊'],
             className: 'slot1',
             textAlign: 'center'
           }, {
@@ -94,101 +99,100 @@
             className: 'slot2'
           }, {
             flex: 1,
-            values: ["骑二无比总部","南通分部2","南通分部3"],
+            values: ["骑二无比总部", "南通分部2", "南通分部3"],
             className: 'slot3',
             textAlign: 'center'
           }
         ],
-        cityList:{
-          "南通":["南通分部1","南通分部2","南通分部3"],
-          "北京":["骑二无比总部1","骑二无比总部2","骑二无比总部3"],
-          "武汉":["武汉分部1","武汉分部2","武汉分部3"],
-          "长春":["长春分部1","长春分部2"],
-          "青岛":["青岛分部1","青岛分部2"],
-          "廊坊":["廊坊分部1","廊坊分部2"]
+        cityList: {
+          "南通": ["南通分部1", "南通分部2", "南通分部3"],
+          "北京": ["骑二无比总部1", "骑二无比总部2", "骑二无比总部3"],
+          "武汉": ["武汉分部1", "武汉分部2", "武汉分部3"],
+          "长春": ["长春分部1", "长春分部2"],
+          "青岛": ["青岛分部1", "青岛分部2"],
+          "廊坊": ["廊坊分部1", "廊坊分部2"]
         }
       }
     },
-    methods:{
-      ...mapActions("lesson",["getBanner","getLessonList"]),
-      ...mapMutations("lesson",["setDetial"]),
+    methods: {
+      ...mapActions("lesson", ["getBanner", "getLessonList"]),
+      ...mapMutations("lesson", ["setDetial"]),
       changeTab(n) {
-        this.lessonType.active = "tab-container"+n;
+        this.lessonType.active = "tab-container" + n;
         this.lessonType.index = n;
       },
-      setDate(time){
+      setDate(time) {
         var temp = new Date();
-        temp.setTime(time*1000);
-        return temp.toLocaleDateString().replace(/\//g,"-")+temp.toLocaleTimeString()
+        temp.setTime(time * 1000);
+        return temp.toLocaleDateString().replace(/\//g, "-") + temp.toLocaleTimeString()
       },
-      goDetial(key,key1) {
-        this.$router.push({path:'/lesson/detial',query:{'lessonType':key,'lessonId':key1}});
-        for(var i = 0; i < this.lessonList.list.length;i++){
-          if(i == key){
-            for(var j = 0; j < this.lessonList.list[i].list.length;j++){
-              if(j == key1){
+      goDetial(key, key1) {
+        this.$router.push({path: '/lesson/detial', query: {'lessonType': key, 'lessonId': key1}});
+        for (var i = 0; i < this.lessonList.list.length; i++) {
+          if (i == key) {
+            for (var j = 0; j < this.lessonList.list[i].list.length; j++) {
+              if (j == key1) {
                 this.setDetial(this.lessonList.list[i].list[j]);
               }
             }
           }
         }
       },
-      onValuesChange(picker,values) {
-        picker.setSlotValues(1,this.cityList[values[0]]);
+      onValuesChange(picker, values) {
+        picker.setSlotValues(1, this.cityList[values[0]]);
         this.city.tempCity = values[0];
         this.city.tempBranch = values[1];
       },
       selectCity(is) {
         this.cityBox = false;
-        if(is){
+        if (is) {
           this.city.text = this.city.tempBranch;
         }
       }
     },
-    watch:{
-      "lessonType.active"(n,o) {
+    watch: {
+      "lessonType.active"(n, o) {
         this.changeTab(n.slice(-1));
       }
     },
-    computed:{
-      ...mapState("lesson",["banner","lessonList"])
+    computed: {
+      ...mapState("lesson", ["banner", "lessonList"])
     },
-    components:{
-    },
+    components: {},
     created() {
       this.getBanner();
       this.getLessonList();
-      this.lessonType.active = 'tab-container'+this.lessonType.index;
+      this.lessonType.active = 'tab-container' + this.lessonType.index;
     }
   }
 </script>
 <style lang="stylus">
-  #index{
+  #index {
     padding: 50px 0;
-    .header{
+    .header {
       width: 100%;
       height: 1.5rem;
       background: #fff;
       position: fixed;
       top: 0;
       z-index: 9;
-      .city-btn{
+      .city-btn {
         flex: 1 1 auto;
         line-height: 1.5rem;
         text-align: center;
         max-width: 4rem;
         padding: 0 13px;
-        .city{
+        .city {
           color: #26a2ff;
         }
-        .place{
+        .place {
           display: block;
           max-width: 3.8rem;
         }
       }
-      .search-btn{
+      .search-btn {
         flex: 1 1 auto;
-        .search-box{
+        .search-box {
           width: 5rem;
           height: .9rem;
           margin-top: .3rem;
@@ -200,131 +204,131 @@
           overflow: hidden;
           line-height: .9rem;
         }
-        span{
+        span {
           color: #777;
           margin-left: 10px;
         }
-        .icon-sousuo{
+        .icon-sousuo {
           color: #777;
           margin-right: 5px;
           font-size: 20px;
         }
       }
     }
-    .swiper-w{
+    .swiper-w {
       height: 6rem;
     }
-    .nav-tab{
+    .nav-tab {
       width: 100%;
       overflow: hidden;
       background: #fff;
-      .nav-group{
+      .nav-group {
         padding: 20px 10px;
-        .nav-list{
+        .nav-list {
           flex: 1 1 auto;
           color: #9d98a0;
           border-right: 1px solid #9d98a0;
         }
-        .active{
+        .active {
           color: #e51f22;
         }
-        .nav-list:last-of-type{
+        .nav-list:last-of-type {
           border-right: none;
         }
       }
     }
-    .list-container{
+    .list-container {
       background: #fff;
       padding: 10px;
       margin-top: 10px;
-      .lesson-list{
-        padding: 0 10px;
-        .list-item{
-          border-bottom: 1px solid #f7f7f7;
-          padding: 10px 0;
-          .item-img{
-            width: 2.5rem;
-            height: 2.5rem;
-            background: url(../../assets/images/user.jpg) no-repeat;
-            background-size: cover;
-            background-position: center;
-            -webkit-border-radius: 10px;
-            -moz-border-radius: 10px;
-            border-radius: 10px;
+    }
+    .lesson-list {
+      padding: 0 10px;
+      .list-item {
+        border-bottom: 1px solid #f7f7f7;
+        padding: 10px 0;
+        .item-img {
+          width: 2.5rem;
+          height: 2.5rem;
+          background: url(../../assets/images/user.jpg) no-repeat;
+          background-size: cover;
+          background-position: center;
+          -webkit-border-radius: 10px;
+          -moz-border-radius: 10px;
+          border-radius: 10px;
+        }
+        .item-detial {
+          flex: 3 1 auto;
+          padding-left: 10px;
+          position: relative;
+          i{
+            font-size: 12px;
+            margin-right: 3px;
           }
-          .item-detial{
-            flex: 3 1 auto;
-            padding-left: 10px;
-            position: relative;
-            h2{
-              font-size: 14px;
-              margin-bottom: 5px;
-              color: #423e45;
-            }
-            p{
-              line-height: 20px;
-              font-size: 12px;
-              color: #878585;
-            }
-            .item-price{
-              font-size: 18px;
-              color: #635f5f;
-            }
-            .item-status{
-              padding: 2px 10px;
-              color: #fff;
-              -webkit-border-radius: 5px;
-              -moz-border-radius: 5px;
-              border-radius: 5px;
-            }
-            .finish{
-              background: #f38218;
-            }
-            .signing{
-              background: #e1324a;
-            }
-            .doing{
-              background: #3cdc20;
-            }
+          h2 {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #423e45;
+          }
+          p {
+            line-height: 20px;
+            font-size: 12px;
+            color: #878585;
+          }
+          .item-price {
+            font-size: 18px;
+            color: #635f5f;
+          }
+          .item-status {
+            padding: 2px 10px;
+            color: #fff;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+          }
+          .finish {
+            background: #f38218;
+          }
+          .signing {
+            background: #e1324a;
+          }
+          .doing {
+            background: #3cdc20;
           }
         }
       }
     }
-    .alert-wrapper{
-      background: #fff;
-      padding: 40px 0;
-      .title{
-        font-size: 18px;
-      }
-      p{
-        line-height: 40px;
-        text-align: center;
-        img{
-          vertical-align: middle;
-          margin-left: 30px;
-        }
-      }
-      .save-btn{
-        border-top: 1px solid #ddd;
-        margin-top: 20px;
-        color: #777;
-        span{
-          display: block;
-          width: 50%;
-          text-align: center;
-        }
-        span:last-of-type{
-          border-left: 1px solid #ddd;
-        }
-      }
-    }
-    .mint-popup{
-      width: 70%;
+    .mint-popup {
+      width: 80%;
       margin: 0 auto;
       border-radius: 10px;
       -webkit-border-radius: 10px;
       -moz-border-radius: 10px;
       overflow: hidden;
+      .title {
+        font-size: 18px;
+      }
+      p {
+        line-height: 40px;
+        text-align: center;
+        img {
+          vertical-align: middle;
+          margin-left: 30px;
+        }
+      }
+      .save-btn {
+        border-top: 1px solid #ddd;
+        margin-top: 20px;
+        color: #777;
+        span {
+          display: block;
+          width: 50%;
+          text-align: center;
+        }
+        span:last-of-type {
+          border-left: 1px solid #ddd;
+        }
+      }
     }
   }
 </style>

@@ -46,7 +46,7 @@ export default {
 
 <style>
   @import './assets/css/reset.css';
-  @import '//at.alicdn.com/t/font_522676_c74y0r9fqztlc8fr.css';
+  @import '//at.alicdn.com/t/font_522676_1zjw6oacc1uoko6r.css';
 
   #app{
     width: 100%;
@@ -79,6 +79,7 @@ export default {
   .fw{
     font-weight: 900;
   }
+
   .txt-dian{
     overflow: hidden;
     white-space: nowrap;
@@ -110,6 +111,7 @@ export default {
     color: #fff;
     background: -webkit-gradient(linear, 0 0, right 0, from(#f32965), to(#f4582e));
   }
+  /*动画*/
   .child-view {
     position: absolute;
     left: 0;
@@ -128,10 +130,25 @@ export default {
     -webkit-transform: translate(-100%, 0);
     transform: translate(-100%, 0);
   }
+  .child-view {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    min-height: 100%;
+    transition: all .5s cubic-bezier(.55,0,.1,1);
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .3s
+  }
+  .fade-enter, .fade-leave-active {
+    opacity: 0
+  }
+  /*公用样式*/
   body{
     background: #f7f7f7;
   }
-  /*公用样式*/
   .header{
     width: 100%;
     height: 40px;
@@ -148,5 +165,10 @@ export default {
     -webkit-appearance: none;
     -webkit-tap-highlight-color: #fff;
     outline: 0;
+  }
+  .circle{
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
   }
 </style>

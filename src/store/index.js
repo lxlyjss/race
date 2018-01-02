@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 
 import lesson_modules from './lesson.js'
+import user_modules from './user.js'
 
 Vue.use(Vuex)
 
@@ -55,7 +56,8 @@ export default new Vuex.Store({
   mutations,
   actions,
   modules:{
-    lesson: lesson_modules
+    lesson: lesson_modules,
+    user: user_modules
   }
 
 })

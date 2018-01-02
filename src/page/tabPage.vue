@@ -14,19 +14,6 @@
     }
   }
 </script>
-<style>
-  .child-view {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    transition: all .5s cubic-bezier(.55,0,.1,1);
-  }
-  .fade-enter-active, .fade-leave-active {
-    transition: opacity .3s
-  }
-  .fade-enter, .fade-leave-active {
-    opacity: 0
-  }
+<style lang="stylus">
+  $red = #d81e06;
 </style>

@@ -8,9 +8,9 @@
       </mt-header>
     </div>
     <div class="container">
-      <div class="top-img" :style="{backgroundImage:`url(${lessonDetial.imgUrl})`}">
+      <div class="top-img" :style="{backgroundImage:`url(${detialData.imgUrl})`}">
         <div class="filter-black">
-          <h2>{{lessonDetial.title}}</h2>
+          <h2>{{detialData.title}}</h2>
         </div>
       </div>
       <!--课程介绍-->
@@ -19,34 +19,34 @@
           <tbody>
           <tr>
             <td width="70"><i class="iconfont icon-icon"></i>课程时间:</td>
-            <td>{{lessonDetial.date}}</td>
+            <td>{{detialData.date}}</td>
           </tr>
           <tr>
             <td><i class="iconfont icon-biaoqian"></i>课程分类:</td>
-            <td>{{lessonDetial.type}}</td>
+            <td>{{detialData.type}}</td>
           </tr>
           <tr>
             <td><i class="iconfont icon-ren"></i>适用年龄:</td>
-            <td>{{lessonDetial.minAge}}-{{lessonDetial.maxAge}}岁</td>
+            <td>{{detialData.minAge}}-{{detialData.maxAge}}岁</td>
           </tr>
           <tr>
             <td><i class="iconfont icon-didian"></i>上课地点:</td>
-            <td>{{lessonDetial.school}}</td>
+            <td>{{detialData.school}}</td>
           </tr>
           </tbody>
         </table>
-        <p class="fr item-status finish" v-show="lessonDetial.status==0">已结束</p>
-        <p class="fr item-status doing" v-show="lessonDetial.status==1">进行中</p>
-        <p class="fr item-status signing" v-show="lessonDetial.status==2">报名中</p>
+        <p class="fr item-status finish" v-show="detialData.status==0">已结束</p>
+        <p class="fr item-status doing" v-show="detialData.status==1">进行中</p>
+        <p class="fr item-status signing" v-show="detialData.status==2">报名中</p>
       </div>
       <!--价格-->
       <div class="price-box">
-        <p class="fl">￥<span class="price">{{lessonDetial.price/100}}</span>起</p>
+        <p class="fl">￥<span class="price">{{detialData.price/100}}</span>起</p>
         <div class="fr sign-group">
           <ul>
-            <li v-for="(item,key) in lessonDetial.signList" :style="{backgroundImage:`url(${item})`}" :key="key"></li>
+            <li v-for="(item,key) in detialData.signList" :style="{backgroundImage:`url(${item})`}" :key="key"></li>
           </ul>
-          <p>{{lessonDetial.currentCount}}/{{lessonDetial.totalCount}}</p>
+          <p>{{detialData.currentCount}}/{{detialData.totalCount}}</p>
         </div>
       </div>
       <div class="nav-tab">
@@ -92,7 +92,7 @@
               </h2>
               <div class="content">
                 <ul class="clear">
-                  <li class="bs" v-for="(item, key) in lessonDate.list" :key="key">
+                  <li class="bs" v-for="(item, key) in detialData.classDate" :key="key">
                     <p><span class="h1">{{key}}</span><i class="iconfont icon-shijian"></i><span>{{item}}</span></p>
                   </li>
                 </ul>
@@ -105,7 +105,7 @@
               </h2>
               <div class="content">
                 <ul class="pack-box">
-                  <li class="item" v-for="(item,key) in packList.list" :key="key">
+                  <li class="item" v-for="(item,key) in detialData.classPack" :key="key">
                     <p class="head clear">
                       <span class="index fl">{{key+1}}</span>
                       <span class="price fr">价值<span>{{item.price/100}}</span>元</span>
@@ -126,7 +126,7 @@
               </h2>
               <div class="content">
                 <ul class="group">
-                  <li class="item dflex" v-for="(item,key) in teacherList.list" :key="key">
+                  <li class="item dflex" v-for="(item,key) in detialData.teachers" :key="key">
                     <div class="left">
                       <div class="img" :style="{backgroundImage: `url(${item.imgUrl})`}"></div>
                     </div>
@@ -181,7 +181,7 @@
     <mt-popup v-model="popupVisible" pop-transition="popup-fade"
       position="center">
       <div class="kefu-container">
-        <p><a :href="'tel:'+kefuInfo.phone"><i class="iconfont icon-dianhua"></i>可点击拨打: <span class="phone">{{kefuInfo.phone}}</span></a></p>
+        <p><a :href="'tel:'+kefuData.phone"><i class="iconfont icon-dianhua"></i>可点击拨打: <span class="phone">{{kefuData.phone}}</span></a></p>
         <p><i class="iconfont icon-ren"></i>微信联系: 大白</p>
         <p><img src="../../assets/images/code.jpg" width="60"></p>
       </div>
@@ -204,7 +204,17 @@
         active:"tab-container1",
         index: 1,
         popupVisible: false,
-        img:require('@/assets/images/top-img.jpg')
+        img:require('@/assets/images/top-img.jpg'),
+        detialData:{
+          signList:[],
+          classDate:[],
+          classPack:[],
+          teachers:[]
+        },
+        commentList:{
+          list:[]
+        },
+        kefuData:{}
       }
     },
     methods:{
@@ -213,50 +223,25 @@
         this.index = n;
       },
       ...mapActions("lesson",[
-        "getLessonList",
-        "getLessonDate",
-        "getPackList",
-        "getTeacherList",
+        "getLessonDetial",
         "getCommentList",
-        "getKefuInfo"
+        "getKefuData"
       ]),
       ...mapMutations("lesson",["setDetial"])
     },
-    computed:{
-      ...mapState("lesson",[
-        "lessonList",
-        "lessonDetial",
-        "lessonDate",
-        "packList",
-        "teacherList",
-        "commentList",
-        "kefuInfo"
-      ])
-    },
-    watch:{
-      'lessonList'(n,o){
-        if(n!=o){
-          for(var i = 0; i < this.lessonList.list.length;i++){
-            if(i == this.$route.query.lessonType){
-              for(var j = 0; j < this.lessonList.list[i].list.length;j++){
-                if(j == this.$route.query.lessonId){
-                  this.setDetial(this.lessonList.list[i].list[j]);
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     created(){
-      this.getLessonDate();
-      this.getPackList();
-      this.getTeacherList();
-      this.getCommentList();
-      this.getKefuInfo();
-      if(!("id" in this.lessonDetial)){
-        this.getLessonList();
-      }
+      this.getLessonDetial().then(res=>{
+        console.log(res.data);
+        this.detialData = res.data;
+      });
+      this.getCommentList().then(res=>{
+        console.log(res.data);
+        this.commentList = res.data;
+      });
+      this.getKefuData().then(res=>{
+        console.log(res.data);
+        this.kefuData = res.data;
+      });
     }
   }
 </script>

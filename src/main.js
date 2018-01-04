@@ -6,12 +6,18 @@ import router from './router'
 import axios from 'axios'
 import store from './store'
 
-import jQuery from "@/assets/js/jquery-1.8.3.min.js"
+import myLoading from "@/components/myLoading"
 
-import { Header, Button } from 'mint-ui';
+import jQuery from "@/assets/js/jquery-1.8.3.min.js"
+import { fetch } from "./config/fetch"
+
+import { Header, Button, Toast, Spinner } from 'mint-ui';
 Vue.component(Header.name, Header);
 Vue.component(Button.name, Button);
+Vue.component(Spinner.name, Spinner);
 
+//全局引入loading组件
+Vue.component(myLoading.name, myLoading);
 
 Vue.prototype.$http = axios;
 

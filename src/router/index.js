@@ -20,6 +20,7 @@ import payResult from '@/page/lesson/payResult'
 import classInfo from '@/page/lesson/classInfo'
 import myLesson from '@/page/lesson/myLesson'
 import search from '@/page/lesson/search'
+import comment from '@/page/lesson/comment'
 
 import shopDetial from '@/page/shop/detial'
 
@@ -32,7 +33,11 @@ import findPw from '@/page/user/findPw'
 
 Router.prototype.goBack = function (){
   this.isBack = true;
-  window.history.go(-1);
+  if(window.history.length>1){
+    window.history.go(-1);
+  }else{
+    this.push("/index/lesson");
+  }
 }
 Vue.use(Router)
 
@@ -138,7 +143,12 @@ let lessonRoute = [
     path: '/lesson/search',
     name: 'search',
     component: search
-  }
+  },
+  {
+    path: '/lesson/comment',
+    name: 'comment',
+    component: comment
+  },
 ];
 let shopRoute = [
   {

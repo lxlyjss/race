@@ -1,6 +1,6 @@
 <template>
-  <div id="index">
-    商城系统正在开发中,敬请期待...
+  <div id="uploadBox">
+
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -11,11 +11,12 @@
       }
     },
     methods:{
-    },
-    components:{
-    },
+
+    }
   }
 </script>
-<style>
+<style lang="stylus">
+  #uploadBox{
 
+  }
 </style>

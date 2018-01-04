@@ -4,6 +4,7 @@ import axios from 'axios'
 
 import lesson_modules from './lesson.js'
 import user_modules from './user.js'
+import { fetch } from "../config/fetch"
 
 Vue.use(Vuex)
 
@@ -44,12 +45,22 @@ const getters = {
 const mutations = {
   changeFooter(state,i) {
     state.footer.nowTab = i;
-    console.log(i)
   }
 }
 const actions = {
-
-}
+  //上传图片接口
+  async uploadImgAjax(context, data) {
+    let res;
+    res = await fetch("post","uploadImg",data);
+    return res;
+  },
+  //删除图片接口
+  async deleteImgAjax(context, data) {
+    let res;
+    res = await fetch("post","deleteImg",data);
+    return res;
+  }
+};
 export default new Vuex.Store({
   state,
   getters,

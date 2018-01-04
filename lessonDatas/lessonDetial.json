@@ -1,0 +1,134 @@
+{
+  "status": 0,
+  "message": "",
+  "data": {
+    "id": 1,
+    "title": "滑步车课程初级班一期",
+    "status": "0",
+    "type": "滑步车初级课程",
+    "typeId": 1,
+    "date": "2017.12.13-2018.02.25",
+    "school": "北京是朝阳区来广营西路26号",
+    "totalCount": "12",
+    "currentCount": "5",
+    "price": "297200",
+    "minAge": "2",
+    "maxAge": "6",
+    "imgUrl": "http://www.72bike.com/img/activitys/a1/2.jpg",
+    "longitude": "223.122335",
+    "latitude": "212.232355",
+    "signList": [
+      "http://lxlin.top/test/img/1.jpg",
+      "http://lxlin.top/test/img/2.jpg",
+      "http://lxlin.top/test/img/3.jpg"
+    ],
+    "desc": "课程介绍",
+    "notice": "注意事项",
+    "classDate": [
+      "2017.01.21",
+      "2017.01.21",
+      "2017.01.21",
+      "2017.01.21",
+      "2017.01.21",
+      "2017.01.21",
+      "2017.01.21",
+      "2017.01.21",
+      "2017.01.21",
+      "2017.01.21"
+    ],
+    "classPack": [
+      {
+        "id": 1,
+        "title": "课件包一",
+        "price": "397200",
+        "item": [
+          {
+            "img": "http://lxlin.top/test/packImg/pack2.png",
+            "title": "10课时专业级儿童培训教程",
+            "price": "3000元"
+          },
+          {
+            "img": "http://lxlin.top/test/packImg/pack1.png",
+            "title": "科菲迪斯儿童滑步车",
+            "price": "1399元"
+          },
+          {
+            "img": "http://lxlin.top/test/packImg/pack3.png",
+            "title": "187PROHELMET头盔",
+            "price": "380元"
+          },
+          {
+            "img": "http://lxlin.top/test/packImg/pack4.png",
+            "title": "187PROHELMET护具",
+            "price": "480元"
+          },
+          {
+            "img": "http://lxlin.top/test/packImg/pack4.png",
+            "title": "定制版纯棉亲子套装",
+            "price": "194元"
+          },
+          {
+            "img": "http://lxlin.top/test/packImg/pack4.png",
+            "title": "定制版儿童骑二日记",
+            "price": "免费"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "课件包二",
+        "price": "327200",
+        "item": [
+          {
+            "img": "http://lxlin.top/test/packImg/pack2.png",
+            "title": "10课时专业级儿童培训教程",
+            "price": "3000元"
+          },
+          {
+            "img": "http://lxlin.top/test/packImg/pack3.png",
+            "title": "187PROHELMET头盔",
+            "price": "380元"
+          },
+          {
+            "img": "http://lxlin.top/test/packImg/pack4.png",
+            "title": "187PROHELMET护具",
+            "price": "480元"
+          },
+          {
+            "img": "http://lxlin.top/test/packImg/pack4.png",
+            "title": "定制版纯棉亲子套装",
+            "price": "194元"
+          },
+          {
+            "img": "http://lxlin.top/test/packImg/pack4.png",
+            "title": "定制版儿童骑二日记",
+            "price": "免费"
+          }
+        ]
+      }
+    ],
+    "teachers": [
+      {
+        "id": 1,
+        "name": "李彬鹏",
+        "imgUrl": "http://lxlin.top/test/img/1.jpg",
+        "years": "15",
+        "desc": "资深山地自行车爱好者,骑二无比总教练,一直活跃在国内各大赛事及活动中,并取得优异成绩.2017年在非黄金年龄的39岁参加北京站赛事,依然挺近6强."
+      },
+      {
+        "id": 2,
+        "name": "刘思瑶",
+        "imgUrl": "http://lxlin.top/test/img/2.jpg",
+        "years": "7",
+        "desc": "山地自行车资深玩家,骑二无比教练,多次参加国内各种规模的山地自行车赛事并取得了不俗的成绩.对自行车运动理论有较深入的学习与研究,特别是在儿童运动方面有着专业的知识系统."
+      },
+      {
+        "id": 3,
+        "name": "肖凡",
+        "imgUrl": "http://lxlin.top/test/img/3.jpg",
+        "years": "6",
+        "desc": "资深BMX街式车手,山地自行车爱好者,骑二无比教练.多次参加国内各大极限赛事,取得优异成绩及名次,多次受邀作为表演嘉宾,在各大赛事及活动中进行BMX技术表演,技术动作舒展,飘逸,观赏性极高."
+      }
+    ]
+  }
+}

@@ -1,4 +1,6 @@
 import axios from 'axios'
+import {fetch} from "../config/fetch";
+
 export default {
   namespaced: true,
   state:{
@@ -48,7 +50,6 @@ export default {
     //获取点击的课程详情
     setDetial(state, res) {
       state.lessonDetial = res
-      console.log(res);
     },
     //获取课时详情
     setLessonDate(state, res) {
@@ -73,53 +74,63 @@ export default {
     }
   },
   actions:{
-    getBanner(context) {
-      axios.get('lessonDatas/banner.json').then(res=>{
-        console.log(res.data.data);
-        context.commit('setBanner',res.data.data);
-      })
+    //获取banner图列表
+    async getBanner(context) {
+      let res = await fetch("get","getBanner");
+      return res;
     },
-    getLessonList(context) {
-      axios.get('lessonDatas/lessonList.json').then(res=>{
-        console.log(res.data.data)
-        context.commit("setLessonList",res.data.data)
-      })
+    //获取课程列表
+    async getLessonList(context) {
+      let res = await fetch("get","getLessonList");
+      return res;
     },
+    //获取课程详情
+    async getLessonDetial(context) {
+      let res = await fetch("get","getLessonDetial");
+      return res;
+    },
+    //获取评价列表
+    async getCommentList(context) {
+      let res = await fetch("get","getCommentList");
+      return res;
+    },
+    //获取客服信息
+    async getKefuData(context) {
+      let res = await fetch("get","getKefuData");
+      return res;
+    },
+    //获取课程课时列表
     getLessonDate(context) {
       axios.get("lessonDatas/classDate.json").then(res=>{
         console.log(res.data.data);
         context.commit("setLessonDate",res.data.data);
       })
     },
+    //获取课件包列表
     getPackList(context) {
       axios.get("lessonDatas/classPack.json").then(res=>{
         console.log(res.data.data);
         context.commit("setPackList",res.data.data)
       })
     },
+    //获取教练列表
     getTeacherList(context) {
       axios.get("lessonDatas/teachers.json").then(res=>{
         console.log(res.data.data);
         context.commit("setTeacherList",res.data.data);
       })
     },
-    getCommentList(context){
-      axios.get("lessonDatas/comments.json").then(res=>{
-        console.log(res.data.data);
-        context.commit("setCommentList",res.data.data);
-      })
+    //获取评价页面标签列表
+    async getTagList(context) {
+      let res;
+      res = await fetch("get","getTagList");
+      return res;
     },
-    getKefuInfo(context) {
-      axios.get("lessonDatas/kefu.json").then(res=>{
-        console.log(res.data.data);
-        context.commit("setKefuInfo",res.data.data);
-      })
-    },
-    getPackList(context) {
-      axios.get("lessonDatas/classPack.json").then(res=>{
-        console.log(res.data.data);
-        context.commit("setPackList",res.data.data);
-      })
+    //获取评价页面历史评价
+    async getHistoryComment(context) {
+      let res;
+      res = await fetch("get","getHistoryCommentList");
+      return res;
     }
   }
 }

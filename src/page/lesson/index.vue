@@ -21,33 +21,13 @@
     </div>
     <div class="nav-tab">
       <ul class="nav-group dflex">
-        <li class="nav-list tc" :class="lessonType.index==k?'active':''" v-for="(item,k) in lessonList.list"
-            @click="changeTab(k)" :key="item.levelId">
+        <li class="nav-list tc" :class="lessonType.index==k?'active':''" v-for="(item,k) in lessonList.list" @click="changeTab(k)" :key="item.levelId">
           <i class="iconfont icon-liebiao9"></i> {{item.level}}
         </li>
       </ul>
     </div>
     <div class="tab-container">
-      <mt-tab-container v-model="lessonType.active" :swipeable="true">
-        <mt-tab-container-item :id="'tab-container'+key" v-for="(item,key) in lessonList.list" :key="key">
-          <div class="list-container">
-            <ul class="lesson-list">
-              <li class="list-item dflex" v-for="(item1,key1) in item.list" :key="key1" @click="goDetial(key,key1)">
-                <div class="item-img" :style="{backgroundImage:`url(${item1.imgUrl})`}"></div>
-                <div class="item-detial">
-                  <h2 class="fw">{{item1.title}}</h2>
-                  <p><i class="iconfont icon-icon"></i>课程时间: {{item1.date}}</p>
-                  <p><i class="iconfont icon-ren"></i>适用年龄: {{item1.minAge}}-{{item1.maxAge}}岁</p>
-                  <p class="fl">￥<span class="item-price">{{item1.price / 100}}</span>起</p>
-                  <p class="fr item-status finish" v-show="item1.status==0">已结束</p>
-                  <p class="fr item-status doing" v-show="item1.status==1">进行中</p>
-                  <p class="fr item-status signing" v-show="item1.status==2">报名中</p>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </mt-tab-container-item>
-      </mt-tab-container>
+      <lesson-list v-show="lessonType.index==key" v-if="lessonList.list" :lesson="item" v-for="(item,key) in lessonList.list" :trun="lessonType.trunLeft" :key="key"></lesson-list>
     </div>
     <mt-popup
       v-model="cityBox" pop-transition="popup-fade"
@@ -58,10 +38,12 @@
         <span class="fl bs" @click="selectCity(false)">取消</span>
         <span class="fr bs" @click="selectCity(true)">保存</span></p>
     </mt-popup>
+    <my-loading :visible="loading"></my-loading>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import {mapState, mapActions, mapMutations, mapGetters} from 'vuex'
+  import lessonList from '@/components/lessonList'
   import {Swipe, SwipeItem, TabContainer, TabContainerItem, Popup, Picker} from 'mint-ui';
   import Vue from 'vue';
 
@@ -71,15 +53,20 @@
   Vue.component(TabContainerItem.name, TabContainerItem);
   Vue.component(Popup.name, Popup);
   Vue.component(Picker.name, Picker);
+  Vue.component(lessonList.name, lessonList);
 
   export default {
     data() {
       return {
-        transitionName: "slide-right",
+        loading: true,
+        banner: {},//banner图数据
+        lessonList:{
+          list:[]
+        },//课程列表数据
         lessonType: {
-          active: "",
           index: 0
         },
+
         cityBox: false,
         city: {
           text: "骑二无比总部",
@@ -126,18 +113,6 @@
         temp.setTime(time * 1000);
         return temp.toLocaleDateString().replace(/\//g, "-") + temp.toLocaleTimeString()
       },
-      goDetial(key, key1) {
-        this.$router.push({path: '/lesson/detial', query: {'lessonType': key, 'lessonId': key1}});
-        for (var i = 0; i < this.lessonList.list.length; i++) {
-          if (i == key) {
-            for (var j = 0; j < this.lessonList.list[i].list.length; j++) {
-              if (j == key1) {
-                this.setDetial(this.lessonList.list[i].list[j]);
-              }
-            }
-          }
-        }
-      },
       onValuesChange(picker, values) {
         picker.setSlotValues(1, this.cityList[values[0]]);
         this.city.tempCity = values[0];
@@ -151,18 +126,37 @@
       }
     },
     watch: {
-      "lessonType.active"(n, o) {
-        this.changeTab(n.slice(-1));
-      }
     },
     computed: {
-      ...mapState("lesson", ["banner", "lessonList"])
+
     },
     components: {},
     created() {
-      this.getBanner();
-      this.getLessonList();
-      this.lessonType.active = 'tab-container' + this.lessonType.index;
+      //获取banner数据
+      this.getBanner().then(res=>{
+        this.loading = false;
+        if(res.status == 0){
+          this.banner = res.data;
+        }else{
+          console.log(res.massage);
+        }
+      }).catch(res=>{
+        this.loading = false;
+        console.log("接口报错了"+res);
+      });
+      //获取课程数据
+      this.getLessonList().then(res=>{
+        this.loading = false;
+        if(res.status == 0){
+          this.lessonList = res.data;
+        }else{
+          console.log(res.massage);
+        }
+      }).catch(res=>{
+        this.loading = false;
+        console.log("接口报错了"+res);
+      });
+      this.changeTab(this.lessonType.index);
     }
   }
 </script>

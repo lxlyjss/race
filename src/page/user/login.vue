@@ -20,7 +20,7 @@
         <p class="alert-info" v-show="alertInfo.pLength">*手机号码位数不足11位</p>
         <p class="alert-info" v-show="alertInfo.pKong">*请输入手机号码</p>
         <p class="input-box">
-          <input type="password" v-model="loginInfo.password" @blur="checkPw()" placeholder="输入账号密码">
+          <input type="password" v-model="loginInfo.password" @blur="checkPw()" placeholder="输入密码">
         </p>
         <p class="alert-info" v-model="loginInfo.password" v-show="alertInfo.pwKong">*密码不能为空</p>
         <p class="login-btn red-btn">
@@ -85,6 +85,9 @@
         if(n.length == 11){
           this.alertInfo.pLength = false;
         }
+        if(n.length != 0){
+          this.alertInfo.pKong = false;
+        }
       },
       "loginInfo.password"(n,o) {
         if(n.length > 0){
@@ -97,12 +100,12 @@
 <style lang="stylus">
   $red = #d81e06;
   #login{
-    padding: 40px 0 50px;
+    padding: 40px 0 0px;
     min-height: 100%;
     height: auto;
     background: #fff;
     .login-box{
-      padding: 1rem 1.5rem;
+      padding: 1rem 1.5rem 0;
       .input-box{
         line-height: 28px;
         margin-top: 20px;

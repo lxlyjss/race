@@ -2,7 +2,7 @@
   <div id="userInfo" class="bs">
     <div class="header">
       <mt-header title="个人资料" fixed>
-        <router-link to="/index/user" slot="left">
+        <router-link to="/user/myBaby" slot="left">
           <mt-button icon="back">返回</mt-button>
         </router-link>
       </mt-header>

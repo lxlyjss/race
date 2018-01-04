@@ -1,7 +1,9 @@
 <template>
   <div id="tabpage">
     <transition name="fade">
-      <router-view></router-view>
+      <keep-alive>
+        <router-view></router-view>
+      </keep-alive>
     </transition>
     <my-footer></my-footer>
   </div>

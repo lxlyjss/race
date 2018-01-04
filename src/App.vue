@@ -7,124 +7,130 @@
 </template>
 
 <script>
-export default {
-  name: 'app',
-  data() {
-    return {
-      transitionName:"slide-right"
-    }
-  },
-  methods:{
-    setFontSize() {
-      $("html").css("fontSize",$(window).width()/10);
-      $(window).resize(function (){
-        $("html").css("fontSize",$(window).width()/10);
-      })
-    }
-  },
-  watch:{
-    '$route' (to, from) {
-      let isBack = this.$router.isBack;
-      if(isBack){
-        this.transitionName = 'slide-right';
-      }else{
-        if(to.fullPath.indexOf('index') != -1){
-          this.transitionName = 'slide-right';
-        }else{
-          this.transitionName = 'slide-left';
-        }
+  export default {
+    name: 'app',
+    data() {
+      return {
+        transitionName: "slide-right"
       }
+    },
+    methods: {
+      setFontSize() {
+        $("html").css("fontSize", $(window).width() / 10);
+        $(window).resize(function () {
+          $("html").css("fontSize", $(window).width() / 10);
+        })
+      }
+    },
+    watch: {
+      '$route'(to, from,next) {
+        let isBack = this.$router.isBack;
+        if (isBack) {
+          this.transitionName = 'slide-right';
+        } else {
+          if (to.fullPath.indexOf('index') != -1) {
+            this.transitionName = 'slide-right';
+          } else {
+            this.transitionName = 'slide-left';
+          }
+        }
 
-      this.$router.isBack = false;
+        this.$router.isBack = false;
+      }
+    },
+    created() {
+      this.setFontSize();
     }
-  },
-  created() {
-    this.setFontSize();
   }
-}
 </script>
 
 <style>
   @import './assets/css/reset.css';
-  @import '//at.alicdn.com/t/font_522676_1zjw6oacc1uoko6r.css';
+  @import '//at.alicdn.com/t/font_522676_42se9jvh1tt9.css';
 
-  #app{
+  #app {
     width: 100%;
     max-width: 500px;
     margin: 0 auto;
     font-size: 14px;
   }
-  .clear::after{
+
+  .clear::after {
     display: block;
     content: '';
     clear: both;
   }
-  .fr{
+
+  .fr {
     float: right;
   }
-  .fl{
+
+  .fl {
     float: left;
   }
-  .tl{
+
+  .tl {
     text-align: left;
   }
-  .tc{
+
+  .tc {
     text-align: center;
   }
-  .bs{
+
+  .bs {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
   }
-  .fw{
+
+  .fw {
     font-weight: 900;
   }
 
-  .txt-dian{
+  .txt-dian {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-  .dflex{
+
+  .dflex {
     display: flex;
     display: -webkit-flex;
   }
-  .gray-c{
+
+  .gray-c {
     color: #9d98a0;
   }
-  .btn-group{
+
+  .btn-group {
     width: 100%;
     display: flex;
     height: 50px;
     background: #fff;
-    line-height:50px;
+    line-height: 50px;
     position: fixed;
     bottom: 0;
     text-align: center;
     border-top: 1px solid #e51f22;
   }
-  .btn{
+
+  .btn {
     flex: 1 1 auto;
     color: #e51f22;
   }
-  .red-btn{
+
+  .red-btn {
     color: #fff;
     background: -webkit-gradient(linear, 0 0, right 0, from(#f32965), to(#f4582e));
   }
+
   /*动画*/
-  .child-view {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    transition: all .5s cubic-bezier(.55,0,.1,1);
-  }
   .slide-left-enter, .slide-right-leave-active {
     opacity: 0;
     -webkit-transform: translate(100%, 0);
     transform: translate(100%, 0);
   }
+
   .slide-left-leave-active, .slide-right-enter {
     opacity: 0;
     -webkit-transform: translate(-100%, 0);
@@ -137,19 +143,22 @@ export default {
     width: 100%;
     height: auto;
     min-height: 100%;
-    transition: all .5s cubic-bezier(.55,0,.1,1);
+    transition: all .5s cubic-bezier(.55, 0, .1, 1);
   }
+
   .fade-enter-active, .fade-leave-active {
     transition: opacity .3s
   }
   .fade-enter, .fade-leave-active {
     opacity: 0
   }
+
   /*公用样式*/
-  body{
+  body {
     background: #f7f7f7;
   }
-  .header{
+
+  .header {
     width: 100%;
     height: 40px;
     position: fixed;
@@ -157,18 +166,28 @@ export default {
     z-index: 99;
     border-bottom: 1px solid #ddd;
   }
-  .header .mint-header{
+
+  .header .mint-header {
     background-color: #fff;
     color: #333;
   }
-  select{
+
+  select {
     -webkit-appearance: none;
     -webkit-tap-highlight-color: #fff;
     outline: 0;
   }
-  .circle{
+  input,textarea{
+    outline: none;
+    border: none;
+    resize: none;
+  }
+  .circle {
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
     border-radius: 50%;
+  }
+  .mint-indicator-mask{
+    z-index: 999;
   }
 </style>

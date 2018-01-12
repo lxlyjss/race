@@ -8,15 +8,14 @@ import store from './store'
 
 import myLoading from "@/components/myLoading"
 
-import jQuery from "@/assets/js/jquery-1.8.3.min.js"
 import { fetch } from "./config/fetch"
 
-import { Header, Button, Toast, Spinner } from 'mint-ui';
+import { Header, Button, Spinner} from 'mint-ui';
 Vue.component(Header.name, Header);
 Vue.component(Button.name, Button);
 Vue.component(Spinner.name, Spinner);
 
-//全局引入loading组件
+//全局注册loading组件
 Vue.component(myLoading.name, myLoading);
 
 Vue.prototype.$http = axios;
@@ -31,4 +30,4 @@ new Vue({
   store,
   template: '<App/>',
   components: { App }
-})
+});

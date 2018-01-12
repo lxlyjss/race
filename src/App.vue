@@ -16,10 +16,12 @@
     },
     methods: {
       setFontSize() {
-        $("html").css("fontSize", $(window).width() / 10);
-        $(window).resize(function () {
-          $("html").css("fontSize", $(window).width() / 10);
-        })
+        let WIDTH = document.body.clientWidth || document.documentElement.clientWidth;
+        document.querySelector("html").style.fontSize = (WIDTH / 10) + "px";
+        window.onresize = function (){
+          let WIDTH = document.body.clientWidth || document.documentElement.clientWidth;
+          document.querySelector("html").style.fontSize = (WIDTH / 10) + "px";
+        };
       }
     },
     watch: {
@@ -38,7 +40,7 @@
         this.$router.isBack = false;
       }
     },
-    created() {
+    mounted() {
       this.setFontSize();
     }
   }
@@ -46,8 +48,10 @@
 
 <style>
   @import './assets/css/reset.css';
-  @import '//at.alicdn.com/t/font_522676_42se9jvh1tt9.css';
-
+  @import '//at.alicdn.com/t/font_522676_fuafshq212ceg66r.css';
+  .iconfont{
+    font-size: 14px;
+  }
   #app {
     width: 100%;
     max-width: 500px;
@@ -75,6 +79,9 @@
 
   .tc {
     text-align: center;
+  }
+  .tr{
+    text-align: right;
   }
 
   .bs {
@@ -104,8 +111,8 @@
 
   .btn-group {
     width: 100%;
-    display: flex;
     height: 50px;
+    font-size: 14px;
     background: #fff;
     line-height: 50px;
     position: fixed;
@@ -115,7 +122,8 @@
   }
 
   .btn {
-    flex: 1 1 auto;
+    float: left;
+    width: 50%;
     color: #e51f22;
   }
 
@@ -145,12 +153,11 @@
     min-height: 100%;
     transition: all .5s cubic-bezier(.55, 0, .1, 1);
   }
-
   .fade-enter-active, .fade-leave-active {
-    transition: opacity .3s
+    transition: opacity .5s;
   }
   .fade-enter, .fade-leave-active {
-    opacity: 0
+    opacity: 0;
   }
 
   /*公用样式*/

@@ -60,10 +60,13 @@
     <section class="my-shop">
 
     </section>
+    <div v-show="!isLogined" class="blank-div"></div>
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import {Toast} from "mint-ui"
   import {mapState,mapActions} from 'vuex'
+  import axios from "axios";
   export default {
     data() {
       return {
@@ -71,20 +74,51 @@
       }
     },
     methods:{
-      ...mapActions("user",['getUserInfo'])
+      ...mapActions("user",['getUserInfo']),
+      text() {
+        axios.get("ucenter/manage/coupon/coupons",{
+          params:{
+            courseId:1,
+            userId:1,
+            branchId:1
+          }
+        }).then(res=>{
+          console.log(res.data);
+        }).catch(res=>{
+          console.log("失败"+res)
+        })
+      }
     },
     computed:{
-      ...mapState("user",['userInfo'])
+      ...mapState("user",['userInfo']),
+      ...mapState(["isLogined"])
     },
     created() {
-      this.getUserInfo();
+      if(this.isLogined){
+        this.getUserInfo();
+      }else{
+        Toast({message:"未登录,请先登录!",duration: 1000})
+        setTimeout(()=>{
+          let nowUrl = encodeURIComponent(window.location.hash.substr(1));
+          this.$router.push({path:"/user/login",query:{nowUrl:nowUrl}});
+        },1000)
+      }
     }
   }
 </script>
 <style lang="stylus">
+  .blank-div{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    background: rgba(255,255,255,.5);
+  }
   #user{
     width: 100%;
     background: #f7f7f7;
+    position: absolute;
+    top: 0;
     .user-info{
       height: 180px;
       position: relative;

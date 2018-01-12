@@ -10,11 +10,10 @@
     <div class="container">
       <ul class="item-group">
         <li class="item">
-          <p class="clear">
+          <p class="clear" @click="$router.push('/user/userInfo/photoClip')">
             <span class="title fl"><i class="iconfont icon-xingming"></i>头像</span>
             <i class="iconfont icon-arrow-right fr" style="margin-left: 10px;"></i>
             <span class="header-img fr" :style="{backgroundImage: 'url('+userInfo.headImg+')'}"></span>
-
           </p>
         </li>
         <li class="item">
@@ -45,11 +44,14 @@
             </span>
           </p>
         </li>
-        <li class="item">
+        <li class="item" @click="$router.push({path:'/user/userInfo/bindPhone',query:{userId:1}})">
           <p class="clear">
             <span class="title fl"><i class="iconfont icon-shouji"></i>手机号码</span>
             <i class="iconfont icon-arrow-right fr" style="margin-left: 10px;"></i>
-            <span class="fr" style="width: auto;">{{userInfo.phone}}</span></p>
+            <span class="fr" style="width: auto;">{{userInfo.phone}}</span>
+            <span class="fr band-text" v-if="userInfo.phone">已绑定&nbsp;</span>
+            <span class="fr band-text red-text" v-if="!userInfo.phone">未绑定&nbsp;</span>
+          </p>
         </li>
       </ul>
     </div>
@@ -98,8 +100,17 @@
     computed:{
       ...mapState("user",['userInfo'])
     },
+    watch:{
+      "userInfo.headImg"(n,o) {
+        console.log(n,o);
+      }
+    },
     mounted(){
-      this.getUserInfo();
+      if("id" in this.userInfo) {//查找到当前存储的有没有用户数据
+        return;
+      }else{
+        this.getUserInfo();
+      }
       //this.pickerValue = this.userInfo.birthday
     }
   }
@@ -110,39 +121,46 @@
     background: #fff;
     .container{
       padding: 30px 20px;
-      .item-group{
-        .item{
-          padding: 8px 10px;
-          border-bottom: 1px solid #ddd;
-          p{
-            line-height: 40px;
-            color: #777;
-            .title{
-              font-size: 12px;
-              i{
-                margin-right: 5px;
-              }
-              .icon-xiaohai{
-                font-size: 19px;
-              }
+    }
+    .item-group{
+      .item{
+        padding: 8px 10px;
+        border-bottom: 1px solid #ddd;
+        p{
+          line-height: 40px;
+          color: #777;
+          .title{
+            font-size: 12px;
+            i{
+              margin-right: 5px;
             }
-            .header-img{
-              display: block;
-              width: 40px;
-              height: 40px;
-              -webkit-background-size: cover;
-              background-size: cover;
+            .icon-xiaohai{
+              font-size: 19px;
             }
-            span{
-              width: 50%;
-              input,select{
-                border: none;
-                outline: none;
-                text-align: right;
-                width: 100%;
-                color: #777;
-              }
+          }
+          .header-img{
+            display: block;
+            width: 40px;
+            height: 40px;
+            -webkit-background-size: cover;
+            background-size: cover;
+          }
+          span{
+            width: 50%;
+            input,select{
+              border: none;
+              outline: none;
+              text-align: right;
+              width: 100%;
+              color: #777;
+              background: #fff;
             }
+          }
+          .band-text{
+            width: auto;
+          }
+          .red-text{
+            color: red;
           }
         }
       }

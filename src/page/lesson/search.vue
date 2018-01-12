@@ -14,7 +14,7 @@
       </div>
       <p class="tc search-title">搜索结果</p>
       <div class="result-box">
-        <ul class="lesson-list">
+        <ul class="lesson-list bs">
           <li class="list-item dflex" v-for="(item1,key1) in item.list" :key="key1" @click="goDetial(item1.typeId,key1)">
             <div class="item-img" :style="{backgroundImage:`url(${item1.imgUrl})`}"></div>
             <div class="item-detial">
@@ -107,6 +107,12 @@
         margin-right: 10px;
         font-size: 20px;
       }
+    }
+    .result-box{
+      position: relative;
+    }
+    .lesson-list{
+      padding: 10px 0 50px;
     }
     .list-item {
       border-bottom: 1px solid #f7f7f7;

@@ -1,7 +1,7 @@
 <template>
   <transition :name="type">
-    <ul class="lesson-list">
-      <li class="list-item dflex" v-for="(item,key) in lesson.list" :key="key" @click="goDetial(item.typeId,item.id)">
+    <ul class="lesson-list bs">
+      <li class="list-item dflex" v-for="(item,key) in lesson.list" :key="key" @click="goDetial(item.id)">
         <div class="item-img" :style="{backgroundImage:`url(${item.imgUrl})`}"></div>
         <div class="item-detial">
           <h2 class="fw">{{item.title}}</h2>
@@ -17,25 +17,42 @@
   </transition>
 </template>
 <script type="text/ecmascript-6">
+  import { mapState } from "vuex";
   export default {
     name: "lessonList",
-    props: ["lesson","trun"],
+    props: ["lesson"],
     data() {
       return {
-        type:"slide-right"
+        type:"slide-left"
       }
     },
     methods:{
-      goDetial(type,id) {
-        this.$router.push({path: '/lesson/detial', query: {'lessonType': type, 'lessonId': id}});
+      goDetial(id) {
+        this.$router.push({path: '/lesson/detial', query: {'lessonId': id}});
+      }
+    },
+    computed:{
+      ...mapState("lesson",["lessonType"])
+    },
+    watch:{
+      "lessonType"(n,o) {
+        if(n>o) {
+          this.type = "slide-right";
+        }else{
+          this.type = "slide-left";
+        }
       }
     }
   }
 </script>
 <style lang="stylus">
   .lesson-list {
-    padding: 10px;
+    padding: 10px 20px 50px;
     background: #fff;
-    transition: all .3s cubic-bezier(.55, 0, .1, 1);
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: all .5s cubic-bezier(.55, 0, .1, 1);
   }
 </style>

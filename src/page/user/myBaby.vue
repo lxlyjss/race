@@ -21,8 +21,8 @@
             </h1>
             <p class="number">{{item.c_number}}</p>
             <p class="edit-btn">
-              <span><i class="iconfont icon-edit"></i>编辑</span>
-              <span><i class="iconfont icon-shanchu"></i>删除</span></p>
+              <span @click="editBaby(item.id)"><i class="iconfont icon-edit"></i>编辑</span>
+              <span @click="deleteBaby(item.id)"><i class="iconfont icon-shanchu"></i>删除</span></p>
           </div>
         </li>
       </ul>
@@ -44,6 +44,12 @@
       ...mapActions("user",["getMyBabyList"]),
       addBaby() {
         this.$router.push("/user/addBaby")
+      },
+      editBaby(id) {
+        this.$router.push({path:"/user/addBaby",query:{babyId: id}});
+      },
+      deleteBaby(id) {
+        alert("删除宝宝")
       }
     },
     computed:{

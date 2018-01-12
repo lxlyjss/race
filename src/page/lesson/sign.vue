@@ -7,42 +7,15 @@
         </span>
       </mt-header>
     </div>
+    <tab-list></tab-list>
     <div class="container">
-      <div class="nav-tab">
-        <ul class="nav-group dflex">
-          <li class="nav-list tc active">
-            <p>
-              <i class="iconfont icon-icon1" v-if="active!='tab-container1'"></i>
-              <i class="iconfont icon-edit" v-if="active=='tab-container1'"></i>
-            </p>
-            填写资料
-          </li>
-          <li class="nav-list tc">
-            <hr>
-          </li>
-          <li class="nav-list tc" :class="active!='tab-container1'?'active':''">
-            <p>
-              <i class="iconfont icon-icon1" v-if="active=='tab-container3'"></i>
-              <i class="iconfont icon-icon-" v-if="active!='tab-container3'"></i>
-            </p>
-            确认订单
-          </li>
-          <li class="nav-list tc">
-            <hr>
-          </li>
-          <li class="nav-list tc">
-            <p><i class="iconfont icon-liebiao9"></i></p>
-            确认支付
-          </li>
-        </ul>
-      </div>
       <div class="tab-container">
-        <mt-tab-container v-model="active">
-          <mt-tab-container-item id="tab-container1">
+        <transition :name="slideType">
+          <div class="page-container" v-show="signIndex==0">
             <div class="user-info">
               <p class="title tc">家长信息</p>
               <p class="input-box"><input type="text" v-model="userInfo.parentName" placeholder="家长姓名"></p>
-              <p class="input-box"><input type="text" v-model="userInfo.phone" placeholder="家长电话"></p>
+              <p class="input-box"><input type="number" v-model="userInfo.phone" placeholder="家长电话" oninput="if(value>=11)value=value.slice(0,11)"></p>
               <p class="input-box"><input type="text" v-model="userInfo.wechat" placeholder="家长微信号"></p>
               <p class="title tc">宝宝信息</p>
               <p class="input-box"><input type="text" v-model="userInfo.babyName" placeholder="宝宝姓名(全名)"></p>
@@ -55,18 +28,14 @@
               <p class="birthday-box">
                 <span>宝宝出生日期</span>
                 <span class="input-date">
-                  <input type="text" v-model="birthdayData.date" readonly aria-readonly="" @click="openPicker()"></span>
+                  <input type="text" class="tr" v-model="birthdayData.date" readonly aria-readonly="" @click="openPicker()"></span>
               </p>
               <textarea v-model="userInfo.mark" placeholder="备注信息"></textarea>
             </div>
             <div class="gift-container">
               <ul class="gift-box">
-                <li class="list-item" v-for="(item,key) in packList.list" :key="key">
+                <li class="list-item" v-for="(item,key) in lessonDetial.classPack" :key="key">
                   <p>
-                    <!--<label :for="`gift${key}`">-->
-                      <!--<input type="checkbox" v-model="packInfo.selectedId" name="gift" :id="`gift${key}`">-->
-                      <!--<span class="title">{{item.title}}</span>-->
-                    <!--</label>-->
                     <span @click="changePack(item.id,item.price)">
                       <span class="checkbox"><i class="iconfont icon-icon1" v-if="packInfo.selectedId==item.id"></i></span>
                       <span class="title">{{item.title}}</span>
@@ -86,8 +55,10 @@
                 </li>
               </ul>
             </div>
-          </mt-tab-container-item>
-          <mt-tab-container-item id="tab-container2">
+          </div>
+        </transition>
+        <transition :name="slideType">
+          <div class="page-container" v-show="signIndex==1">
             <div class="submit-container">
               <div class="submit-info">
                 <p class="title">骑二无比儿童滑步车初级课程(三期班)</p>
@@ -99,8 +70,7 @@
               </div>
               <p class="all-price">总金额￥<span class="price">{{packInfo.price/100}}</span></p>
               <ul class="coupon-group">
-                <li class="coupon-list">
-                  <label for="coupon1" class="dflex">
+                <li class="coupon-list dflex" @click="couponId=0">
                   <div class="coupon-img">
                     <img src="../../assets/images/coupon.png">
                   </div>
@@ -110,12 +80,10 @@
                     <p><span class="fr">仅限本人使用</span></p>
                   </div>
                   <div class="select-box selected">
-                    <input type="radio" name="coupon" checked id="coupon1">
+                    <span class="checkbox fr coupon-check"><i class="iconfont icon-icon1" v-if="couponId==0"></i></span>
                   </div>
-                  </label>
                 </li>
-                <li class="coupon-list">
-                  <label for="coupon2" class="dflex">
+                <li class="coupon-list dflex" @click="couponId=1">
                   <div class="coupon-img">
                     <img src="../../assets/images/coupon.png">
                   </div>
@@ -125,101 +93,41 @@
                     <p><span class="fr">仅限本人使用</span></p>
                   </div>
                   <div class="select-box">
-                    <input type="radio" name="coupon" id="coupon2">
+                    <span class="checkbox fr coupon-check"><i class="iconfont icon-icon1" v-if="couponId==1"></i></span>
                   </div>
-                  </label>
                 </li>
               </ul>
               <br>
               <p class="all-price">实际支付￥<span class="price">7400</span></p>
               <p class="access">
-                <input type="checkbox">
+                <span class="checkbox access-check" :class="isAccess?'active':''" @click="isAccess=!isAccess"><i class="iconfont icon-icon1" v-if="isAccess"></i></span>
                 <span>提交订单默认您已阅读并同意《服务条款》</span>
               </p>
             </div>
-          </mt-tab-container-item>
-          <mt-tab-container-item id="tab-container2">
-            <div class="submit-container">
-              <div class="submit-info">
-                <p class="title">骑二无比儿童滑步车初级课程(三期班)</p>
-                <p class="text"><span>张三</span><span>3岁</span><span>新会员礼包一</span></p>
-                <p class="price">￥<span>{{packInfo.price/100}}</span></p>
-              </div>
-              <div class="mark-box">
-                <textarea v-model="userInfo.mark" placeholder="备注信息"></textarea>
-              </div>
-              <p class="all-price">总金额￥<span class="price">{{packInfo.price/100}}</span></p>
-              <ul class="coupon-group">
-                <li class="coupon-list">
-                  <label for="coupon1" class="dflex">
-                    <div class="coupon-img">
-                      <img src="../../assets/images/coupon.png">
-                    </div>
-                    <div class="coupon-info">
-                      <p>滑步车初级课折扣券</p>
-                      <p>券号: 84565656</p>
-                      <p><span class="fr">仅限本人使用</span></p>
-                    </div>
-                    <div class="select-box selected">
-                      <input type="radio" name="coupon" checked id="coupon1">
-                    </div>
-                  </label>
-                </li>
-                <li class="coupon-list">
-                  <label for="coupon2" class="dflex">
-                    <div class="coupon-img">
-                      <img src="../../assets/images/coupon.png">
-                    </div>
-                    <div class="coupon-info">
-                      <p>滑步车初级课折扣券</p>
-                      <p>券号: 84565656</p>
-                      <p><span class="fr">仅限本人使用</span></p>
-                    </div>
-                    <div class="select-box">
-                      <input type="radio" name="coupon" id="coupon2">
-                    </div>
-                  </label>
-                </li>
-              </ul>
-              <br>
-              <p class="all-price">实际支付￥<span class="price">7400</span></p>
-              <p class="access">
-                <input type="checkbox">
-                <span>提交订单默认您已阅读并同意《服务条款》</span>
-              </p>
-            </div>
-          </mt-tab-container-item>
-        </mt-tab-container>
+          </div>
+        </transition>
       </div>
     </div>
-    <div class="btn-group" v-if="active=='tab-container1'">
-      <div class="btn" @click="popupVisible=true">
+    <div class="btn-group" v-if="signIndex==0">
+      <div class="btn" @click="kefuShow=true">
         <span>联系客服</span>
       </div>
-      <div class="btn red-btn" @click="active='tab-container2'">
+      <div class="btn red-btn" @click="checkInfoPage">
         <span>下一步</span>
       </div>
     </div>
-    <div class="btn-group" v-if="active=='tab-container2'">
-      <div class="btn" @click="active='tab-container1'">
+    <div class="btn-group" v-if="signIndex==1">
+      <div class="btn" @click="changeSignIndex(0)">
         <span>上一步</span>
       </div>
-      <div class="btn red-btn" @click="active='tab-container3'">
+      <div class="btn" :class="isAccess?'red-btn':'gray-btn'" @click="goPay">
         <span>确认订单</span>
       </div>
     </div>
-    <div class="btn-group" v-if="active=='tab-container3'">
-      <div class="btn" @click="">
-        <span>查看订单</span>
-      </div>
-      <div class="btn red-btn" @click="$router.push('/lesson/pay')">
-        <span>确认支付</span>
-      </div>
-    </div>
-    <mt-popup v-model="popupVisible" id="kefuBox" pop-transition="popup-fade"
+    <mt-popup v-model="kefuShow" id="kefuBox" pop-transition="popup-fade"
               position="center">
       <div class="kefu-container">
-        <p><i class="iconfont icon-dianhua"></i>可点击拨打: <span class="phone">{{kefuInfo.phone}}</span></p>
+        <p><i class="iconfont icon-dianhua"></i>可点击拨打: <span class="phone">{{kefuData.phone}}</span></p>
         <p><i class="iconfont icon-ren"></i>微信联系: 大白</p>
         <p><img src="../../assets/images/code.jpg" width="60"></p>
       </div>
@@ -230,9 +138,6 @@
       type="date"
       :startDate="birthdayData.startDate"
       :endDate="birthdayData.endDate"
-      year-format="{value} 年"
-      month-format="{value} 月"
-      date-format="{value} 日"
       v-model="birthdayData.show" @confirm="selectedDate">
     </mt-datetime-picker>
   </div>
@@ -240,22 +145,25 @@
 <script type="text/ecmascript-6">
   import Vue from 'vue';
   import {mapState, mapMutations, mapActions} from 'vuex';
-  import { DatetimePicker } from 'mint-ui';
+  import { DatetimePicker, Toast } from 'mint-ui';
+  import tabList from "@/components/tabList";
   Vue.component(DatetimePicker.name, DatetimePicker);
+  Vue.component(tabList.name, tabList);
 
   export default {
     data() {
       return {
-        active:"tab-container1",
-        popupVisible: false,
-        gift: "礼包一",
-        birthdayData:{
+        kefuShow: false,//客服弹框是否显示
+        slideType:"slide-right",
+        couponId: 1,
+        isAccess: true,//是否勾选了同意服务条款
+        birthdayData:{//日期配置参数
           date:"",
           show: false,
-          startDate: new Date("1970-01-01"),
+          startDate: new Date("2000-01-01"),
           endDate: new Date()
         },
-        userInfo:{
+        userInfo:{//存储用户输入的信息
           parentName:"",
           phone:"",
           wechat:"",
@@ -265,27 +173,53 @@
           birthday:"",
           mark:""
         },
-        packInfo:{
+        packInfo:{//存储用户选择的课件包信息
           selectedId: "",
           price:""
-        }
+        },
       }
     },
     methods:{
-      ...mapActions("lesson",["getKefuInfo","getPackList"]),
-      changeTab(n) {
-        this.active = "tab-container"+n;
+      ...mapActions("lesson",["getLessonDetial","getKefuData"]),
+      ...mapMutations("lesson",["changeSignIndex"]),
+      //进入确认信息页面
+      checkInfoPage() {
+        //if(this.checkInput()) {
+          this.changeSignIndex(1);
+          console.log(this.userInfo);
+          console.log(this.packInfo);
+        //}
+      },
+      //判断当前页面是否是直接进入的
+      checkLessonId() {
+        let self = this;
+        if('id' in this.lessonDetial){
+          console.log("有课程数据");
+        }else{
+          console.log("没有课程数据");
+          if(this.$route.query.lessonId) {
+            this.getLessonDetial(this.$route.query.lessonId);
+            this.getKefuData(this.$route.query.lessonId);
+          }else{
+            Toast("页面错误,没有课程id,2秒后跳转至首页");
+            setTimeout(function () {
+              self.$router.push("/index/lesson");
+            },2000)
+          }
+        }
       },
       openPicker() {
         this.$refs.picker.open();
       },
+      //设置日期
       selectedDate(value) {
         this.birthdayData.date = value.toLocaleDateString().replace(/\//g,"-");
-        this.userInfo.birthday = this.pickerValue;
+        this.userInfo.birthday = this.birthdayData.date;
       },
       changeSex(i) {
         this.userInfo.sex = i;
       },
+      //选择课件包
       changePack(i,p) {
         if(this.packInfo.selectedId == i){
           this.packInfo.selectedId = "";
@@ -294,53 +228,82 @@
           this.packInfo.selectedId = i;
           this.packInfo.price = p;
         }
+      },
+      //检查输入选项是否有误
+      checkInput() {
+        function checkFun(str,info) {
+          if(str === "" || str === null || str === "undefined") {
+            Toast({
+              message: info,
+              duration: 2000
+            });
+            return false;
+          }
+          return true;
+        }
+        if(
+          !checkFun(this.userInfo.parentName, "请输入家长姓名") ||
+          !checkFun(this.userInfo.phone, "请输入家长电话") ||
+          !checkFun(this.userInfo.babyName, "请输入宝宝姓名") ||
+          !checkFun(this.userInfo.smallName, "请输入宝宝小名") ||
+          !checkFun(this.userInfo.sex, "请选择宝宝性别") ||
+          !checkFun(this.userInfo.birthday, "请选择宝宝出生日期") ||
+          !checkFun(this.packInfo.selectedId, "请选择课件包")
+        ){
+          return false;
+          return;
+        };
+        return true;
+      },
+      goPay() {
+        if(this.isAccess){
+          this.$router.push("/lesson/pay");
+        }else{
+          Toast("请阅读并同意服务条款!");
+        }
+      }
+    },
+    watch:{
+      "signIndex"(n,o) {
+        if(n>o) {
+          console.log("left");
+          this.slideType = "slide-left";
+        }else{
+          console.log("right");
+          this.slideType = "slide-right";
+        }
       }
     },
     computed:{
-      ...mapState("lesson",["kefuInfo","packList"])
+      ...mapState("lesson",["kefuData","lessonDetial","signIndex"])
     },
     created() {
-      this.getKefuInfo();
-      this.getPackList();
+      this.checkLessonId();
+      this.changeSignIndex(0);//进入该页面将报名步骤清0
     }
   }
 </script>
 <style lang="stylus">
   #sign{
     height: auto;
-    padding: 40px 0 50px;
+    padding: 110px 0 50px;
+    color: #777;
     .container{
-      .nav-tab{
-        margin-top: 7px;
-        width: 100%;
-        overflow: hidden;
-        background: #fff;
-        .nav-group{
-          padding: 10px 10px;
-          .nav-list{
-            flex: 1 1 auto;
-            color: #9d98a0;
-            font-size: 12px;
-            p{
-              line-height: 24px;
-              i{
-                font-size: 20px;
-              }
-            }
-          }
-          .active{
-            color: #e51f22;
-          }
-        }
-      }
+      margin-top: 10px;
     }
     .tab-container{
-      margin-top: 8px;
-
+      position: relative;
+    }
+    .page-container{
+      width: 100%;
+      background: #fff;
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding-bottom: 50px;
+      transition: all .5s cubic-bezier(.55, 0, .1, 1);
     }
     .user-info{
-      background: #fff;
-      margin-top: 10px;
       padding: 10px 20px;
       .title{
         font-size: 15px;
@@ -349,14 +312,12 @@
       }
       .input-box{
         line-height: 40px;
-        margin-bottom: 5px;
+        margin-bottom: 8px;
         border: 1px solid #ddd;
       }
       .sex-box{
-        color: #777;
         line-height: 30px;
-        margin-bottom: 10px;
-        margin-top: 10px;
+        margin: 10px 0;
         padding-left: 10px;
         span{
           padding: 5px 20px;
@@ -387,56 +348,34 @@
       }
     }
     .gift-container{
-      background: #fff;
       padding: 10px 20px;
       .gift-group{
         flex-wrap: wrap;
         width: 100%;
-        .gift-list{
-          width: 23.33%;
-          margin: 0 5%;
-          .img{
-            background: #f7f7f7;
-            -webkit-border-radius: 5px;
-            -moz-border-radius: 5px;
-            border-radius: 5px;
-            line-height: 0;
-            padding: 8px;
-            img{
-              width: 100%;
-            }
+      }
+      .gift-list{
+        width: 23.33%;
+        margin: 0 5%;
+        .img{
+          background: #f7f7f7;
+          -webkit-border-radius: 5px;
+          -moz-border-radius: 5px;
+          border-radius: 5px;
+          line-height: 0;
+          padding: 8px;
+          img{
+            width: 100%;
           }
-          .info{
-            background: #fff;
-            font-size: 12px;
-            line-height: 20px;
-            color: #888;
-          }
+        }
+        .info{
+          font-size: 12px;
+          line-height: 20px;
         }
       }
       .list-item{
         padding: 10px 0;
         p{
           line-height: 30px;
-          input{
-            width: 20px;
-            height: 20px;
-            vertical-align: middle;
-          }
-          .checkbox{
-            display: block;
-            width: 20px;
-            height: 20px;
-            border: 1px solid #ddd;
-            float: left;
-            margin-top: 4px;
-            margin-right: 4px;
-            text-align: center;
-            line-height: 20px;
-            i{
-              color: #26a2ff;
-            }
-          }
           .title{
             font-size: 14px;
             vertical-align: middle;
@@ -448,11 +387,9 @@
             font-size: 20px;
           }
         }
-
       }
     }
     .submit-container{
-      background: #fff;
       padding: 10px 20px;
       .submit-info{
         position: relative;
@@ -516,8 +453,7 @@
           .select-box{
             width: 10%;
             flex: 1 1 auto;
-            background: #fff;
-            line-height: 20px;
+            background: #f7f7f7;
             text-align: center;
             line-height: 60px;
           }
@@ -552,12 +488,9 @@
         }
       }
     }
-    input[type=text],textarea{
-      color: #555;
-      border: none;
-      outline: none;
+    input[type=text],input[type=number],textarea{
+      color: #777;
       padding: 0 10px;
-      resize: none;
       width: 100%;
       -webkit-box-sizing: border-box;
       -moz-box-sizing: border-box;
@@ -571,6 +504,37 @@
       font-size: 14px;
       height: 130px;
       background: #f7f7f7;
+    }
+    .checkbox{
+      display: block;
+      width: 20px;
+      height: 20px;
+      border: 1px solid #ddd;
+      float: left;
+      margin-top: 4px;
+      margin-right: 4px;
+      text-align: center;
+      line-height: 20px;
+      i{
+        color: #26a2ff;
+      }
+    }
+    .access-check{
+      float: none;
+      display: inline;
+      padding: 3px 11px;
+    }
+    .coupon-check{
+      margin-top: 18px;
+      border-color: #ccc;
+      background: #fff;
+    }
+    .active{
+      padding: 3px 5px 3px 3px;
+    }
+    .gray-btn{
+      background: gray;
+      color: #fff;
     }
   }
 </style>

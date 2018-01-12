@@ -30,6 +30,9 @@ import addBaby from '@/page/user/addBaby'
 import login from '@/page/user/login'
 import register from '@/page/user/register'
 import findPw from '@/page/user/findPw'
+import uploadUserImg from '@/components/uploadUserImg'
+import uploadBabyImg from '@/components/uploadBabyImg'
+import bindPhone from '@/page/user/bindPhone'
 
 Router.prototype.goBack = function (){
   this.isBack = true;
@@ -40,8 +43,7 @@ Router.prototype.goBack = function (){
   }
 }
 Vue.use(Router)
-
-let raceRoute = [
+let baseRoute = [
   {
     path: '/',
     redirect: '/index/lesson'
@@ -76,36 +78,13 @@ let raceRoute = [
         component: user
       }
     ]
-  },
+  }
+];
+let raceRoute = [
   {
     path: '/race/detial',
     name: 'raceDetial',
     component: detial
-  },
-  {
-    path: '/race/vote',
-    name: 'vote',
-    component: vote
-  },
-  {
-    path: '/race/pay',
-    name: 'pay',
-    component: pay
-  },
-  {
-    path: '/race/myRaceVote',
-    name: 'myRaceVote',
-    component: myRaceVote
-  },
-  {
-    path: '/race/myCollectionRace',
-    name: 'myCollectionRace',
-    component: myCollectionRace
-  },
-  {
-    path: '/race/myRace',
-    name: 'myRace',
-    component: myRace
   }
 ];
 let lessonRoute = [
@@ -161,7 +140,7 @@ let userRoute = [
   {
     path: '/user/userInfo',
     name: 'userInfo',
-    component: userInfo
+    component: userInfo,
   },
   {
     path: '/user/login',
@@ -187,9 +166,24 @@ let userRoute = [
     path: '/user/addBaby',
     name: 'addBaby',
     component: addBaby
-  }
+  },
+  {
+    path: '/user/userInfo/uploadUserImg',
+    name: 'uploadUserImg',
+    component: uploadUserImg,
+  },
+  {
+    path: '/user/userInfo/uploadBabyImg',
+    name: 'uploadBabyImg',
+    component: uploadBabyImg,
+  },
+  {
+    path: '/user/userInfo/bindPhone',
+    name: 'bindPhone',
+    component: bindPhone,
+  },
 ];
-let allRoute = raceRoute.concat(lessonRoute,shopRoute,userRoute)
+let allRoute = baseRoute.concat(lessonRoute,raceRoute,shopRoute,userRoute)
 export default new Router({
   routes: allRoute,
   scrollBehavior (to, from, savedPosition) {

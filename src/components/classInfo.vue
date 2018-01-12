@@ -2,134 +2,24 @@
   <div class="classInfo clear">
     <div class="point-box fl">
       <ul>
-        <li>
-          <span><i class="done"></i></span>
-        </li>
-        <li>
-          <span><i class="miss"></i></span>
-        </li>
-        <li>
-          <span><i class="unstart"></i></span>
-        </li>
-        <li>
-          <span><i class="unstart"></i></span>
-        </li>
-        <li>
-          <span><i class="unstart"></i></span>
-        </li>
-        <li>
-          <span><i class="unstart"></i></span>
-        </li>
-        <li>
-          <span><i class="unstart"></i></span>
-        </li>
-        <li>
-          <span><i class="unstart"></i></span>
-        </li>
-        <li>
-          <span><i class="unstart"></i></span>
+        <li v-for="(item,key) in myLessonList.list[index].classInfo" :key="key">
+          <span v-if="item.status==2"><i class="done"></i></span>
+          <span v-if="item.status==1"><i class="miss"></i></span>
+          <span v-if="item.status==0"><i class="unstart"></i></span>
         </li>
       </ul>
     </div>
     <div class="info-box fr">
       <ul>
-        <li class="clear">
+        <li class="clear" v-for="(item,key) in myLessonList.list[index].classInfo" :key="key">
           <span class="sanjiao"></span>
           <p class="text">
-            <span class="title">1</span>
-            <span class="date">2017.12.21</span>
-            <span class="time">10:00-12:00</span>
-            <span class="class-btn fr done">
-              照片
-            </span>
-          </p>
-        </li>
-        <li class="clear">
-          <span class="sanjiao"></span>
-          <p class="text">
-            <span class="title">1</span>
-            <span class="date">2017.12.21</span>
-            <span class="time">10:00-12:00</span>
-            <span class="class-btn fr miss">
-              已请假
-            </span>
-          </p>
-        </li>
-        <li class="clear">
-          <span class="sanjiao"></span>
-          <p class="text">
-            <span class="title">1</span>
-            <span class="date">2017.12.21</span>
-            <span class="time">10:00-12:00</span>
-            <span class="class-btn fr">
-              照片
-            </span>
-          </p>
-        </li>
-        <li class="clear">
-          <span class="sanjiao"></span>
-          <p class="text">
-            <span class="title">1</span>
-            <span class="date">2017.12.21</span>
-            <span class="time">10:00-12:00</span>
-            <span class="class-btn fr">
-              照片
-            </span>
-          </p>
-        </li>
-        <li class="clear">
-          <span class="sanjiao"></span>
-          <p class="text">
-            <span class="title">1</span>
-            <span class="date">2017.12.21</span>
-            <span class="time">10:00-12:00</span>
-            <span class="class-btn fr">
-              照片
-            </span>
-          </p>
-        </li>
-        <li class="clear">
-          <span class="sanjiao"></span>
-          <p class="text">
-            <span class="title">1</span>
-            <span class="date">2017.12.21</span>
-            <span class="time">10:00-12:00</span>
-            <span class="class-btn fr">
-              照片
-            </span>
-          </p>
-        </li>
-        <li class="clear">
-          <span class="sanjiao"></span>
-          <p class="text">
-            <span class="title">1</span>
-            <span class="date">2017.12.21</span>
-            <span class="time">10:00-12:00</span>
-            <span class="class-btn fr">
-              照片
-            </span>
-          </p>
-        </li>
-        <li class="clear">
-          <span class="sanjiao"></span>
-          <p class="text">
-            <span class="title">1</span>
-            <span class="date">2017.12.21</span>
-            <span class="time">10:00-12:00</span>
-            <span class="class-btn fr">
-              照片
-            </span>
-          </p>
-        </li>
-        <li class="clear">
-          <span class="sanjiao"></span>
-          <p class="text">
-            <span class="title">1</span>
-            <span class="date">2017.12.21</span>
-            <span class="time">10:00-12:00</span>
-            <span class="class-btn fr">
-              照片
-            </span>
+            <span class="title">{{key+1}}</span>
+            <span class="date">{{item.date}}</span>
+            <span class="time">{{item.time}}</span>
+            <span class="class-btn fr done" v-if="item.status==2">照片</span>
+            <span class="class-btn fr miss" v-if="item.status==1">已请假</span>
+            <span class="class-btn fr unstart" v-if="item.status==0">请假</span>
           </p>
         </li>
       </ul>
@@ -137,12 +27,27 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import {mapState} from "vuex";
+  export default {
+    props:["index"],
+    data() {
+      return {
 
+      }
+    },
+    computed:{
+      ...mapState("lesson",["myLessonList"])
+    },
+    created() {
+      console.log(this.index);
+    }
+  }
 </script>
 <style lang="stylus">
   .classInfo{
-    padding: 20px;
+    padding: 20px 15px;
     background: #f7f7f7;
+    transition: all .3s;
     .point-box{
       width: 10%;
       ul{
@@ -197,7 +102,7 @@
       background: #33b9f6!important;
     }
     .info-box{
-      width: 84%;
+      width: 85%;
       li{
         position: relative;
         margin: 4px 0;

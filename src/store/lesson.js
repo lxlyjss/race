@@ -4,73 +4,55 @@ import {fetch} from "../config/fetch";
 export default {
   namespaced: true,
   state:{
-    banner:{
-      list:[]
-    },
-    lessonList:{
-      list:[]
-    },
+    lessonType: 0,//首页切换课程类型当前定位
+    signIndex: 0,//报名页面当前进行第几步
     branchList:{
 
     },
-    lessonDetial:{
-      signList:[]
+    lessonDetial:{//因为课程详情里的信息很多地方需要用到,所以这里需要全局储存课程详情
+      signList: [],
+      classDate: [],
+      classPack: [],
+      teachers: []
     },
-    lessonDate:{
-      list:[]
-    },
-    packList:{
-      list:[]
-    },
-    teacherList:{
-      list:[]
-    },
-    commentList:{
-      list:[]
-    },
-    kefuInfo:{
+    kefuData:{//客服信息其他页面内也需要,所以也储存
 
     },
-    packList:{
-      list:[]
-    }
+    myLessonList:{//全局储存我的课程数据
+      list:[],
+    },
+    classShow:[]//储存课时详情是否显示
   },
   getters:{
 
   },
   mutations:{
-    //获取banner列表
-    setBanner(state,res) {
-      state.banner = res
+    //切换课程类型
+    changeLessonType(state, res) {
+      state.lessonType = res;
     },
-    //获取课程列表
-    setLessonList(state, res) {
-      state.lessonList = res;
+    setKefuData(state, res){
+      state.kefuData = res;
     },
-    //获取点击的课程详情
-    setDetial(state, res) {
-      state.lessonDetial = res
+    //存储课程详情
+    setLessonDetial(state, res) {
+      state.lessonDetial = res;
     },
-    //获取课时详情
-    setLessonDate(state, res) {
-      state.lessonDate = res;
+    //改变报名当前步骤
+    changeSignIndex(state, res) {
+      state.signIndex = res;
     },
-    //获取课件包列表
-    setPackList(state, res) {
-      state.packList = res
+    //设置我的课程列表
+    setMyLessonList(state, res) {
+      state.myLessonList = res;
+      if(res.list) {
+        for(let i = 0;i< res.list.length;i++){
+          state.classShow.push({show:i==0?true:false})
+        }
+      }
     },
-    //设置教练列表
-    setTeacherList(state, res) {
-      state.teacherList = res;
-    },
-    setCommentList(state, res){
-      state.commentList = res;
-    },
-    setKefuInfo(state, res){
-      state.kefuInfo = res;
-    },
-    setPackList(state, res) {
-      state.packList = res;
+    changeClassShow(state, key) {
+      state.classShow[key].show = !state.classShow[key].show;
     }
   },
   actions:{
@@ -84,10 +66,27 @@ export default {
       let res = await fetch("get","getLessonList");
       return res;
     },
+    //测试获取多个数据
+    async getIndexData(context) {
+      let arr = [];
+      try{
+        let res1 = await fetch("get","getLessonList");
+        arr.push(res1);
+      }catch(e) {
+        arr.push({status:1});
+      }
+      try{
+        let res2 = await fetch("get","getBanner");
+        arr.push(res2);
+      }catch(e) {
+        arr.push({status:1});
+      }
+      return arr;
+    },
     //获取课程详情
     async getLessonDetial(context) {
       let res = await fetch("get","getLessonDetial");
-      return res;
+      context.commit("setLessonDetial",res.data);
     },
     //获取评价列表
     async getCommentList(context) {
@@ -97,28 +96,7 @@ export default {
     //获取客服信息
     async getKefuData(context) {
       let res = await fetch("get","getKefuData");
-      return res;
-    },
-    //获取课程课时列表
-    getLessonDate(context) {
-      axios.get("lessonDatas/classDate.json").then(res=>{
-        console.log(res.data.data);
-        context.commit("setLessonDate",res.data.data);
-      })
-    },
-    //获取课件包列表
-    getPackList(context) {
-      axios.get("lessonDatas/classPack.json").then(res=>{
-        console.log(res.data.data);
-        context.commit("setPackList",res.data.data)
-      })
-    },
-    //获取教练列表
-    getTeacherList(context) {
-      axios.get("lessonDatas/teachers.json").then(res=>{
-        console.log(res.data.data);
-        context.commit("setTeacherList",res.data.data);
-      })
+      context.commit("setKefuData",res);
     },
     //获取评价页面标签列表
     async getTagList(context) {
@@ -131,6 +109,12 @@ export default {
       let res;
       res = await fetch("get","getHistoryCommentList");
       return res;
+    },
+    //获取我的课程信息
+    async getMyLessonList(context) {
+      let res;
+      res = await fetch("get","getMyLessonList");
+      context.commit("setMyLessonList",res.data);
     }
   }
 }

@@ -2,9 +2,9 @@
   <div id="login" class="bs">
     <div class="header">
       <mt-header title="登录" fixed>
-        <router-link to="/index/user" slot="left">
+        <span @click="$router.goBack()" slot="left">
           <mt-button icon="back">返回</mt-button>
-        </router-link>
+        </span>
       </mt-header>
     </div>
     <div class="container">
@@ -23,7 +23,7 @@
           <input type="password" v-model="loginInfo.password" @blur="checkPw()" placeholder="输入密码">
         </p>
         <p class="alert-info" v-model="loginInfo.password" v-show="alertInfo.pwKong">*密码不能为空</p>
-        <p class="login-btn red-btn">
+        <p class="login-btn red-btn" @click="login">
           <span>登录</span>
         </p>
         <p class="clear">
@@ -42,6 +42,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import { mapState,mapMutations,mapActions } from "vuex";
   export default {
     data() {
       return {
@@ -58,6 +59,8 @@
       }
     },
     methods:{
+      ...mapMutations(["changeLogined"]),
+      ...mapActions("user",["userLogin"]),
       //验证手机号码是否符合规则
       checkPhone() {
         if(this.loginInfo.phone.length < 11 && this.loginInfo.phone.length > 0){
@@ -78,6 +81,22 @@
         }else{
           this.alertInfo.pwKong = false;
         }
+      },
+      isCheck() {
+        //判断所有条件是否符合
+      },
+      login() {
+        this.userLogin(this.loginInfo).then(res=>{
+          console.log(res);
+        }).catch(res=>{
+          console.log("网络出错")
+        });
+        if("nowUrl" in this.$route.query) {
+          this.isBack = true;
+          this.$router.push(decodeURIComponent(this.$route.query.nowUrl));
+        }else{
+          this.$router.push("/index/lesson");
+        }
       }
     },
     watch:{
@@ -94,6 +113,9 @@
           this.alertInfo.pwKong = false;
         }
       }
+    },
+    created() {
+      console.log(this.$route)
     }
   }
 </script>

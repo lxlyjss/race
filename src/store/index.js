@@ -9,6 +9,11 @@ import { fetch } from "../config/fetch"
 Vue.use(Vuex)
 
 const state = {
+  //当前浏览器数据
+  isPc: false,//是否是pc端
+  isWechat: false,//是否是微信页面
+  isLogined: false,//是否有登录
+  //底部tab数据
   footer:{
     nowTab: 0,
     tabList:[
@@ -43,10 +48,22 @@ const getters = {
 
 }
 const mutations = {
+  //切换底部tab显示
   changeFooter(state,i) {
     state.footer.nowTab = i;
+  },
+  //更改pc端还是移动端
+  changeIsPc(state, res){
+    state.isPc = res;
+  },
+  //更改是否微信浏览器
+  changeIsWechat(state, res) {
+    state.isWechat = res;
+  },
+  changeLogined(state, res) {
+    state.isLogined = res;
   }
-}
+};
 const actions = {
   //上传图片接口
   async uploadImgAjax(context, data) {

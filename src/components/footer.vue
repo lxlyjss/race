@@ -15,16 +15,12 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import {mapState} from 'vuex'
+  import {mapState,mapMutations} from 'vuex'
   export default {
-    data() {
-      return {
-
-      }
-    },
     methods:{
+      ...mapMutations(["changeFooter"]),
       selectFn(i) {
-        this.$store.commit("changeFooter",i);
+        this.changeFooter(i);
       }
     },
     computed:{

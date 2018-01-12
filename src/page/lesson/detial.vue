@@ -8,9 +8,9 @@
       </mt-header>
     </div>
     <div class="container">
-      <div class="top-img" :style="{backgroundImage:`url(${detialData.imgUrl})`}">
+      <div class="top-img" :style="{backgroundImage:`url(${lessonDetial.imgUrl})`}">
         <div class="filter-black">
-          <h2>{{detialData.title}}</h2>
+          <h2>{{lessonDetial.title}}</h2>
         </div>
       </div>
       <!--课程介绍-->
@@ -19,51 +19,51 @@
           <tbody>
           <tr>
             <td width="70"><i class="iconfont icon-icon"></i>课程时间:</td>
-            <td>{{detialData.date}}</td>
+            <td>{{lessonDetial.date}}</td>
           </tr>
           <tr>
             <td><i class="iconfont icon-biaoqian"></i>课程分类:</td>
-            <td>{{detialData.type}}</td>
+            <td>{{lessonDetial.type}}</td>
           </tr>
           <tr>
             <td><i class="iconfont icon-ren"></i>适用年龄:</td>
-            <td>{{detialData.minAge}}-{{detialData.maxAge}}岁</td>
+            <td>{{lessonDetial.minAge}}-{{lessonDetial.maxAge}}岁</td>
           </tr>
           <tr>
             <td><i class="iconfont icon-didian"></i>上课地点:</td>
-            <td>{{detialData.school}}</td>
+            <td>{{lessonDetial.school}}</td>
           </tr>
           </tbody>
         </table>
-        <p class="fr item-status finish" v-show="detialData.status==0">已结束</p>
-        <p class="fr item-status doing" v-show="detialData.status==1">进行中</p>
-        <p class="fr item-status signing" v-show="detialData.status==2">报名中</p>
+        <p class="fr item-status finish" v-show="lessonDetial.status==0">已结束</p>
+        <p class="fr item-status doing" v-show="lessonDetial.status==1">进行中</p>
+        <p class="fr item-status signing" v-show="lessonDetial.status==2">报名中</p>
       </div>
       <!--价格-->
       <div class="price-box">
-        <p class="fl">￥<span class="price">{{detialData.price/100}}</span>起</p>
+        <p class="fl">￥<span class="price">{{lessonDetial.price / 100}}</span>起</p>
         <div class="fr sign-group">
           <ul>
-            <li v-for="(item,key) in detialData.signList" :style="{backgroundImage:`url(${item})`}" :key="key"></li>
+            <li v-for="(item,key) in lessonDetial.signList" :style="{backgroundImage:`url(${item})`}" :key="key"></li>
           </ul>
-          <p>{{detialData.currentCount}}/{{detialData.totalCount}}</p>
+          <p>{{lessonDetial.currentCount}}/{{lessonDetial.totalCount}}</p>
         </div>
       </div>
       <div class="nav-tab">
         <ul class="nav-group dflex">
-          <li class="nav-list tc" :class="index==1?'active':''" @click="changeTab(1)">
+          <li class="nav-list tc" :class="index==0?'active':''" @click="changeTab(0)">
             <i class="iconfont icon-note"></i><span>关于课程</span>
           </li>
-          <li class="nav-list tc" :class="index==2?'active':''" @click="changeTab(2)">
+          <li class="nav-list tc" :class="index==1?'active':''" @click="changeTab(1)">
             <i class="iconfont icon-edit"></i><span>查看评价</span>
           </li>
         </ul>
       </div>
       <!--课程介绍和查看感悟盒子-->
       <div class="tab-container">
-        <mt-tab-container v-model="active" swipeable="swipeable">
-          <mt-tab-container-item id="tab-container1">
-            <!--课程介绍模块-->
+        <!--课程介绍模块-->
+        <transition :name="slideType">
+          <div class="lesson-detial" v-show="index==0">
             <div class="section lesson-info">
               <h2 class="tc">
                 <span>课程介绍</span>
@@ -92,7 +92,7 @@
               </h2>
               <div class="content">
                 <ul class="clear">
-                  <li class="bs" v-for="(item, key) in detialData.classDate" :key="key">
+                  <li class="bs" v-for="(item, key) in lessonDetial.classDate" :key="key">
                     <p><span class="h1">{{key}}</span><i class="iconfont icon-shijian"></i><span>{{item}}</span></p>
                   </li>
                 </ul>
@@ -105,10 +105,10 @@
               </h2>
               <div class="content">
                 <ul class="pack-box">
-                  <li class="item" v-for="(item,key) in detialData.classPack" :key="key">
+                  <li class="item" v-for="(item,key) in lessonDetial.classPack" :key="key">
                     <p class="head clear">
-                      <span class="index fl">{{key+1}}</span>
-                      <span class="price fr">价值<span>{{item.price/100}}</span>元</span>
+                      <span class="index fl">{{key + 1}}</span>
+                      <span class="price fr">价值<span>{{item.price / 100}}</span>元</span>
                     </p>
                     <ul>
                       <li v-for="(item1,key1) in item.item">
@@ -126,7 +126,7 @@
               </h2>
               <div class="content">
                 <ul class="group">
-                  <li class="item dflex" v-for="(item,key) in detialData.teachers" :key="key">
+                  <li class="item dflex" v-for="(item,key) in lessonDetial.teachers" :key="key">
                     <div class="left">
                       <div class="img" :style="{backgroundImage: `url(${item.imgUrl})`}"></div>
                     </div>
@@ -148,8 +148,11 @@
                 <img src="../../assets/images/notice.jpg" style="width: 100%;" alt="">
               </div>
             </div>
-          </mt-tab-container-item>
-          <mt-tab-container-item id="tab-container2">
+          </div>
+        </transition>
+        <!--评价页面-->
+        <transition :name="slideType">
+          <div class="lesson-comments" v-show="index==1">
             <div class="section comments">
               <ul class="group">
                 <li class="item" v-for="(item,key) in commentList.list" :key="key">
@@ -160,105 +163,129 @@
                   <p class="tc date">{{item.date}}</p>
                   <p class="text">{{item.content}}</p>
                   <ul class="img-group clear">
-                    <li class="img-list fl" v-for="(item1,key1) in item.imgList" :key="key1" :style="{backgroundImage:`url(${item1})`}">
+                    <li class="img-list fl" v-for="(item1,key1) in item.imgList" :key="key1"
+                        :style="{backgroundImage:`url(${item1})`}">
                     </li>
                   </ul>
                 </li>
               </ul>
             </div>
-          </mt-tab-container-item>
-        </mt-tab-container>
+          </div>
+        </transition>
       </div>
     </div>
     <div class="btn-group">
-      <div class="btn" @click="popupVisible=true">
+      <div class="btn" @click="kefuShow=true">
         <span>联系客服</span>
       </div>
-      <div class="btn red-btn" @click="$router.push('/lesson/sign')">
+      <div class="btn red-btn" @click="goSign">
         <span>马上报名</span>
       </div>
     </div>
-    <mt-popup v-model="popupVisible" pop-transition="popup-fade"
-      position="center">
+    <mt-popup v-model="kefuShow" pop-transition="popup-fade"
+              position="center">
       <div class="kefu-container">
-        <p><a :href="'tel:'+kefuData.phone"><i class="iconfont icon-dianhua"></i>可点击拨打: <span class="phone">{{kefuData.phone}}</span></a></p>
+        <p><a :href="'tel:'+kefuData.phone"><i class="iconfont icon-dianhua"></i>可点击拨打: <span
+          class="phone">{{kefuData.phone}}</span></a></p>
         <p><i class="iconfont icon-ren"></i>微信联系: 大白</p>
         <p><img src="../../assets/images/code.jpg" width="60"></p>
       </div>
     </mt-popup>
+    <my-loading :visible="loading"></my-loading>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import Vue from "vue";
-  import {mapState, mapActions,mapMutations} from 'vuex';
-  import { Popup,TabContainer,TabContainerItem  } from 'mint-ui';
-
+  import {mapState, mapActions, mapMutations} from 'vuex';
+  import {Popup,Toast} from 'mint-ui';
 
   Vue.component(Popup.name, Popup);
-  Vue.component(TabContainer.name, TabContainer);
-  Vue.component(TabContainerItem.name, TabContainerItem);
 
   export default {
     data() {
       return {
-        active:"tab-container1",
-        index: 1,
-        popupVisible: false,
-        img:require('@/assets/images/top-img.jpg'),
-        detialData:{
-          signList:[],
-          classDate:[],
-          classPack:[],
-          teachers:[]
-        },
-        commentList:{
-          list:[]
-        },
-        kefuData:{}
+        index: 0,//当前显示课程介绍还是评价的定位,0是课程介绍,1是评价
+        loading: true,
+        slideType:"slide-right",
+        kefuShow: false,//客服弹框是否显示
+        commentList: {
+          list: []
+        }
       }
     },
-    methods:{
+    methods: {
       changeTab(n) {
-        this.active = "tab-container"+n;
         this.index = n;
       },
-      ...mapActions("lesson",[
+      ...mapActions("lesson", [
         "getLessonDetial",
         "getCommentList",
         "getKefuData"
       ]),
-      ...mapMutations("lesson",["setDetial"])
+      async getDetialData() {
+        await this.getLessonDetial();
+        await this.getKefuData();
+      },
+      goSign() {
+        if(this.isLogined) {
+          this.$router.push({path:'/lesson/sign',query:{lessonId:this.lessonDetial.id}});
+        }else{
+          Toast({message:"未登录,请先登录!",duration: 1000})
+          setTimeout(()=>{
+            let nowUrl = encodeURIComponent(window.location.hash.substr(1));
+            this.$router.push({path:"/user/login",query:{nowUrl:nowUrl}});
+          },1000)
+        }
+      }
     },
-    created(){
-      this.getLessonDetial().then(res=>{
-        console.log(res.data);
-        this.detialData = res.data;
-      });
-      this.getCommentList().then(res=>{
-        console.log(res.data);
-        this.commentList = res.data;
-      });
-      this.getKefuData().then(res=>{
-        console.log(res.data);
-        this.kefuData = res.data;
+    computed:{
+      ...mapState("lesson",["lessonDetial","kefuData"]),
+      ...mapState(["isLogined"])
+    },
+    watch:{
+      "index"(n,o) {
+        if(n>o) {
+          this.slideType = "slide-left";
+        }else{
+          this.slideType = "slide-right";
+        }
+      }
+    },
+    created() {
+      console.log(this.isLogined)
+      this.getDetialData().then(res=>{
+        this.getCommentList().then(res => {
+          this.commentList = res.data;
+          this.loading = false;
+        });
       });
     }
   }
 </script>
 <style lang="stylus">
-  #detial{
+  #detial {
     padding: 40px 0 50px;
     height: auto;
-    .container{
-      .top-img{
+    .tab-container{
+      position: relative;
+    }
+    .lesson-detial,.lesson-comments{
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: all .5s cubic-bezier(.55, 0, .1, 1);
+      padding-bottom: 50px;
+    }
+    .container {
+      .top-img {
         height: 6rem;
         background-size: cover;
-        .filter-black{
+        .filter-black {
           width: 100%;
           height: 100%;
-          background-color: rgba(0,0,0,.3);
+          background-color: rgba(0, 0, 0, .3);
           position: relative;
-          h2{
+          h2 {
             width: 100%;
             position: absolute;
             bottom: 10px;
@@ -268,20 +295,20 @@
           }
         }
       }
-      .detial-info{
+      .detial-info {
         padding: 10px 20px;
         background: #fff;
         position: relative;
-        table{
-          line-height:20px;
+        table {
+          line-height: 20px;
           font-size: 12px;
           max-width: 70%;
-          i{
+          i {
             font-size: 12px;
             margin-right: 2px;
           }
         }
-        .item-status{
+        .item-status {
           position: absolute;
           top: 10px;
           right: 20px;
@@ -291,31 +318,50 @@
           -moz-border-radius: 5px;
           border-radius: 5px;
         }
-        .finish{
+        .finish {
           background: #f38218;
         }
-        .signing{
+        .signing {
           background: #e1324a;
         }
-        .doing{
+        .doing {
           background: #3cdc20;
         }
       }
-      .price-box{
+      .nav-tab {
+        width: 100%;
+        overflow: hidden;
+        background: #fff;
+        .nav-group {
+          padding: 20px 10px;
+          .nav-list {
+            flex: 1 1 auto;
+            color: #9d98a0;
+            border-right: 1px solid #9d98a0;
+          }
+          .active {
+            color: #e51f22;
+          }
+          .nav-list:last-of-type {
+            border-right: none;
+          }
+        }
+      }
+      .price-box {
         background: #fff;
         color: #777;
         height: 1.4rem;
         line-height: 1.4rem;
         padding: 0 20px;
-        .price{
+        .price {
           font-size: 18px;
         }
-        .sign-group{
-          ul{
+        .sign-group {
+          ul {
             position: relative;
             right: 20px;
             top: .2rem;
-            li{
+            li {
               width: 1rem;
               height: 1rem;
               background: url(../../assets/images/user.jpg) no-repeat;
@@ -326,64 +372,37 @@
               border-radius: 50%;
               position: absolute;
             }
-            li:nth-of-type(1){
+            li:nth-of-type(1) {
               z-index: 4;
               right: 2rem;
             }
-            li:nth-of-type(2){
+            li:nth-of-type(2) {
               z-index: 3;
               right: 1.2rem;
             }
-            li:nth-of-type(3){
+            li:nth-of-type(3) {
               z-index: 2;
               right: .4rem;
             }
           }
         }
       }
-      .nav-tab{
-        width: 100%;
-        overflow: hidden;
-        background: #fff;
-        margin-top: 7px;
-        .nav-group{
-          padding: 20px 10px;
-          .nav-list{
-            flex: 1 1 auto;
-            color: #9d98a0;
-            border-right: 1px solid #9d98a0;
-            i{
-              font-size: 20px;
-              vertical-align: middle;
-            }
-            span{
-              vertical-align: middle;
-            }
-          }
-          .active{
-            color: #e51f22;
-          }
-          .nav-list:last-of-type{
-            border-right: none;
-          }
-        }
-      }
-      .tab-container{
-        .section{
+      .tab-container {
+        .section {
           background: #fff;
           padding: 10px 20px;
-          h2{
+          h2 {
             font-size: 16px;
-            span{
+            span {
               padding: 3px 10px;
               border-bottom: 1px solid #ddd;
             }
           }
         }
-        .lesson-info{
-          ul{
+        .lesson-info {
+          ul {
             padding: 20px 0;
-            li{
+            li {
               width: 30%;
               float: left;
               padding-top: 30%;
@@ -392,20 +411,20 @@
               background-position: center;
               margin-bottom: 5%;
             }
-            li:nth-of-type(3n){
+            li:nth-of-type(3n) {
               margin-right: 0;
             }
           }
-          .text{
+          .text {
             line-height: 20px;
             color: #777;
           }
         }
-        .date-info{
-          .content{
+        .date-info {
+          .content {
             padding: 20px 0;
-            ul{
-              li{
+            ul {
+              li {
                 width: 50%;
                 background: #33b9f6;
                 color: #fff;
@@ -413,30 +432,30 @@
                 padding: 10px 0;
                 text-align: center;
                 margin-bottom: 10px;
-                p{
+                p {
                   line-height: 25px;
-                  .h1{
+                  .h1 {
                     font-size: 20px;
                     margin-right: 10px;
                   }
-                  i{
+                  i {
                     font-size: 12px;
                     margin-right: 5px;
                   }
                 }
               }
-              li:nth-of-type(2n+1){
+              li:nth-of-type(2n+1) {
                 -webkit-border-top-left-radius: 10px;
                 -moz-border-top-left-radius: 10px;
                 border-top-left-radius: 10px;
                 -webkit-border-bottom-left-radius: 10px;
                 -moz-border-bottom-left-radius: 10px;
                 border-bottom-left-radius: 10px;
-                p{
-                  &::after{
+                p {
+                  &::after {
                     display: block;
                     float: right;
-                    content:"";
+                    content: "";
                     width: 1px;
                     height: 28px;
                     background: #ddd;
@@ -444,7 +463,7 @@
                 }
               }
 
-              li:nth-of-type(2n){
+              li:nth-of-type(2n) {
                 -webkit-border-top-right-radius: 10px;
                 -moz-border-top-right-radius: 10px;
                 border-top-right-radius: 10px;
@@ -455,13 +474,13 @@
             }
           }
         }
-        .pack-info{
-          .content{
+        .pack-info {
+          .content {
             padding: 20px 0;
-            .pack-box{
-              .item{
-                .head{
-                  .index{
+            .pack-box {
+              .item {
+                .head {
+                  .index {
                     text-align: center;
                     font-size: 20px;
                     background: #33b9f6;
@@ -471,17 +490,17 @@
                     -moz-border-radius: 5px;
                     border-radius: 5px;
                   }
-                  .price{
+                  .price {
                     color: #33b9f6;
-                    span{
+                    span {
                       font-size: 20px;
 
                     }
                   }
                 }
-                ul{
+                ul {
                   padding: 10px 20px;
-                  li{
+                  li {
                     list-style: disc;
                     line-height: 24px;
                     color: #777;
@@ -491,15 +510,15 @@
             }
           }
         }
-        .teacher-info{
-          .content{
+        .teacher-info {
+          .content {
             padding: 20px 0px;
-            .group{
-              .item{
+            .group {
+              .item {
                 padding: 10px 0;
-                .left{
+                .left {
                   width: 30%;
-                  .img{
+                  .img {
                     width: 2.4rem;
                     height: 2.4rem;
                     background-size: cover;
@@ -508,16 +527,16 @@
                     border-radius: 50%;
                   }
                 }
-                .right{
+                .right {
                   width: 70%;
-                  h1{
+                  h1 {
                     font-size: 20px;
                   }
-                  .age{
+                  .age {
                     color: #33b9f6;
                     line-height: 30px;
                   }
-                  .text{
+                  .text {
                     font-size: 12px;
                     color: #777;
                     line-height: 18px;
@@ -527,18 +546,18 @@
             }
           }
         }
-//        评论区域
-        .comments{
-          .group{
-            .item{
+      //        评论区域
+        .comments {
+          .group {
+            .item {
               margin-bottom: 10px;
               border-bottom: 1px solid #ddd;
-              p{
+              p {
                 color: #777;
                 line-height: 20px;
               }
-              .head-box{
-                .head{
+              .head-box {
+                .head {
                   display: block;
                   background-image: url(http://lxlin.top/test/img/1.jpg);
                   width: 1.5rem;
@@ -548,12 +567,12 @@
                   margin: 0 auto;
                 }
               }
-              .date{
+              .date {
                 color: #33b9f6;
               }
-              .img-group{
+              .img-group {
                 padding: 10px 0;
-                .img-list{
+                .img-list {
                   width: 30%;
                   padding-top: 30%;
                   -webkit-background-size: cover;
@@ -562,7 +581,7 @@
                   margin-right: 5%;
                   margin-bottom: 10px;
                 }
-                .img-list:nth-of-type(3n){
+                .img-list:nth-of-type(3n) {
                   margin-right: 0;
                 }
               }
@@ -571,7 +590,7 @@
         }
       }
     }
-    .mint-popup{
+    .mint-popup {
       width: 90%;
       margin: 0 auto;
       border-radius: 10px;
@@ -580,14 +599,15 @@
       overflow: hidden;
     }
   }
-  .kefu-container{
+
+  .kefu-container {
     background: #fff;
     padding: 40px 0;
-    p{
+    p {
       color: #777;
       line-height: 40px;
       text-align: center;
-      i{
+      i {
         margin-right: 10px;
       }
     }

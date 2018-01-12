@@ -21,13 +21,13 @@
     </div>
     <div class="nav-tab">
       <ul class="nav-group dflex">
-        <li class="nav-list tc" :class="lessonType.index==k?'active':''" v-for="(item,k) in lessonList.list" @click="changeTab(k)" :key="item.levelId">
+        <li class="nav-list tc" :class="lessonType==k?'active':''" v-for="(item,k) in lessonList.list" @click="changeTab(k)" :key="item.levelId">
           <i class="iconfont icon-liebiao9"></i> {{item.level}}
         </li>
       </ul>
     </div>
     <div class="tab-container">
-      <lesson-list v-show="lessonType.index==key" v-if="lessonList.list" :lesson="item" v-for="(item,key) in lessonList.list" :trun="lessonType.trunLeft" :key="key"></lesson-list>
+      <lesson-list v-show="lessonType==key" v-if="lessonList.list" :lesson="item" v-for="(item,key) in lessonList.list" :key="key"></lesson-list>
     </div>
     <mt-popup
       v-model="cityBox" pop-transition="popup-fade"
@@ -59,14 +59,12 @@
     data() {
       return {
         loading: true,
-        banner: {},//banner图数据
-        lessonList:{
+        banner: {
           list:[]
-        },//课程列表数据
-        lessonType: {
-          index: 0
+        },//banner图数据
+        lessonList:{//课程列表数据
+          list:[]
         },
-
         cityBox: false,
         city: {
           text: "骑二无比总部",
@@ -102,11 +100,10 @@
       }
     },
     methods: {
-      ...mapActions("lesson", ["getBanner", "getLessonList"]),
-      ...mapMutations("lesson", ["setDetial"]),
+      ...mapActions("lesson", ["getBanner", "getLessonList","getIndexData"]),
+      ...mapMutations("lesson", ["changeLessonType"]),
       changeTab(n) {
-        this.lessonType.active = "tab-container" + n;
-        this.lessonType.index = n;
+        this.changeLessonType(n);
       },
       setDate(time) {
         var temp = new Date();
@@ -123,46 +120,30 @@
         if (is) {
           this.city.text = this.city.tempBranch;
         }
-      }
+      },
     },
     watch: {
     },
     computed: {
-
+      ...mapState("lesson",["lessonType"])
     },
-    components: {},
     created() {
-      //获取banner数据
-      this.getBanner().then(res=>{
+      //获取固定首页数据
+      this.getIndexData().then(res=>{
+        res[0].status==0?(this.lessonList = res[0].data):(this.lessonList);
+        res[1].status==0?(this.banner = res[1].data):(this.banner);
         this.loading = false;
-        if(res.status == 0){
-          this.banner = res.data;
-        }else{
-          console.log(res.massage);
-        }
-      }).catch(res=>{
-        this.loading = false;
-        console.log("接口报错了"+res);
       });
-      //获取课程数据
-      this.getLessonList().then(res=>{
-        this.loading = false;
-        if(res.status == 0){
-          this.lessonList = res.data;
-        }else{
-          console.log(res.massage);
-        }
-      }).catch(res=>{
-        this.loading = false;
-        console.log("接口报错了"+res);
-      });
-      this.changeTab(this.lessonType.index);
+      this.changeTab(this.lessonType);
     }
   }
 </script>
 <style lang="stylus">
   #index {
+    width: 100%;
     padding: 50px 0;
+    position: absolute;
+    top: 0;
     .header {
       width: 100%;
       height: 1.5rem;
@@ -236,8 +217,10 @@
       padding: 10px;
       margin-top: 10px;
     }
+    .tab-container{
+      position: relative;
+    }
     .lesson-list {
-      padding: 0 10px;
       .list-item {
         border-bottom: 1px solid #f7f7f7;
         padding: 10px 0;

@@ -84,7 +84,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import "@/assets/lib/lrz/lrz.bundle.js";
+  import "@/assets/lib/lrz/lrz.all.bundle";
   import {mapActions} from "vuex";
   import {Indicator, Toast} from 'mint-ui';
 
@@ -162,18 +162,20 @@
             .then(function (rst) {
               // 处理成功会执行
               Indicator.open({spinnerType: 'fading-circle'});
-              that.uploadImgAjax({image: rst.base64}).then(res => {
-                console.log(res.data.picture)
-                that.showImg({img: res.data.picture.imageUrl, id: res.data.picture.id});
+              //that.uploadImgAjax({image: rst.base64}).then(res => {
+                //console.log(res.data.picture)
+                //that.showImg({img: res.data.picture.imageUrl, id: res.data.picture.id});
+//              console.log(rst);
+              //that.showImg({img: rst.base64, id: 1});
                 Indicator.close();
-              }).catch(res => {
-                Toast({
-                  message: '上传失败!',
-                  duration: 2000
-                });
-                console.log(res.data);
-                Indicator.close();
-              });
+              //}).catch(res => {
+//                Toast({
+//                  message: '上传失败!',
+//                  duration: 2000
+//                });
+//                console.log(res.data);
+//                Indicator.close();
+//              });
             })
             .catch(function (err) {
               // 处理失败会执行

@@ -55,6 +55,7 @@
 </template>
 <script type="text/ecmascript-6">
   import {mapActions} from "vuex"
+  import {Toast,Indicator} from "mint-ui"
   export default {
     data() {
       return {
@@ -83,7 +84,7 @@
       }
     },
     methods:{
-      ...mapActions("user",["userRegister"]),
+      ...mapActions("user",["userRegister","getCodeAjax","checkPhoneHasReg"]),
       //验证手机号码是否符合规则
       checkPhone() {
         if(this.regInfo.phone.length < 11 && this.regInfo.phone.length > 0){
@@ -96,6 +97,22 @@
         }else{
           this.alertInfo.pKong = false;
         }
+        this.checkPhoneHasReg({
+          "phone": this.regInfo.phone
+        }).then(res=>{
+          console.log(res);
+          if(res.status == 0) {
+            //判断手机号码有没有被注册过,0是有,1是没有
+            if(res.data.hasUser == 0) {
+              this.alertInfo.pHas = true;
+            }else{
+              this.alertInfo.pHas = false;
+            }
+          }
+        }).catch(res=>{
+          console.log(res);
+          Toast("网络出错")
+        })
       },
       //验证密码是否符合规则
       checkPw() {
@@ -133,20 +150,41 @@
           this.alertInfo.pwError = true;
         }
       },
-      //点击获取验证码
-      getCode() {
-        this.sendCode();
-        this.codeInfo.unclick = false;
-        this.seconds();
-      },
       //发送手机验证码函数
-      sendCode() {
-
+      getCode() {
+        Indicator.open({
+          spinnerType: 'fading-circle',
+          text:"发送中..."
+        });
+        this.getCodeAjax({
+          "phone":this.regInfo.phone,
+          "type": 0
+        }).then(res=>{
+          console.log(res);
+          Indicator.close()
+          if(res.status == 0) {
+            this.seconds();
+            this.codeInfo.unclick = false;
+            Toast({
+              message: "验证码已成功发送至您手机",
+              duration: 1000
+            });
+          }else{
+            Toast({
+              message: res.msg,
+              duration: 1000
+            })
+          }
+        }).catch(res=>{
+          console.log(res);
+          Indicator.close();
+          Toast("网络出错")
+        });
       },
       //60秒倒计时函数
       seconds() {
         let _this = this;
-        function down() {
+        (function down() {
           let _that = _this;
           setTimeout(function () {
             _that.codeInfo.codeTime--;
@@ -158,8 +196,7 @@
               down();
             }
           },1000);
-        }
-        down();
+        })();
       },
       //检查所有数据是否符合规则
       checkAll() {
@@ -180,14 +217,33 @@
       register() {
         console.log(this.alertInfo);
         if(this.checkAll()){//检查所有数据都通过
+          Indicator.open({
+            spinnerType: 'fading-circle',
+            text:"注册中..."
+          });
           this.userRegister(this.regInfo).then(res=>{
-            console.log("注册成功");
-            console.log(res);
+            Indicator.close();
+            if(res.status == 0) {
+              Toast({
+                message: "恭喜您,注册成功!2s后跳转至个人中心页面",
+                duration: 1000
+              });
+              setTimeout(()=>{
+                this.$router.push("/user/index");
+              },2000)
+            }else{
+              Toast({
+                message: res.msg,
+                duration: 1000
+              })
+            }
           }).catch(res=>{
-            console.log("网络错误");
+            console.log(res)
+            Indicator.close();
+            Toast("网络出错")
           });
         }else{
-          alert("信息填写有误");
+          Toast("信息填写有误");
         }
       }
     },

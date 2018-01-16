@@ -8,12 +8,16 @@ const ajaxURL = {
   //登录相关
   userLogin: "open/login",//登录接口
   userRegister: "open/register/registerMobile",//注册
+  getCode: "open/code/getCode",//获取验证码接口
+  checkPhoneHasReg: "open/user/exist",//获取手机号有没有注册过接口
+  findPwAjax: "open/user/forgetPassword",//忘记密码重置接口
   //课程列表相关接口
-  getBanner: "lessonDatas/banner.json",
-  getLessonList: "lessonDatas/lessonList.json",
-  getLessonDetial: "lessonDatas/lessonDetial.json",
-  getCommentList:"lessonDatas/comments.json",
-  getKefuData:"lessonDatas/kefu.json",
+  getBanner: "open/bannerTraining/banners",//获取 轮播图
+  getLessonList: "open/course/courses",//获取课程列表
+  getLessonDetial: "open/course/courseInfo",//获取课程详情
+  getCommentList:"lessonDatas/comments.json",//获取评论列表
+  getKefuData:"lessonDatas/kefu.json",//获取客服信息
+  getBranchList: "open/organization/organizations",//获取省份和分部列表
   //评价相关接口
   getTagList:"lessonDatas/tagList.json",
   getHistoryCommentList:"lessonDatas/comments.json",

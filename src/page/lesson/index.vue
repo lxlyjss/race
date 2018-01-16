@@ -1,8 +1,8 @@
 <template>
   <div id="index">
     <div class="header dflex">
-      <div class="city-btn" @click="cityBox=true">
-        <span class="fl place txt-dian">位置: <span class="city">{{city.text}}</span></span>
+      <div class="city-btn" @click="branchData.cityShow=true">
+        <span class="fl place txt-dian">位置: <span class="city">{{branchData.branch}}</span></span>
         <span class="fr"><img src="../../assets/images/sanjiao.png" width="10"></span>
       </div>
       <div class="search-btn">
@@ -15,14 +15,14 @@
     <div class="swiper-w">
       <mt-swipe :auto="2000">
         <mt-swipe-item v-if="banner.list" v-for="item in banner.list"
-                       :style="{backgroundImage:`url(${item.imgUrl})`,backgroundSize:'cover'}"
-                       :key="item.lessonid"></mt-swipe-item>
+                       :style="{backgroundImage:`url(${item.image})`,backgroundSize:'cover'}"
+                       :key="item.courseId"></mt-swipe-item>
       </mt-swipe>
     </div>
     <div class="nav-tab">
       <ul class="nav-group dflex">
-        <li class="nav-list tc" :class="lessonType==k?'active':''" v-for="(item,k) in lessonList.list" @click="changeTab(k)" :key="item.levelId">
-          <i class="iconfont icon-liebiao9"></i> {{item.level}}
+        <li class="nav-list tc" :class="lessonType==k?'active':''" v-for="(item,k) in lessonList.list" @click="changeTab(k)" :key="item.level">
+          <i class="iconfont icon-liebiao9"></i> {{item.levelName}}
         </li>
       </ul>
     </div>
@@ -30,10 +30,10 @@
       <lesson-list v-show="lessonType==key" v-if="lessonList.list" :lesson="item" v-for="(item,key) in lessonList.list" :key="key"></lesson-list>
     </div>
     <mt-popup
-      v-model="cityBox" pop-transition="popup-fade"
+      v-model="branchData.cityShow" pop-transition="popup-fade"
       position="center">
       <p class="title">选择所在城市和地区</p>
-      <mt-picker :slots="slots" :visibleItemCount="3" @change="onValuesChange"></mt-picker>
+      <mt-picker :slots="branchData.slots" :visibleItemCount="3" @change="onValuesChange"></mt-picker>
       <p class="clear save-btn">
         <span class="fl bs" @click="selectCity(false)">取消</span>
         <span class="fr bs" @click="selectCity(true)">保存</span></p>
@@ -59,49 +59,23 @@
     data() {
       return {
         loading: true,
-        banner: {
+        banner: {//banner图数据
           list:[]
-        },//banner图数据
+        },
         lessonList:{//课程列表数据
           list:[]
-        },
-        cityBox: false,
-        city: {
-          text: "骑二无比总部",
-          tempCity: "北京",
-          tempBranch: "骑二无比总部"
-        },
-        slots: [
-          {
-            flex: 1,
-            defaultIndex: 1,
-            values: ['南通', '北京', '武汉', '长春', '青岛', '廊坊'],
-            className: 'slot1',
-            textAlign: 'center'
-          }, {
-            divider: true,
-            content: '-',
-            className: 'slot2'
-          }, {
-            flex: 1,
-            values: ["骑二无比总部", "南通分部2", "南通分部3"],
-            className: 'slot3',
-            textAlign: 'center'
-          }
-        ],
-        cityList: {
-          "南通": ["南通分部1", "南通分部2", "南通分部3"],
-          "北京": ["骑二无比总部1", "骑二无比总部2", "骑二无比总部3"],
-          "武汉": ["武汉分部1", "武汉分部2", "武汉分部3"],
-          "长春": ["长春分部1", "长春分部2"],
-          "青岛": ["青岛分部1", "青岛分部2"],
-          "廊坊": ["廊坊分部1", "廊坊分部2"]
         }
       }
     },
     methods: {
-      ...mapActions("lesson", ["getBanner", "getLessonList","getIndexData"]),
-      ...mapMutations("lesson", ["changeLessonType"]),
+      ...mapActions("lesson", [
+        "getBanner", "getLessonList",
+        "getIndexData","getBranchList"
+      ]),
+      ...mapMutations("lesson", [
+        "changeLessonType","setFormatBranch",
+        "setSlotsByLxl","setBranchData"
+      ]),
       changeTab(n) {
         this.changeLessonType(n);
       },
@@ -111,30 +85,87 @@
         return temp.toLocaleDateString().replace(/\//g, "-") + temp.toLocaleTimeString()
       },
       onValuesChange(picker, values) {
-        picker.setSlotValues(1, this.cityList[values[0]]);
-        this.city.tempCity = values[0];
-        this.city.tempBranch = values[1];
+        picker.setSlotValues(1, this.formatBranchList[values[0]]);
+        this.setBranchData({type:"tempBranch",value:values[1]});
       },
-      selectCity(is) {
-        this.cityBox = false;
-        if (is) {
-          this.city.text = this.city.tempBranch;
+      selectCity(bool) {//确定选择分部
+        this.setBranchData({type:"cityShow",value:false});
+        if (bool) {
+          this.setBranchData({type:"branch",value:this.branchData.tempBranch});
+          this.setBranchData({type:"branchId",value:this.getPFCode(this.branchList.list,this.branchData.branch)});
+          console.log(this.branchData);
         }
       },
+      setProvienceArr(list) {//将省份和分部列表存储;
+        let tempObj = {};
+        if(list instanceof Array) {
+          for(let i = 0; i < list.length;i++) {
+            let arr = [];
+            for(let j = 0; j < list[i].list.length;j++) {
+              arr.push(list[i].list[j].name);
+            }
+            tempObj[list[i].name] = arr;
+          }
+        }else{
+          console.log("list不是数组类型")
+        }
+        return tempObj;
+      },
+      //给城市选择器设置初始化数据
+      setSlotsValues(formatData) {
+        let arr = [];
+        if(formatData instanceof Object){
+          for(let k in formatData) {
+            arr.push(k);
+          }
+        }else{
+          console.log("formatData不是object类型")
+        }
+        return arr;
+      },
+      //根据选择的分部名称获取分部code,并且赋值给branchData;
+      getPFCode(list,f) {
+        let code = "";
+        if(list instanceof Array) {
+          for(let i = 0; i < list.length;i++) {
+            for(let j = 0 ; j < list[i].list.length; j++) {
+              if(list[i].list[j].name == f) {
+                code = list[i].list[j].code;
+              }
+            }
+          }
+        }else{
+          console.log("formatData不是数组类型")
+        }
+        return code;
+      }
     },
     watch: {
     },
     computed: {
-      ...mapState("lesson",["lessonType"])
+      ...mapState("lesson",["lessonType","branchList","branchData","formatBranchList"])
     },
     created() {
+      this.changeTab(this.lessonType);
       //获取固定首页数据
-      this.getIndexData().then(res=>{
+      this.getIndexData({
+        "branchId": 1,
+        "type": 1,
+        "page": 1,
+        "pageSize": 10
+      }).then(res=>{
         res[0].status==0?(this.lessonList = res[0].data):(this.lessonList);
         res[1].status==0?(this.banner = res[1].data):(this.banner);
         this.loading = false;
       });
-      this.changeTab(this.lessonType);
+      //获取分部列表
+      this.getBranchList().then(res=>{
+        console.log(this.branchList);
+        //获取到分部列表之后,需要将所有省份和分部按照固定格式存储起来,
+        this.setFormatBranch(this.setProvienceArr(this.branchList.list));
+        this.setSlotsByLxl(this.setSlotsValues(this.formatBranchList));
+        console.log(this.formatBranchList);
+      })
     }
   }
 </script>

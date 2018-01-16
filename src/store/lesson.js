@@ -6,14 +6,41 @@ export default {
   state:{
     lessonType: 0,//首页切换课程类型当前定位
     signIndex: 0,//报名页面当前进行第几步
+    branchData:{
+      cityShow: false,
+      tempBranch:"",
+      branch:"全部",
+      branchId: "",
+      slots: [
+        {
+          flex: 1,
+          defaultIndex: 1,
+          values: [],
+          className: 'slot1',
+          textAlign: 'center'
+        }, {
+          divider: true,
+          content: '-',
+          className: 'slot2'
+        }, {
+          flex: 1,
+          values: [],
+          className: 'slot3',
+          textAlign: 'center'
+        }
+      ]
+    },
+    formatBranchList:{},
     branchList:{
-
+      list:[]
     },
     lessonDetial:{//因为课程详情里的信息很多地方需要用到,所以这里需要全局储存课程详情
-      signList: [],
-      classDate: [],
-      classPack: [],
-      teachers: []
+      course:{
+        signList: [],//已报名列表
+      },
+      periods: [],//课程日期表
+      coursewares: [],//课件包
+      coachs: []//教练列表
     },
     kefuData:{//客服信息其他页面内也需要,所以也储存
 
@@ -53,30 +80,38 @@ export default {
     },
     changeClassShow(state, key) {
       state.classShow[key].show = !state.classShow[key].show;
+    },
+    setBranchList(state, res) {
+      state.branchList = res;
+    },
+    setFormatBranch(state, res) {//将所获取的数据整理
+      state.formatBranchList = res;
+    },
+    setSlotsByLxl(state, res) {//给slots设置初始化数据
+      state.branchData.slots[0].values = res;
+    },
+    setBranchData(state, res) {//设置branchData数据
+      state.branchData[res.type] = res.value;
     }
   },
   actions:{
-    //获取banner图列表
-    async getBanner(context) {
-      let res = await fetch("get","getBanner");
+    //获取分部列表
+    async getBranchList(context) {
+      let res = await fetch("get","getBranchList");
+      context.commit("setBranchList",res.data);
       return res;
     },
-    //获取课程列表
-    async getLessonList(context) {
-      let res = await fetch("get","getLessonList");
-      return res;
-    },
-    //测试获取多个数据
-    async getIndexData(context) {
+    //获取多个数据
+    async getIndexData(context,data) {
       let arr = [];
       try{
-        let res1 = await fetch("get","getLessonList");
+        let res1 = await fetch("get","getLessonList",data);//获取课程列表
         arr.push(res1);
       }catch(e) {
         arr.push({status:1});
       }
       try{
-        let res2 = await fetch("get","getBanner");
+        let res2 = await fetch("get","getBanner");//获取banner图列表
         arr.push(res2);
       }catch(e) {
         arr.push({status:1});
@@ -84,9 +119,10 @@ export default {
       return arr;
     },
     //获取课程详情
-    async getLessonDetial(context) {
-      let res = await fetch("get","getLessonDetial");
+    async getLessonDetial(context,data) {
+      let res = await fetch("get","getLessonDetial",data);
       context.commit("setLessonDetial",res.data);
+      return res;
     },
     //获取评价列表
     async getCommentList(context) {

@@ -1,16 +1,16 @@
 <template>
   <transition :name="type">
     <ul class="lesson-list bs">
-      <li class="list-item dflex" v-for="(item,key) in lesson.list" :key="key" @click="goDetial(item.id)">
-        <div class="item-img" :style="{backgroundImage:`url(${item.imgUrl})`}"></div>
+      <li class="list-item dflex" v-for="item in lesson.list" :key="item.id" @click="goDetial(item.id)">
+        <div class="item-img" :style="{backgroundImage:`url(${item.image})`}"></div>
         <div class="item-detial">
-          <h2 class="fw">{{item.title}}</h2>
-          <p><i class="iconfont icon-icon"></i>课程时间: {{item.date}}</p>
-          <p><i class="iconfont icon-ren"></i>适用年龄: {{item.minAge}}-{{item.maxAge}}岁</p>
+          <h2 class="fw">{{item.courseName}}</h2>
+          <p><i class="iconfont icon-icon"></i>课程时间: {{item.enrollBeginDate}}</p>
+          <p><i class="iconfont icon-ren"></i>适用年龄: {{item.ageMin}}-{{item.ageMax}}岁</p>
           <p class="fl">￥<span class="item-price">{{item.price / 100}}</span>起</p>
-          <p class="fr item-status finish" v-show="item.status==0">已结束</p>
-          <p class="fr item-status doing" v-show="item.status==1">进行中</p>
-          <p class="fr item-status signing" v-show="item.status==2">报名中</p>
+          <p class="fr item-status finish" v-show="item.state==0">已结束</p>
+          <p class="fr item-status doing" v-show="item.state==1">进行中</p>
+          <p class="fr item-status signing" v-show="item.state==2">报名中</p>
         </div>
       </li>
     </ul>

@@ -41,13 +41,31 @@ export default {
     //登录接口
     async userLogin(context,data) {
       let res;
-      res = await fetch("userLogin",data);
+      res = await fetch("post","userLogin",data);
       return res;
     },
     //注册接口
     async userRegister(context,data) {
       let res;
-      res = await fetch("userRegister",data);
+      res = await fetch("post","userRegister",data);
+      return res;
+    },
+    //获取验证码接口
+    async getCodeAjax(context,data) {
+      let res;
+      res = await fetch("post","getCode",data);
+      return res;
+    },
+    //判断手机号有未被注册过
+    async checkPhoneHasReg(context,data) {
+      let res;
+      res = await fetch("post","checkPhoneHasReg",data);
+      return res;
+    },
+    //找回密码接口
+    async findPwAjax(context,data) {
+      let res;
+      res = await fetch("post","findPwAjax",data);
       return res;
     },
     //获取用户数据

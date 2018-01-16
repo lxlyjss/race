@@ -29,7 +29,7 @@
         <p class="clear">
           <span class="fl">没有账号?</span>
           <span class="fl toReg" @click="$router.push({path:'/user/register'})">立即注册</span>
-          <span class="fr toFind">忘记密码</span>
+          <span class="fr toFind" @click="$router.push('/user/findPw')">忘记密码</span>
         </p>
         <p class="other-title">
           其他登录方式
@@ -43,6 +43,7 @@
 </template>
 <script type="text/ecmascript-6">
   import { mapState,mapMutations,mapActions } from "vuex";
+  import {Toast,Indicator} from "mint-ui"
   export default {
     data() {
       return {
@@ -84,19 +85,34 @@
       },
       isCheck() {
         //判断所有条件是否符合
+
       },
       login() {
+        Indicator.open({
+          spinnerType: 'fading-circle',
+          text:"登录中..."
+        });
         this.userLogin(this.loginInfo).then(res=>{
           console.log(res);
+          Indicator.close();
+          if(res.status == 0) {
+            if("nowUrl" in this.$route.query) {
+              this.isBack = true;
+              this.$router.push(decodeURIComponent(this.$route.query.nowUrl));
+            }else{
+              this.$router.push("/index/lesson");
+            }
+          }else{
+            Toast({
+              message: res.msg,
+              duration: 1000
+            });
+          }
         }).catch(res=>{
-          console.log("网络出错")
+          console.log(res)
+          Indicator.close();
+          Toast("网络出错")
         });
-        if("nowUrl" in this.$route.query) {
-          this.isBack = true;
-          this.$router.push(decodeURIComponent(this.$route.query.nowUrl));
-        }else{
-          this.$router.push("/index/lesson");
-        }
       }
     },
     watch:{
@@ -115,7 +131,6 @@
       }
     },
     created() {
-      console.log(this.$route)
     }
   }
 </script>

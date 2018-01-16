@@ -20,13 +20,14 @@
           </p>
           <p class="alert-info" v-show="alertInfo.pLength">*手机号码位数不足11位</p>
           <p class="alert-info" v-show="alertInfo.pKong">*请输入手机号码</p>
+          <p class="alert-info" v-show="alertInfo.pHasReg">*该手机号码尚未注册过</p>
           <p class="input-box clear">
             <input type="number" oninput="if(value.length>6)value=value.slice(0,6)" class="fl code-input" v-model="findInfo.code" @blur="checkCode" placeholder="输入验证码" />
             <span class="get-code fr" @click="getCode" v-show="codeInfo.unclick">{{codeInfo.codeText}}</span>
             <span class="get-code fr get-code-gray" v-show="!codeInfo.unclick">{{codeInfo.codeTime}} s</span>
           </p>
           <p class="alert-info" v-show="alertInfo.codeError">*请输入6位数验证码</p>
-          <p class="login-btn red-btn" @click="index=2">
+          <p class="login-btn red-btn" @click="nextTo">
             <span>下一步</span>
           </p>
         </div>
@@ -52,6 +53,8 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import {mapActions} from "vuex";
+  import {Toast,Indicator} from "mint-ui"
   export default {
     data() {
       return {
@@ -70,6 +73,7 @@
         },
         alertInfo:{
           pLength: false,//手机号长度错误
+          pHasReg: false,//判断手机有没有注册过
           pKong: false,//手机号是否为空
           codeError: false,//验证码位数错误
           pwKong: false,//密码1是否为空
@@ -80,6 +84,7 @@
       }
     },
     methods:{
+      ...mapActions("user",["findPwAjax","getCodeAjax","checkPhoneHasReg"]),
       checkPhone() {
         if(this.findInfo.phone.length < 11 && this.findInfo.phone.length > 0){
           this.alertInfo.pLength = true;
@@ -90,6 +95,24 @@
           this.alertInfo.pKong = true;
         }else{
           this.alertInfo.pKong = false;
+        }
+        if(this.findInfo.phone.length === 11) {
+          this.checkPhoneHasReg({
+            "phone": this.findInfo.phone
+          }).then(res=>{
+            console.log(res);
+            if(res.status == 0) {
+              //判断手机号码有没有被注册过,0是有,1是没有
+              if(res.data.hasUser == 0) {
+                this.alertInfo.pHas = false;
+              }else{
+                this.alertInfo.pHas = true;
+              }
+            }
+          }).catch(res=>{
+            console.log(res);
+            Toast("网络出错")
+          });
         }
       },
       //验证码是否符合规则
@@ -130,20 +153,41 @@
           }
         }
       },
-      //点击获取验证码
-      getCode() {
-        this.sendCode();
-        this.codeInfo.unclick = false;
-        this.seconds();
-      },
       //发送手机验证码函数
-      sendCode() {
-
+      getCode() {
+        Indicator.open({
+          spinnerType: 'fading-circle',
+          text:"发送中..."
+        });
+        this.getCodeAjax({
+          "phone":this.findInfo.phone,
+          "type": 1
+        }).then(res=>{
+          console.log(res);
+          Indicator.close()
+          if(res.status == 0) {
+            this.seconds();
+            this.codeInfo.unclick = false;
+            Toast({
+              message: "验证码已成功发送至您手机",
+              duration: 1000
+            });
+          }else{
+            Toast({
+              message: res.msg,
+              duration: 1000
+            })
+          }
+        }).catch(res=>{
+          console.log(res);
+          Indicator.close();
+          Toast("网络出错")
+        });
       },
       //60秒倒计时函数
       seconds() {
         let _this = this;
-        function down() {
+        (function down() {
           let _that = _this;
           setTimeout(function () {
             _that.codeInfo.codeTime--;
@@ -155,8 +199,14 @@
               down();
             }
           },1000);
+        })();
+      },
+      nextTo() {
+        this.checkPhone();
+        this.checkCode();
+        if(this.findInfo.phone.length === 11 && this.findInfo.code) {
+          this.index = 2;
         }
-        down();
       },
       //检查所有数据是否符合规则
       checkAll() {
@@ -177,9 +227,33 @@
       findFun() {
         console.log(this.alertInfo);
         if(this.checkAll()){//检查所有数据都通过
-          alert("找回成功")
+          Indicator.open({
+            spinnerType: 'fading-circle',
+            text:"重置中..."
+          });
+          this.findPwAjax(this.findInfo).then(res=>{
+            Indicator.close();
+            if(res.status == 0) {
+              Toast({
+                message: "恭喜您,重置成功!2s后跳转至登录页面",
+                duration: 1000
+              });
+              setTimeout(()=>{
+                this.$router.push("/user/login");
+              },2000);
+            }else{
+              Toast({
+                message: res.msg,
+                duration: 1000
+              })
+            }
+          }).catch(res=>{
+            console.log(res)
+            Indicator.close();
+            Toast("网络出错")
+          });
         }else{
-          alert("信息填写有误");
+          Toast("信息填写有误");
         }
       }
     },

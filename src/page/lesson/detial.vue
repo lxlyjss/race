@@ -8,9 +8,9 @@
       </mt-header>
     </div>
     <div class="container">
-      <div class="top-img" :style="{backgroundImage:`url(${lessonDetial.imgUrl})`}">
+      <div class="top-img" :style="{backgroundImage:`url(${lessonDetial.course.image})`}">
         <div class="filter-black">
-          <h2>{{lessonDetial.title}}</h2>
+          <h2>{{lessonDetial.course.courseName}}</h2>
         </div>
       </div>
       <!--课程介绍-->
@@ -19,34 +19,34 @@
           <tbody>
           <tr>
             <td width="70"><i class="iconfont icon-icon"></i>课程时间:</td>
-            <td>{{lessonDetial.date}}</td>
+            <td>{{lessonDetial.course.enrollBeginDate}}</td>
           </tr>
           <tr>
             <td><i class="iconfont icon-biaoqian"></i>课程分类:</td>
-            <td>{{lessonDetial.type}}</td>
+            <td>{{lessonDetial.course.levelName+lessonDetial.course.typeName}}</td>
           </tr>
           <tr>
             <td><i class="iconfont icon-ren"></i>适用年龄:</td>
-            <td>{{lessonDetial.minAge}}-{{lessonDetial.maxAge}}岁</td>
+            <td>{{lessonDetial.course.ageMin}}-{{lessonDetial.course.ageMax}}岁</td>
           </tr>
           <tr>
             <td><i class="iconfont icon-didian"></i>上课地点:</td>
-            <td>{{lessonDetial.school}}</td>
+            <td>{{lessonDetial.course.address}}</td>
           </tr>
           </tbody>
         </table>
-        <p class="fr item-status finish" v-show="lessonDetial.status==0">已结束</p>
-        <p class="fr item-status doing" v-show="lessonDetial.status==1">进行中</p>
-        <p class="fr item-status signing" v-show="lessonDetial.status==2">报名中</p>
+        <p class="fr item-status finish" v-show="lessonDetial.course.state==0">已结束</p>
+        <p class="fr item-status doing" v-show="lessonDetial.course.state==1">进行中</p>
+        <p class="fr item-status signing" v-show="lessonDetial.course.state==2">报名中</p>
       </div>
       <!--价格-->
       <div class="price-box">
-        <p class="fl">￥<span class="price">{{lessonDetial.price / 100}}</span>起</p>
+        <p class="fl">￥<span class="price">{{lessonDetial.course.price / 100}}</span>起</p>
         <div class="fr sign-group">
           <ul>
-            <li v-for="(item,key) in lessonDetial.signList" :style="{backgroundImage:`url(${item})`}" :key="key"></li>
+            <li v-for="(item,key) in lessonDetial.course.signList" :style="{backgroundImage:`url(${item})`}" :key="key"></li>
           </ul>
-          <p>{{lessonDetial.currentCount}}/{{lessonDetial.totalCount}}</p>
+          <p>{{lessonDetial.course.currentCount}}/{{lessonDetial.course.totalCount}}</p>
         </div>
       </div>
       <div class="nav-tab">
@@ -92,7 +92,7 @@
               </h2>
               <div class="content">
                 <ul class="clear">
-                  <li class="bs" v-for="(item, key) in lessonDetial.classDate" :key="key">
+                  <li class="bs" v-if="item!==null" v-for="(item, key) in lessonDetial.periods" :key="key">
                     <p><span class="h1">{{key}}</span><i class="iconfont icon-shijian"></i><span>{{item}}</span></p>
                   </li>
                 </ul>
@@ -105,7 +105,7 @@
               </h2>
               <div class="content">
                 <ul class="pack-box">
-                  <li class="item" v-for="(item,key) in lessonDetial.classPack" :key="key">
+                  <li class="item" v-if="item!==null" v-for="(item,key) in lessonDetial.coursewares" :key="key">
                     <p class="head clear">
                       <span class="index fl">{{key + 1}}</span>
                       <span class="price fr">价值<span>{{item.price / 100}}</span>元</span>
@@ -126,14 +126,14 @@
               </h2>
               <div class="content">
                 <ul class="group">
-                  <li class="item dflex" v-for="(item,key) in lessonDetial.teachers" :key="key">
+                  <li class="item dflex" v-if="item!==null" v-for="(item,key) in lessonDetial.coachs" :key="item.id">
                     <div class="left">
-                      <div class="img" :style="{backgroundImage: `url(${item.imgUrl})`}"></div>
+                      <div class="img" :style="{backgroundImage: `url(${item.headImage})`}"></div>
                     </div>
                     <div class="right">
                       <h1>{{item.name}}</h1>
                       <p class="age">车龄/{{item.years}}年</p>
-                      <p class="text">{{item.desc}}</p>
+                      <p class="text">{{item.remark}}</p>
                     </div>
                   </li>
                 </ul>
@@ -222,10 +222,6 @@
         "getCommentList",
         "getKefuData"
       ]),
-      async getDetialData() {
-        await this.getLessonDetial();
-        await this.getKefuData();
-      },
       goSign() {
         if(this.isLogined) {
           this.$router.push({path:'/lesson/sign',query:{lessonId:this.lessonDetial.id}});
@@ -253,12 +249,20 @@
     },
     created() {
       console.log(this.isLogined)
-      this.getDetialData().then(res=>{
-        this.getCommentList().then(res => {
-          this.commentList = res.data;
-          this.loading = false;
-        });
+      this.getLessonDetial({
+        "courseId":this.$route.query.lessonId
+      }).then(res=>{
+        this.loading = false;
+        console.log(this.lessonDetial);
+//        this.getCommentList().then(res => {
+//          this.commentList = res.data;
+//          this.loading = false;
+//        });
+      }).catch(res=>{
+        this.loading = false;
+        Toast("网络错误");
       });
+
     }
   }
 </script>

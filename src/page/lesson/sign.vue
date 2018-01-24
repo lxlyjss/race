@@ -1,7 +1,7 @@
 <template>
   <div id="sign" class="bs">
     <div class="header">
-      <mt-header title="儿童滑步车培训(初级三期)">
+      <mt-header :title="lessonInfo.course.courseName">
         <span @click="$router.goBack()" slot="left">
           <mt-button icon="back">返回</mt-button>
         </span>
@@ -11,7 +11,7 @@
     <div class="container">
       <div class="tab-container">
         <transition :name="slideType">
-          <div class="page-container" v-show="signIndex==0">
+          <div class="page-container page-index1" v-show="signIndex==0">
             <div class="user-info">
               <p class="title tc">家长信息</p>
               <p class="input-box"><input type="text" v-model="userInfo.parentName" placeholder="家长姓名"></p>
@@ -34,9 +34,10 @@
             </div>
             <div class="gift-container">
               <ul class="gift-box">
-                <li class="list-item" v-for="(item,key) in lessonDetial.coursewares" :key="key">
+                <li class="list-item" v-for="(item,key) in lessonInfo.coursewares" :key="key">
                   <p>
-                    <span @click="changePack(item.id,item.price)">
+                    <span @click="changePack(item.id,item.price,item.giftName
+)">
                       <span class="checkbox"><i class="iconfont icon-icon1" v-if="packInfo.selectedId==item.id"></i></span>
                       <span class="title">{{item.giftName}}</span>
                     </span>
@@ -58,17 +59,17 @@
           </div>
         </transition>
         <transition :name="slideType">
-          <div class="page-container" v-show="signIndex==1">
+          <div class="page-container page-index2" v-show="signIndex==1">
             <div class="submit-container">
               <div class="submit-info">
-                <p class="title">骑二无比儿童滑步车初级课程(三期班)</p>
-                <p class="text"><span>张三</span><span>3岁</span><span>新会员礼包一</span></p>
-                <p class="price">￥<span>{{packInfo.price/100}}</span></p>
+                <p class="title">{{lessonInfo.course.courseName}}</p>
+                <p class="text"><span>{{userInfo.babyName}}</span><span>{{lessonInfo.course.ageMin}}-{{lessonInfo.course.ageMax}}岁</span><span>{{packInfo.name}}</span></p>
+                <p class="price">￥<span>{{packInfo.price}}</span></p>
               </div>
               <div class="mark-box">
                 <textarea v-model="userInfo.mark" placeholder="备注信息"></textarea>
               </div>
-              <p class="all-price">总金额￥<span class="price">{{packInfo.price/100}}</span></p>
+              <p class="all-price">总金额￥<span class="price">{{packInfo.price}}</span></p>
               <ul class="coupon-group">
                 <li class="coupon-list dflex" @click="couponId=0">
                   <div class="coupon-img">
@@ -98,7 +99,7 @@
                 </li>
               </ul>
               <br>
-              <p class="all-price">实际支付￥<span class="price">7400</span></p>
+              <p class="all-price">实际支付￥<span class="price">{{packInfo.price}}</span></p>
               <p class="access">
                 <span class="checkbox access-check" :class="isAccess?'active':''" @click="isAccess=!isAccess"><i class="iconfont icon-icon1" v-if="isAccess"></i></span>
                 <span>提交订单默认您已阅读并同意《服务条款》</span>
@@ -120,7 +121,7 @@
       <div class="btn" @click="changeSignIndex(0)">
         <span>上一步</span>
       </div>
-      <div class="btn" :class="isAccess?'red-btn':'gray-btn'" @click="goPay">
+      <div class="btn" :class="isAccess?'red-btn':'gray-btn'" @click="submitVote">
         <span>确认订单</span>
       </div>
     </div>
@@ -156,7 +157,15 @@
         kefuShow: false,//客服弹框是否显示
         slideType:"slide-right",
         couponId: 1,
+        courseId: "",//课程id
         isAccess: true,//是否勾选了同意服务条款
+        lessonInfo:{
+          course:{},
+          coursewares:[]
+        },
+        kefuData:{
+          phone: "",
+        },
         birthdayData:{//日期配置参数
           date:"",
           show: false,
@@ -175,37 +184,38 @@
         },
         packInfo:{//存储用户选择的课件包信息
           selectedId: "",
-          price:""
+          price:"",
+          name:""
         },
       }
     },
     methods:{
-      ...mapActions("lesson",["getLessonDetial","getKefuData"]),
+      ...mapActions("lesson",["getLessonDetial","getKefuData","submitVoteAjax"]),
       ...mapMutations("lesson",["changeSignIndex"]),
       //进入确认信息页面
       checkInfoPage() {
-        //if(this.checkInput()) {
+        if(this.checkInput()) {
           this.changeSignIndex(1);
-          console.log(this.userInfo);
-          console.log(this.packInfo);
-        //}
+        }
       },
       //判断当前页面是否是直接进入的
       checkLessonId() {
         let self = this;
-        if('id' in this.lessonDetial){
-          console.log("有课程数据");
+        if('lessonId' in this.$route.query){
+          this.courseId = this.$route.query.lessonId;
+          this.getLessonDetial({courseId:this.$route.query.lessonId}).then(res=>{
+            console.log(res);
+            if(res.status == 0) {
+              this.lessonInfo = res.data;
+              console.log(this.lessonInfo);
+            }else{
+              alert("获取数据失败!请重新刷新网页")
+            }
+          });
+          //this.getKefuData(this.$route.query.lessonId);
         }else{
-          console.log("没有课程数据");
-          if(this.$route.query.lessonId) {
-            this.getLessonDetial(this.$route.query.lessonId);
-            this.getKefuData(this.$route.query.lessonId);
-          }else{
-            Toast("页面错误,没有课程id,2秒后跳转至首页");
-            setTimeout(function () {
-              self.$router.push("/index/lesson");
-            },2000)
-          }
+          Toast("页面错误,没有课程id");
+          self.$router.push("/index/lesson");
         }
       },
       openPicker() {
@@ -220,13 +230,15 @@
         this.userInfo.sex = i;
       },
       //选择课件包
-      changePack(i,p) {
+      changePack(i,p,n) {
         if(this.packInfo.selectedId == i){
           this.packInfo.selectedId = "";
           this.packInfo.price = "0";
+          this.packInfo.name = "";
         }else{
           this.packInfo.selectedId = i;
           this.packInfo.price = p;
+          this.packInfo.name = n;
         }
       },
       //检查输入选项是否有误
@@ -255,11 +267,46 @@
         };
         return true;
       },
+      submitVote() {
+        let send_data = {
+          courseId: this.courseId,
+          userName: this.userInfo.parentName,
+          phone: this.userInfo.phone,
+          wechatNum: this.userInfo.wechat,
+          babyRealname: this.userInfo.babyName,
+          babyPetName: this.userInfo.smallName,
+          gender: this.userInfo.sex,
+          birthday: this.userInfo.birthday,
+          remark: this.userInfo.mark,
+          coursewareId: this.packInfo.selectedId,
+          couponId: this.couponId
+        };
+        console.log(send_data);
+        this.submitVoteAjax(send_data).then(res=>{
+          console.log(res);
+          if(res.status == 0) {
+            Toast("提交订单成功");
+            this.goPay();
+          }else{
+            alert("提交失败!请联系管理员")
+          }
+        }).catch(err=>{
+          cosnole.log(err);
+        })
+      },
       goPay() {
         if(this.isAccess){
           this.$router.push("/lesson/pay");
         }else{
           Toast("请阅读并同意服务条款!");
+        }
+      },
+      getCourseId() {
+        if("courseId" in this.$route.query) {
+          this.courseId = this.$route.query.courseId;
+        }else{
+          alert("没有课程id");
+          this.$router.push("/index/lesson");
         }
       }
     },
@@ -275,7 +322,7 @@
       }
     },
     computed:{
-      ...mapState("lesson",["kefuData","lessonDetial","signIndex"])
+      ...mapState("lesson",["signIndex"])
     },
     created() {
       this.checkLessonId();

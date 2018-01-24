@@ -8,11 +8,12 @@
       </mt-header>
     </div>
     <div class="container">
-      <div class="top-img" :style="{backgroundImage:`url(${lessonDetial.course.image})`}">
+      <!-- <div class="top-img" :style="{backgroundImage:`url(${lessonDetial.course.image})`}">
         <div class="filter-black">
           <h2>{{lessonDetial.course.courseName}}</h2>
         </div>
-      </div>
+      </div> -->
+      <h2 style="text-align: center;line-height: 50px;background: #fff;font-size: 16px;font-weight: 900;">{{lessonDetial.course.courseName}}</h2>
       <!--课程介绍-->
       <div class="detial-info gray-c">
         <table>
@@ -169,6 +170,7 @@
                   </ul>
                 </li>
               </ul>
+              <p style="text-align: center;color: #ccc;" v-show="!commentList.list.length">暂无评价</p>
             </div>
           </div>
         </transition>
@@ -185,465 +187,550 @@
     <mt-popup v-model="kefuShow" pop-transition="popup-fade"
               position="center">
       <div class="kefu-container">
-        <p><a :href="'tel:'+kefuData.phone"><i class="iconfont icon-dianhua"></i>可点击拨打: <span
-          class="phone">{{kefuData.phone}}</span></a></p>
-        <p><i class="iconfont icon-ren"></i>微信联系: 大白</p>
-        <p><img src="../../assets/images/code.jpg" width="60"></p>
+        <p><a :href="'tel:'+kefuData.customerService.phone"><i class="iconfont icon-dianhua"></i>可点击拨打: <span
+          class="phone">{{kefuData.customerService.phone}}</span></a></p>
+        <p><i class="iconfont icon-ren"></i>微信联系: {{kefuData.customerService.name}}</p>
+        <p><img :src="kefuData.customerService.image" width="60"></p>
       </div>
     </mt-popup>
     <my-loading :visible="loading"></my-loading>
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import Vue from "vue";
-  import {mapState, mapActions, mapMutations} from 'vuex';
-  import {Popup,Toast} from 'mint-ui';
-import { getCache } from '../../config/cache';
+import Vue from "vue";
+import { mapState, mapActions, mapMutations } from "vuex";
+import { Popup, Toast } from "mint-ui";
+import { getCache } from "../../config/cache";
 
-  Vue.component(Popup.name, Popup);
+Vue.component(Popup.name, Popup);
 
-  export default {
-    data() {
-      return {
-        index: 0,//当前显示课程介绍还是评价的定位,0是课程介绍,1是评价
-        loading: true,
-        slideType:"slide-right",
-        courseId: "",
-        kefuShow: false,//客服弹框是否显示
-        commentList: {
-          list: []
-        }
+export default {
+  data() {
+    return {
+      index: 0, //当前显示课程介绍还是评价的定位,0是课程介绍,1是评价
+      loading: true,
+      slideType: "slide-right",
+      courseId: "",
+      branchId: 1,
+      kefuShow: false, //客服弹框是否显示
+      kefuData: {
+        customerService: {}
+      },
+      lessonDetial: {
+        coachs: [],
+        course: {},
+        coursewares: [],
+        periods: []
+      },
+      commentList: {
+        list: []
+      }
+    };
+  },
+  methods: {
+    changeTab(n) {
+      this.index = n;
+    },
+    ...mapActions("lesson", [
+      "getLessonDetial",
+      "getCommentList",
+      "getKefuData"
+    ]),
+    goSign() {
+      this.$checkLogin(this.goSignDone);
+    },
+    goSignDone(done) {
+      if(done) {
+        this.$router.push({path:'/lesson/sign',query:{'courseId':this.courseId}});
       }
     },
-    methods: {
-      changeTab(n) {
-        this.index = n;
-      },
-      ...mapActions("lesson", [
-        "getLessonDetial",
-        "getCommentList",
-        "getKefuData"
-      ]),
-      getSessionId() {
-        let sId = getCache("sessionId");
-        if(sId) {
-          return true;
-        }else{
-          return false;
-        }
-      },
-      goSign() {
-       if(this.getSessionId()) {
-          this.$router.push({path:'/lesson/sign',query:{lessonId:this.lessonDetial.course.id}});
-       }else{
-         Toast({message:"未登录,请先登录!",duration: 1000})
-         setTimeout(()=>{
-           let nowUrl = encodeURIComponent(window.location.hash.substr(1));
-           this.$router.push({path:"/user/login",query:{nowUrl:nowUrl}});
-         },1000)
-       }
-      },
-      getDetialFn() {
-        this.getLessonDetial({
-          "courseId":this.$route.query.lessonId
-        }).then(res=>{
+    getDetialFn() {
+      this.getLessonDetial({
+        courseId: this.$route.query.lessonId
+      })
+        .then(res => {
+          console.log(res);
           this.loading = false;
+          if (res.status == 0) {
+            this.lessonDetial = res.data;
+          } else {
+            Toast(res.msg);
+          }
           console.log(this.lessonDetial);
-          this.getCommentFn();
-        }).catch(res=>{
+        })
+        .catch(res => {
           this.loading = false;
           Toast("网络错误");
           this.$router.push("/index/lesson");
         });
-      },
-      getCommentFn() {
-        this.getCommentList({
-          courseId: this.courseId
-        }).then(res=>{
+    },
+    getCommentFn() {
+      this.getCommentList({
+        courseId: this.courseId
+      })
+        .then(res => {
           console.log(res);
-          if(res.status == 0) {
+          if (res.status == 0) {
             this.commentList = res.data;
-          }else{
+          } else {
             Toast(res.msg);
           }
-        }).catch(err=>{
+        })
+        .catch(err => {
           Toast("网络错误!获取感悟列表失败");
           console.log(err);
         });
-      },
     },
-    computed:{
-      ...mapState("lesson",["lessonDetial","kefuData"]),
-      ...mapState(["isLogined"])
-    },
-    watch:{
-      "index"(n,o) {
-        if(n>o) {
-          this.slideType = "slide-left";
-        }else{
-          this.slideType = "slide-right";
-        }
-      }
-    },
-    created() {
-      if("lessonId" in this.$route.query) {
-        this.courseId = this.$route.query.lessonId;
-        this.getDetialFn();
-        this.getCommentFn();
-      }else{
-        alert("未知的课程id");
+    getKefuFn() {
+      this.getKefuData({
+        branchId: this.branchId,
+        type: 0
+      })
+        .then(res => {
+          console.log(res);
+          if (res.status == 0) {
+            this.kefuData = res.data;
+          } else {
+            Toast(res.msg);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          Toast("网络错误!获取客服信息失败");
+          console.log(err);
+        });
+    }
+  },
+  watch: {
+    index(n, o) {
+      if (n > o) {
+        this.slideType = "slide-left";
+      } else {
+        this.slideType = "slide-right";
       }
     }
+  },
+  created() {
+    if ("lessonId" in this.$route.query) {
+      this.courseId = this.$route.query.lessonId;
+      this.getDetialFn();
+      this.getCommentFn();
+      this.getKefuFn();
+    } else {
+      alert("未知的课程id");
+    }
   }
+};
 </script>
 <style lang="stylus">
-  #detial {
-    padding: 40px 0 50px;
-    height: auto;
-    .tab-container{
-      position: relative;
-    }
-    .lesson-detial,.lesson-comments{
-      position: absolute;
-      top: 0;
-      left: 0;
-      transition: all .5s cubic-bezier(.55, 0, .1, 1);
-      padding-bottom: 50px;
-    }
-    .container {
-      .top-img {
-        height: 6rem;
-        background-size: cover;
-        .filter-black {
-          width: 100%;
-          height: 100%;
-          background-color: rgba(0, 0, 0, .3);
-          position: relative;
-          h2 {
-            width: 100%;
-            position: absolute;
-            bottom: 10px;
-            text-align: center;
-            color: #fff;
-            font-size: 18px;
-          }
-        }
-      }
-      .detial-info {
-        padding: 10px 20px;
-        background: #fff;
-        position: relative;
-        table {
-          line-height: 20px;
-          font-size: 12px;
-          max-width: 70%;
-          i {
-            font-size: 12px;
-            margin-right: 2px;
-          }
-        }
-        .item-status {
-          position: absolute;
-          top: 10px;
-          right: 20px;
-          padding: 5px 10px;
-          color: #fff;
-          -webkit-border-radius: 5px;
-          -moz-border-radius: 5px;
-          border-radius: 5px;
-        }
-        .finish {
-          background: #f38218;
-        }
-        .signing {
-          background: #e1324a;
-        }
-        .doing {
-          background: #3cdc20;
-        }
-      }
-      .nav-tab {
+#detial {
+  padding: 40px 0 50px;
+  height: auto;
+
+  .tab-container {
+    position: relative;
+  }
+
+  .lesson-detial, .lesson-comments {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+    padding-bottom: 50px;
+  }
+
+  .container {
+    .top-img {
+      height: 6rem;
+      background-size: cover;
+
+      .filter-black {
         width: 100%;
-        overflow: hidden;
-        background: #fff;
-        .nav-group {
-          padding: 20px 10px;
-          .nav-list {
-            flex: 1 1 auto;
-            color: #9d98a0;
-            border-right: 1px solid #9d98a0;
-          }
-          .active {
-            color: #e51f22;
-          }
-          .nav-list:last-of-type {
-            border-right: none;
-          }
-        }
-      }
-      .price-box {
-        background: #fff;
-        color: #777;
-        height: 1.4rem;
-        line-height: 1.4rem;
-        padding: 0 20px;
-        .price {
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.3);
+        position: relative;
+
+        h2 {
+          width: 100%;
+          position: absolute;
+          bottom: 10px;
+          text-align: center;
+          color: #fff;
           font-size: 18px;
         }
-        .sign-group {
+      }
+    }
+
+    .detial-info {
+      padding: 10px 20px;
+      background: #fff;
+      position: relative;
+
+      table {
+        line-height: 20px;
+        font-size: 12px;
+        max-width: 70%;
+
+        i {
+          font-size: 12px;
+          margin-right: 2px;
+        }
+      }
+
+      .item-status {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        padding: 5px 10px;
+        color: #fff;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+      }
+
+      .finish {
+        background: #f38218;
+      }
+
+      .signing {
+        background: #e1324a;
+      }
+
+      .doing {
+        background: #3cdc20;
+      }
+    }
+
+    .nav-tab {
+      width: 100%;
+      overflow: hidden;
+      background: #fff;
+
+      .nav-group {
+        padding: 20px 10px;
+
+        .nav-list {
+          flex: 1 1 auto;
+          color: #9d98a0;
+          border-right: 1px solid #9d98a0;
+        }
+
+        .active {
+          color: #e51f22;
+        }
+
+        .nav-list:last-of-type {
+          border-right: none;
+        }
+      }
+    }
+
+    .price-box {
+      background: #fff;
+      color: #777;
+      height: 1.4rem;
+      line-height: 1.4rem;
+      padding: 0 20px;
+
+      .price {
+        font-size: 18px;
+      }
+
+      .sign-group {
+        ul {
+          position: relative;
+          right: 20px;
+          top: 0.2rem;
+
+          li {
+            width: 1rem;
+            height: 1rem;
+            background: url('../../assets/images/user.jpg') no-repeat;
+            -webkit-background-size: cover;
+            background-size: cover;
+            -webkit-border-radius: 50%;
+            -moz-border-radius: 50%;
+            border-radius: 50%;
+            position: absolute;
+          }
+
+          li:nth-of-type(1) {
+            z-index: 4;
+            right: 2rem;
+          }
+
+          li:nth-of-type(2) {
+            z-index: 3;
+            right: 1.2rem;
+          }
+
+          li:nth-of-type(3) {
+            z-index: 2;
+            right: 0.4rem;
+          }
+        }
+      }
+    }
+
+    .tab-container {
+      .section {
+        background: #fff;
+        padding: 10px 20px;
+
+        h2 {
+          font-size: 16px;
+
+          span {
+            padding: 3px 10px;
+            border-bottom: 1px solid #ddd;
+          }
+        }
+      }
+
+      .lesson-info {
+        ul {
+          padding: 20px 0;
+
+          li {
+            width: 30%;
+            float: left;
+            padding-top: 30%;
+            margin-right: 5%;
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 5%;
+          }
+
+          li:nth-of-type(3n) {
+            margin-right: 0;
+          }
+        }
+
+        .text {
+          line-height: 20px;
+          color: #777;
+        }
+      }
+
+      .date-info {
+        .content {
+          padding: 20px 0;
+
           ul {
-            position: relative;
-            right: 20px;
-            top: .2rem;
             li {
-              width: 1rem;
-              height: 1rem;
-              background: url(../../assets/images/user.jpg) no-repeat;
-              -webkit-background-size: cover;
-              background-size: cover;
-              -webkit-border-radius: 50%;
-              -moz-border-radius: 50%;
-              border-radius: 50%;
-              position: absolute;
+              width: 50%;
+              background: #33b9f6;
+              color: #fff;
+              float: left;
+              padding: 10px 0;
+              text-align: center;
+              margin-bottom: 10px;
+
+              p {
+                line-height: 25px;
+
+                .h1 {
+                  font-size: 20px;
+                  margin-right: 10px;
+                }
+
+                i {
+                  font-size: 12px;
+                  margin-right: 5px;
+                }
+              }
             }
-            li:nth-of-type(1) {
-              z-index: 4;
-              right: 2rem;
+
+            li:nth-of-type(2n+1) {
+              -webkit-border-top-left-radius: 10px;
+              -moz-border-top-left-radius: 10px;
+              border-top-left-radius: 10px;
+              -webkit-border-bottom-left-radius: 10px;
+              -moz-border-bottom-left-radius: 10px;
+              border-bottom-left-radius: 10px;
+
+              p {
+                &::after {
+                  display: block;
+                  float: right;
+                  content: '';
+                  width: 1px;
+                  height: 28px;
+                  background: #ddd;
+                }
+              }
             }
-            li:nth-of-type(2) {
-              z-index: 3;
-              right: 1.2rem;
-            }
-            li:nth-of-type(3) {
-              z-index: 2;
-              right: .4rem;
+
+            li:nth-of-type(2n) {
+              -webkit-border-top-right-radius: 10px;
+              -moz-border-top-right-radius: 10px;
+              border-top-right-radius: 10px;
+              -webkit-border-bottom-right-radius: 10px;
+              -moz-border-bottom-right-radius: 10px;
+              border-bottom-right-radius: 10px;
             }
           }
         }
       }
-      .tab-container {
-        .section {
-          background: #fff;
-          padding: 10px 20px;
-          h2 {
-            font-size: 16px;
-            span {
-              padding: 3px 10px;
-              border-bottom: 1px solid #ddd;
-            }
-          }
-        }
-        .lesson-info {
-          ul {
-            padding: 20px 0;
-            li {
-              width: 30%;
-              float: left;
-              padding-top: 30%;
-              margin-right: 5%;
-              background-size: cover;
-              background-position: center;
-              margin-bottom: 5%;
-            }
-            li:nth-of-type(3n) {
-              margin-right: 0;
-            }
-          }
-          .text {
-            line-height: 20px;
-            color: #777;
-          }
-        }
-        .date-info {
-          .content {
-            padding: 20px 0;
-            ul {
-              li {
-                width: 50%;
-                background: #33b9f6;
-                color: #fff;
-                float: left;
-                padding: 10px 0;
-                text-align: center;
-                margin-bottom: 10px;
-                p {
-                  line-height: 25px;
-                  .h1 {
-                    font-size: 20px;
-                    margin-right: 10px;
-                  }
-                  i {
-                    font-size: 12px;
-                    margin-right: 5px;
-                  }
+
+      .pack-info {
+        .content {
+          padding: 20px 0;
+
+          .pack-box {
+            .item {
+              .head {
+                .index {
+                  text-align: center;
+                  font-size: 20px;
+                  background: #33b9f6;
+                  padding: 3px 25px;
+                  color: #fff;
+                  -webkit-border-radius: 5px;
+                  -moz-border-radius: 5px;
+                  border-radius: 5px;
                 }
-              }
-              li:nth-of-type(2n+1) {
-                -webkit-border-top-left-radius: 10px;
-                -moz-border-top-left-radius: 10px;
-                border-top-left-radius: 10px;
-                -webkit-border-bottom-left-radius: 10px;
-                -moz-border-bottom-left-radius: 10px;
-                border-bottom-left-radius: 10px;
-                p {
-                  &::after {
-                    display: block;
-                    float: right;
-                    content: "";
-                    width: 1px;
-                    height: 28px;
-                    background: #ddd;
+
+                .price {
+                  color: #33b9f6;
+
+                  span {
+                    font-size: 20px;
                   }
                 }
               }
 
-              li:nth-of-type(2n) {
-                -webkit-border-top-right-radius: 10px;
-                -moz-border-top-right-radius: 10px;
-                border-top-right-radius: 10px;
-                -webkit-border-bottom-right-radius: 10px;
-                -moz-border-bottom-right-radius: 10px;
-                border-bottom-right-radius: 10px;
-              }
-            }
-          }
-        }
-        .pack-info {
-          .content {
-            padding: 20px 0;
-            .pack-box {
-              .item {
-                .head {
-                  .index {
-                    text-align: center;
-                    font-size: 20px;
-                    background: #33b9f6;
-                    padding: 3px 25px;
-                    color: #fff;
-                    -webkit-border-radius: 5px;
-                    -moz-border-radius: 5px;
-                    border-radius: 5px;
-                  }
-                  .price {
-                    color: #33b9f6;
-                    span {
-                      font-size: 20px;
+              ul {
+                padding: 10px 20px;
 
-                    }
-                  }
-                }
-                ul {
-                  padding: 10px 20px;
-                  li {
-                    list-style: disc;
-                    line-height: 24px;
-                    color: #777;
-                  }
+                li {
+                  list-style: disc;
+                  line-height: 24px;
+                  color: #777;
                 }
               }
             }
           }
         }
-        .teacher-info {
-          .content {
-            padding: 20px 0px;
-            .group {
-              .item {
-                padding: 10px 0;
-                .left {
-                  width: 30%;
-                  .img {
-                    width: 2.4rem;
-                    height: 2.4rem;
-                    background-size: cover;
-                    -webkit-border-radius: 50%;
-                    -moz-border-radius: 50%;
-                    border-radius: 50%;
-                  }
-                }
-                .right {
-                  width: 70%;
-                  h1 {
-                    font-size: 20px;
-                  }
-                  .age {
-                    color: #33b9f6;
-                    line-height: 30px;
-                  }
-                  .text {
-                    font-size: 12px;
-                    color: #777;
-                    line-height: 18px;
-                  }
-                }
-              }
-            }
-          }
-        }
-      //        评论区域
-        .comments {
+      }
+
+      .teacher-info {
+        .content {
+          padding: 20px 0px;
+
           .group {
             .item {
-              margin-bottom: 10px;
-              border-bottom: 1px solid #ddd;
-              p {
-                color: #777;
-                line-height: 20px;
-              }
-              .head-box {
-                .head {
-                  display: block;
-                  background-image: url(http://lxlin.top/test/img/1.jpg);
-                  width: 1.5rem;
-                  height: 1.5rem;
+              padding: 10px 0;
+
+              .left {
+                width: 30%;
+
+                .img {
+                  width: 2.4rem;
+                  height: 2.4rem;
                   background-size: cover;
+                  -webkit-border-radius: 50%;
+                  -moz-border-radius: 50%;
                   border-radius: 50%;
-                  margin: 0 auto;
                 }
               }
-              .date {
-                color: #33b9f6;
-              }
-              .img-group {
-                padding: 10px 0;
-                .img-list {
-                  width: 30%;
-                  padding-top: 30%;
-                  -webkit-background-size: cover;
-                  background-size: cover;
-                  background-position: center;
-                  margin-right: 5%;
-                  margin-bottom: 10px;
+
+              .right {
+                width: 70%;
+
+                h1 {
+                  font-size: 20px;
                 }
-                .img-list:nth-of-type(3n) {
-                  margin-right: 0;
+
+                .age {
+                  color: #33b9f6;
+                  line-height: 30px;
+                }
+
+                .text {
+                  font-size: 12px;
+                  color: #777;
+                  line-height: 18px;
                 }
               }
             }
           }
         }
       }
-    }
-    .mint-popup {
-      width: 90%;
-      margin: 0 auto;
-      border-radius: 10px;
-      -webkit-border-radius: 10px;
-      -moz-border-radius: 10px;
-      overflow: hidden;
-    }
-  }
 
-  .kefu-container {
-    background: #fff;
-    padding: 40px 0;
-    p {
-      color: #777;
-      line-height: 40px;
-      text-align: center;
-      i {
-        margin-right: 10px;
+      .comments {
+        .group {
+          .item {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+
+            p {
+              color: #777;
+              line-height: 20px;
+            }
+
+            .head-box {
+              .head {
+                display: block;
+                background-image: url('http://lxlin.top/test/img/1.jpg'); // lxlin.top/test/img/1.jpg);
+                width: 1.5rem;
+                height: 1.5rem;
+                background-size: cover;
+                border-radius: 50%;
+                margin: 0 auto;
+              }
+            }
+
+            .date {
+              color: #33b9f6;
+            }
+
+            .img-group {
+              padding: 10px 0;
+
+              .img-list {
+                width: 30%;
+                padding-top: 30%;
+                -webkit-background-size: cover;
+                background-size: cover;
+                background-position: center;
+                margin-right: 5%;
+                margin-bottom: 10px;
+              }
+
+              .img-list:nth-of-type(3n) {
+                margin-right: 0;
+              }
+            }
+          }
+        }
       }
     }
   }
+
+  .mint-popup {
+    width: 90%;
+    margin: 0 auto;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    overflow: hidden;
+  }
+}
+
+.kefu-container {
+  background: #fff;
+  padding: 40px 0;
+
+  p {
+    color: #777;
+    line-height: 40px;
+    text-align: center;
+
+    i {
+      margin-right: 10px;
+    }
+  }
+}
 </style>

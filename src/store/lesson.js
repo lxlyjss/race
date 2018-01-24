@@ -33,22 +33,7 @@ export default {
     formatBranchList:{},
     branchList:{
       list:[]
-    },
-    lessonDetial:{//因为课程详情里的信息很多地方需要用到,所以这里需要全局储存课程详情
-      course:{
-        signList: [],//已报名列表
-      },
-      periods: [],//课程日期表
-      coursewares: [],//课件包
-      coachs: []//教练列表
-    },
-    kefuData:{//客服信息其他页面内也需要,所以也储存
-
-    },
-    myLessonList:{//全局储存我的课程数据
-      list:[],
-    },
-    classShow:[]//储存课时详情是否显示
+    }
   },
   getters:{
 
@@ -58,28 +43,9 @@ export default {
     changeLessonType(state, res) {
       state.lessonType = res;
     },
-    setKefuData(state, res){
-      state.kefuData = res;
-    },
-    //存储课程详情
-    setLessonDetial(state, res) {
-      state.lessonDetial = res;
-    },
     //改变报名当前步骤
     changeSignIndex(state, res) {
       state.signIndex = res;
-    },
-    //设置我的课程列表
-    setMyLessonList(state, res) {
-      state.myLessonList = res;
-      if(res.list) {
-        for(let i = 0;i< res.list.length;i++){
-          state.classShow.push({show:i==0?true:false})
-        }
-      }
-    },
-    changeClassShow(state, key) {
-      state.classShow[key].show = !state.classShow[key].show;
     },
     setBranchList(state, res) {
       state.branchList = res;
@@ -121,7 +87,6 @@ export default {
     //获取课程详情
     async getLessonDetial(context,data) {
       let res = await fetch("get","getLessonDetial",data);
-      context.commit("setLessonDetial",res.data);
       return res;
     },
     //获取评价列表
@@ -130,9 +95,9 @@ export default {
       return res;
     },
     //获取客服信息
-    async getKefuData(context) {
-      let res = await fetch("post","getKefuData");
-      context.commit("setKefuData",res);
+    async getKefuData(context, data) {
+      let res = await fetch("post", "getKefuData", data);
+      return res;
     },
     //获取评价页面标签列表
     async getTagList(context,data) {
@@ -157,6 +122,13 @@ export default {
       let res;
       res = await fetch("post","getMyLessonList");
       return res;
-    }
+    },
+    //提交订单
+    async submitVoteAjax(context, data) {
+      let res;
+      res = await fetch("post", "createVotes",data);
+      return res;
+    },
+    
   }
 }

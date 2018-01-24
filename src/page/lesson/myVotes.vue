@@ -1,7 +1,7 @@
 <template>
   <div id="myVotes" class="bs">
     <div class="header">
-      <mt-header title="我的课程" fixed>
+      <mt-header title="我的订单" fixed>
         <router-link to="/index/user" slot="left">
           <mt-button icon="back">返回</mt-button>
         </router-link>
@@ -58,9 +58,7 @@
   export default {
     data() {
       return {
-        listImg: require("../../assets/images/lesson-img.jpg"),
-        courseId: "",
-        userId:""
+        listImg: require("../../assets/images/lesson-img.jpg")
       }
     },
     methods: {
@@ -75,13 +73,6 @@
         }).catch(err=>{
           console.log(err);
         });
-      },
-      getCourseIdFn() {
-        if("userId" in this.$route.query) {
-          this.userId = this.$router.query.userId;
-        }else{
-          alert("数据错误,请联系管理员");
-        }
       }
     },
     computed:{
@@ -91,7 +82,6 @@
       classInfo
     },
     created() {
-      this.getCourseIdFn();
     }
   }
 </script>

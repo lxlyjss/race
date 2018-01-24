@@ -28,19 +28,17 @@ Vue.prototype.$checkLogin = (fn) =>{
   });
   let self = this;
   let token = getCache("access_token");
-  let sessionId = getCache("sessionId");
   if(token){
     axios.get("open/isLogin",{
       params:{
-        token: token,
-        sessionId: sessionId
+        token: token
       }
     }).then(res=>{
       Indicator.close();
       console.log(res.data);
       if(res.data.status == 0) {
         if(res.data.data.result === 0) {//登录成功之后
-          fn();
+          fn(1);
         }else{
           //登录已过期;
           Toast({message:"登录已过期,请重新登录!",duration: 1000})

@@ -41,7 +41,7 @@
               <span><i class="iconfont icon-riqi"></i>课时详情 <i class="iconfont icon-icon2"></i></span>
             </div>
           </div>
-          <div class="classInfo-box">
+          <div class="classInfo-box" v-show="showData[key]">
             <transition name="slide-down">
               <class-info :index="key" :classInfo="item.classInfo" :classLeave="item.classLeave"></class-info>
             </transition>
@@ -58,6 +58,7 @@
 <script type="text/ecmascript-6">
   import classInfo from '@/components/classInfo';
   import {mapState, mapActions, mapMutations} from "vuex";
+import myVotesVue from './myVotes.vue';
 
   export default {
     data() {
@@ -65,22 +66,30 @@
         listImg: require("../../assets/images/lesson-img.jpg"),
         myLessonList:{
           list:[]
-        }
+        },
+        showData:{}
       }
     },
     methods: {
       ...mapActions("lesson",["getMyLessonList"]),
-      getListFn() {
+      getListFn() {   //获取课程列表
         this.getMyLessonList().then(res=>{
           console.log(res);
           this.myLessonList = res.data;
+          this.setShowData(this.myLessonList);
         }).catch(err=>{
           console.log(err);
         });
+      },
+      setShowData(data) {   //设置显示与隐藏的数据
+        for(let i = 0; i < data.list.length;i++) {
+          this.showData[i] = false;
+        }
+        console.log(this.showData);
+      },
+      changeClassShow(i) {
+        this.showData[i] = !this.showData[i];
       }
-    },
-    computed:{
-      ...mapState("lesson",["classShow"]),
     },
     components: {
       classInfo

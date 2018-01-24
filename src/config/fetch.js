@@ -16,7 +16,7 @@ const ajaxURL = {
   getLessonList: "open/course/courses",//获取课程列表
   getLessonDetial: "open/course/courseInfo",//获取课程详情
   getCommentList:"/open/graduation/perceptions",//获取评论列表
-  getKefuData:"lessonDatas/kefu.json",//获取客服信息
+  getKefuData:"open/customerService/getCustomer",//获取客服信息
   getBranchList: "open/organization/organizations",//获取省份和分部列表
   hasOtherVote: "open/order/unpaid",//是否还有未支付的订单
   getMyCoupons: "open/coupon/myCoupons",//优惠券列表
@@ -24,6 +24,8 @@ const ajaxURL = {
   getTagList:"/open/label/labels",
   getHistoryCommentList:"/open/graduation/evaluates",
   sendComment: "open/graduation/saveEvaluation",
+  //订单相关
+  createVotes: "/open/order/createOrder",
   //上传图片删除图片相关接口
   uploadImg: "upload/image",
   deleteImg: "upload/delImage",

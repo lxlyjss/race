@@ -25,7 +25,6 @@
         </p>
       </li>
     </ul>
-    <a href="http://baqidemazha.imwork.net:30229/ucenter/aliPay/pay?orderNum=1234567&branchId=1">支付</a>
     <div class="pay-content" v-html="htmlData">
 
     </div>
@@ -55,18 +54,7 @@
     },
     methods:{
       gopay() {
-        axios.get("http://baqidemazha.imwork.net:30229/ucenter/aliPay/pay",{
-            params:{
-              orderNum: 123456,
-              branchId: 1
-            }
-          }
-        ).then(res=>{
-          this.htmlData = res.data;
-          console.log(res);
-        }).catch(res=>{
-          console.log(res)
-        })
+        this.$router.push("/lesson/payResult")
       }
     }
   }

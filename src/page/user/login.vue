@@ -5,6 +5,7 @@
         <span @click="$router.goBack()" slot="left">
           <mt-button icon="back">返回</mt-button>
         </span>
+        <mt-button class="iconfont icon-home1" @click="$router.push('/index/lesson')" slot="right"></mt-button>
       </mt-header>
     </div>
     <div class="container">
@@ -44,6 +45,7 @@
 <script type="text/ecmascript-6">
   import { mapState,mapMutations,mapActions } from "vuex";
   import {Toast,Indicator} from "mint-ui"
+  import {setCache} from "../../config/cache"
   export default {
     data() {
       return {
@@ -88,6 +90,14 @@
 
       },
       login() {
+        if(this.loginInfo.phone == "") {
+          Toast("请输入用户名!");
+          return;
+        }
+        if(this.loginInfo.password == "") {
+          Toast("请输入密码!");
+          return;
+        }
         Indicator.open({
           spinnerType: 'fading-circle',
           text:"登录中..."
@@ -96,6 +106,9 @@
           console.log(res);
           Indicator.close();
           if(res.status == 0) {
+            setCache("access_token", res.data.token);
+            setCache("sessionId", res.data.sessionId);
+            setCache("user", JSON.stringify(res.data.user));
             if("nowUrl" in this.$route.query) {
               this.isBack = true;
               this.$router.push(decodeURIComponent(this.$route.query.nowUrl));
@@ -109,7 +122,6 @@
             });
           }
         }).catch(res=>{
-          console.log(res)
           Indicator.close();
           Toast("网络出错")
         });

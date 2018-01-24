@@ -19,13 +19,14 @@
         </p>
         <p class="alert-info" v-show="alertInfo.pLength">*手机号码位数不足11位</p>
         <p class="alert-info" v-show="alertInfo.pKong">*请输入手机号码</p>
+        <p class="alert-info" v-show="alertInfo.pHas">*该手机已被注册过,请换另一个手机号码</p>
         <p class="input-box clear">
           <input type="number" oninput="if(value.length>6)value=value.slice(0,6)" class="fl code-input" v-model="findInfo.code" @blur="checkCode" placeholder="输入验证码" />
           <span class="get-code fr" @click="getCode" v-show="codeInfo.unclick">{{codeInfo.codeText}}</span>
           <span class="get-code fr get-code-gray" v-show="!codeInfo.unclick">{{codeInfo.codeTime}} s</span>
         </p>
         <p class="alert-info" v-show="alertInfo.codeError">*请输入6位数验证码</p>
-        <p class="login-btn red-btn" @click="index=2">
+        <p class="login-btn red-btn" @click="bindFun">
           <span>确认绑定</span>
         </p>
       </div>
@@ -33,6 +34,8 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import {mapActions} from "vuex";
+  import {Toast,Indicator} from "mint-ui"
   export default {
     data() {
       return {
@@ -50,11 +53,13 @@
         alertInfo:{
           pLength: false,//手机号长度错误
           pKong: false,//手机号是否为空
-          codeError: false//验证码位数错误
+          codeError: false,//验证码位数错误
+          pHas: false
         }
       }
     },
     methods:{
+      ...mapActions("user",["getCodeAjax","checkPhoneHasReg","userBindPhone"]),
       checkPhone() {
         if(this.findInfo.phone.length < 11 && this.findInfo.phone.length > 0){
           this.alertInfo.pLength = true;
@@ -90,13 +95,50 @@
       },
       //点击获取验证码
       getCode() {
+        if(this.findInfo.phone == "") {
+          Toast({
+            message: "请输入手机号码",
+            duration: 1000
+          });
+          return;
+        }
+        // if(this.alertInfo.pHas) {
+        //   return;
+        // }
         this.sendCode();
         this.codeInfo.unclick = false;
         this.seconds();
       },
       //发送手机验证码函数
       sendCode() {
-
+        Indicator.open({
+          spinnerType: 'fading-circle',
+          text:"发送中..."
+        });
+        this.getCodeAjax({
+          "phone":this.findInfo.phone,
+          "type": 1
+        }).then(res=>{
+          console.log(res);
+          Indicator.close()
+          if(res.status == 0) {
+            this.seconds();
+            this.codeInfo.unclick = false;
+            Toast({
+              message: "验证码已成功发送至您手机",
+              duration: 1000
+            });
+          }else{
+            Toast({
+              message: res.msg,
+              duration: 1000
+            })
+          }
+        }).catch(res=>{
+          console.log(res);
+          Indicator.close();
+          Toast("网络出错")
+        });
       },
       //60秒倒计时函数
       seconds() {
@@ -128,11 +170,15 @@
         return true;
       },
       //点击注册按钮
-      findFun() {
-        console.log(this.alertInfo);
+      bindFun() {
+        console.log(this.findInfo);
         if(this.checkAll()){//检查所有数据都通过
           //调用绑定接口
-          alert("绑定成功");
+          this.userBindPhone(this.findInfo).then(res=>{
+            console.log(res);
+          }).catch(err=>{
+            console.log(err)
+          })
         }else{
           alert("信息填写有误");
         }
@@ -147,6 +193,22 @@
       "findInfo.phone"(n,o) {
         if(n.length == 11){
           this.alertInfo.pLength = false;
+          this.checkPhoneHasReg({
+            "phone": this.findInfo.phone
+          }).then(res=>{
+            console.log(res);
+            if(res.status == 0) {
+              //判断手机号码有没有被注册过,0是有,1是没有
+              if(res.data.hasUser == 0) {
+                this.alertInfo.pHas = true;
+              }else{
+                this.alertInfo.pHas = false;
+              }
+            }
+          }).catch(res=>{
+            console.log(res);
+            Toast("网络出错")
+          });
         }
         if(n.length > 0){
           this.alertInfo.pKong = false;

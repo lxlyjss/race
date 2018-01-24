@@ -1,5 +1,5 @@
 <template>
-  <div id="myLesson" class="bs">
+  <div id="myVotes" class="bs">
     <div class="header">
       <mt-header title="我的课程" fixed>
         <router-link to="/index/user" slot="left">
@@ -43,12 +43,8 @@
           </div>
           <div class="classInfo-box">
             <transition name="slide-down">
-              <class-info :index="key" :classInfo="item.classInfo" :classLeave="item.classLeave"></class-info>
+              <class-info :index="key" v-show="classShow[key].show"></class-info>
             </transition>
-          </div>
-          <div class="comment-btn" @click="$router.push({path:'/lesson/comment',query:{'courseId': item.id}})">
-            <i class="iconfont icon-liaotian1"></i>
-            课后评价
           </div>
         </li>
       </ul>
@@ -63,30 +59,39 @@
     data() {
       return {
         listImg: require("../../assets/images/lesson-img.jpg"),
-        myLessonList:{
-          list:[]
-        }
+        courseId: "",
+        userId:""
       }
     },
     methods: {
       ...mapActions("lesson",["getMyLessonList"]),
+      ...mapMutations("lesson",["changeClassShow"]),
       getListFn() {
-        this.getMyLessonList().then(res=>{
+        this.getMyLessonList({
+          courseId: this.courseId,
+          userId: this.userId
+        }).then(res=>{
           console.log(res);
-          this.myLessonList = res.data;
         }).catch(err=>{
           console.log(err);
         });
+      },
+      getCourseIdFn() {
+        if("userId" in this.$route.query) {
+          this.userId = this.$router.query.userId;
+        }else{
+          alert("数据错误,请联系管理员");
+        }
       }
     },
     computed:{
-      ...mapState("lesson",["classShow"]),
+      ...mapState("lesson",["myLessonList","classShow"]),
     },
     components: {
       classInfo
     },
     created() {
-      this.getListFn();
+      this.getCourseIdFn();
     }
   }
 </script>
@@ -96,7 +101,7 @@
     -webkit-transform: translate(0, -100%);
     transform: translate(0, -100%);
   }
-  #myLesson {
+  #myVotes {
     padding: 40px 0 50px;
     .container {
       background: #fff;
@@ -106,19 +111,9 @@
       height: auto;
       overflow: hidden;
     }
-    .comment-btn{
-      text-align: center;
-      background: red;
-      color: #fff;
-      line-height: 40px;
-      width: 150px;
-      margin: 0 auto;
-      border-radius: 5px;
-    }
     .group {
       .item {
         position: relative;
-        background: #f7f7f7;
         .img {
           width: 100%;
           height: 4rem;

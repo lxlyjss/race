@@ -125,32 +125,38 @@ export default {
       return res;
     },
     //获取评价列表
-    async getCommentList(context) {
-      let res = await fetch("get","getCommentList");
+    async getCommentList(context,data) {
+      let res = await fetch("get","getCommentList",data);
       return res;
     },
     //获取客服信息
     async getKefuData(context) {
-      let res = await fetch("get","getKefuData");
+      let res = await fetch("post","getKefuData");
       context.commit("setKefuData",res);
     },
     //获取评价页面标签列表
-    async getTagList(context) {
+    async getTagList(context,data) {
       let res;
-      res = await fetch("get","getTagList");
+      res = await fetch("post","getTagList",data);
       return res;
     },
     //获取评价页面历史评价
-    async getHistoryComment(context) {
+    async getHistoryComment(context,data) {
       let res;
-      res = await fetch("get","getHistoryCommentList");
+      res = await fetch("post","getHistoryCommentList",data);
+      return res;
+    },
+    //提交评价
+    async submitComment(context, data) {
+      let res;
+      res = await fetch("post", "sendComment", data);
       return res;
     },
     //获取我的课程信息
     async getMyLessonList(context) {
       let res;
-      res = await fetch("get","getMyLessonList");
-      context.commit("setMyLessonList",res.data);
+      res = await fetch("post","getMyLessonList");
+      return res;
     }
   }
 }

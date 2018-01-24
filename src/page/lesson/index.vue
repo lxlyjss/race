@@ -46,6 +46,7 @@
   import lessonList from '@/components/lessonList'
   import {Swipe, SwipeItem, TabContainer, TabContainerItem, Popup, Picker} from 'mint-ui';
   import Vue from 'vue';
+import { setCache,getCache } from '../../config/cache';
 
   Vue.component(Swipe.name, Swipe);
   Vue.component(SwipeItem.name, SwipeItem);
@@ -94,6 +95,10 @@
           this.setBranchData({type:"branch",value:this.branchData.tempBranch});
           this.setBranchData({type:"branchId",value:this.getPFCode(this.branchList.list,this.branchData.branch)});
           console.log(this.branchData);
+          setCache("branchData",JSON.stringify({
+            "branch":this.branchData.branch,
+            "branchId": this.branchData.branchId
+          }))
         }
       },
       setProvienceArr(list) {//将省份和分部列表存储;
@@ -138,6 +143,13 @@
           console.log("formatData不是数组类型")
         }
         return code;
+      },
+      setBranchFn() {
+        let branchData = JSON.parse(getCache("branchData"));
+        if(branchData) {
+          this.setBranchData({type:"branch",value:branchData.branch});
+          this.setBranchData({type:"branchId",value:branchData.branchId});
+        }
       }
     },
     watch: {
@@ -147,6 +159,7 @@
     },
     created() {
       this.changeTab(this.lessonType);
+      this.setBranchFn();
       //获取固定首页数据
       this.getIndexData({
         "branchId": 1,
@@ -165,7 +178,7 @@
         this.setFormatBranch(this.setProvienceArr(this.branchList.list));
         this.setSlotsByLxl(this.setSlotsValues(this.formatBranchList));
         console.log(this.formatBranchList);
-      })
+      });
     }
   }
 </script>
@@ -188,6 +201,7 @@
         text-align: center;
         max-width: 4rem;
         padding: 0 13px;
+        min-width: 4rem;
         .city {
           color: #26a2ff;
         }

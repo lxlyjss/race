@@ -58,7 +58,6 @@
           this.changeIsWechat(false);
         }
       }
-      console.log(this.isPc,this.isWechat);
     }
   }
 </script>

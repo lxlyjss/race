@@ -5,6 +5,7 @@
         <router-link to="/index/user" slot="left">
           <mt-button icon="back">返回</mt-button>
         </router-link>
+        <mt-button class="iconfont icon-home1" @click="$router.push('/index/lesson')" slot="right"></mt-button>
       </mt-header>
     </div>
     <div class="container">

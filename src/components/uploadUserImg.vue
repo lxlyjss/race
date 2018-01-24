@@ -2,9 +2,6 @@
   <div id="clipPhoto">
     <div class="header">
       <mt-header title="裁剪上传图片" fixed>
-        <span @click="goUserInfo" slot="left">
-          <mt-button icon="back">返回</mt-button>
-        </span>
       </mt-header>
     </div>
     <div id="clipArea"></div>
@@ -12,8 +9,8 @@
       <span id="chooseBtn" @click="chooseImg">选择图片</span>
     </div>
     <div class="btn-group">
-      <input type="file" id="file" style="display: none;">
-      <span class="btn cancle" @click="goUserInfo">取消</span>
+      <input type="file" id="file" accept="image/*" style="display: none;">
+      <span class="btn cancle" @click="returnUserInfo">取消</span>
       <span class="btn red-btn" id="clipBtn" >确定并上传</span>
     </div>
   </div>
@@ -24,12 +21,8 @@
   import {mapState,mapMutations, mapActions} from "vuex";
 
   export default {
-    data() {
-      return {}
-    },
     methods: {
       ...mapActions(["uploadImgAjax"]),
-      ...mapMutations("user",["setUserPhotoUrl"]),
       //图片裁剪初始化
       photoClipFun() {
         let self = this;
@@ -51,25 +44,30 @@
           },
           //确认裁剪
           done: function (dataURL) {
-            Indicator.open({
-              spinnerType: "fading-circle"
-            });
-            self.uploadImgAjax({img: dataURL}).then(res=>{
+            Indicator.open({spinnerType: "fading-circle"});
+            self.uploadImgAjax({image: dataURL}).then(res=>{
               Indicator.close();
               console.log(res)
-              Toast({
-                message:"上传成功!",
-                duration: 5000
-              });
-              self.setUserPhotoUrl(res.data.picture.imageUrl);
-              self.goUserInfo();
+              if(res.status===0) {
+                Toast({
+                  message:"上传成功!",
+                  duration: 2000
+                });
+                self.$emit("changeImgUrl", res.data.picture.imageUrl);
+                self.returnUserInfo();
+              }else{
+                Toast({
+                  message:res.msg,
+                  duration: 2000
+                });
+              }
             }).catch(res=>{
-              console.log("接口错误")
+              Toast({
+                message:"网络错误",
+                duration: 2000
+              });
               Indicator.close();
             });
-            //测试
-            //self.setUserPhotoUrl(dataURL);
-            //self.goUserInfo();
           },
           fail: function (msg) {
             alert(msg);
@@ -79,10 +77,8 @@
       chooseImg() {
         document.getElementById("file").click();
       },
-      //返回用户资料页面
-      goUserInfo() {
-        this.$router.isBack = true;
-        this.$router.push("/user/userInfo");
+      returnUserInfo() {
+        this.$emit("changeTabIndex", 0);
       }
     },
     mounted() {

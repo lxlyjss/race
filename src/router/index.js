@@ -19,6 +19,7 @@ import lessonPay from '@/page/lesson/pay'
 import payResult from '@/page/lesson/payResult'
 import classInfo from '@/page/lesson/classInfo'
 import myLesson from '@/page/lesson/myLesson'
+import myVotes from '@/page/lesson/myVotes'
 import search from '@/page/lesson/search'
 import comment from '@/page/lesson/comment'
 
@@ -31,7 +32,6 @@ import login from '@/page/user/login'
 import register from '@/page/user/register'
 import findPw from '@/page/user/findPw'
 import uploadUserImg from '@/components/uploadUserImg'
-import uploadBabyImg from '@/components/uploadBabyImg'
 import bindPhone from '@/page/user/bindPhone'
 
 Router.prototype.goBack = function (){
@@ -119,6 +119,11 @@ let lessonRoute = [
     component: myLesson
   },
   {
+    path: '/lesson/myVotes',
+    name: 'myVotes',
+    component: myVotes
+  },
+  {
     path: '/lesson/search',
     name: 'search',
     component: search
@@ -171,11 +176,6 @@ let userRoute = [
     path: '/user/userInfo/uploadUserImg',
     name: 'uploadUserImg',
     component: uploadUserImg,
-  },
-  {
-    path: '/user/userInfo/uploadBabyImg',
-    name: 'uploadBabyImg',
-    component: uploadBabyImg,
   },
   {
     path: '/user/userInfo/bindPhone',

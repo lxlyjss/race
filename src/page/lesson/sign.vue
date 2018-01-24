@@ -34,20 +34,20 @@
             </div>
             <div class="gift-container">
               <ul class="gift-box">
-                <li class="list-item" v-for="(item,key) in lessonDetial.classPack" :key="key">
+                <li class="list-item" v-for="(item,key) in lessonDetial.coursewares" :key="key">
                   <p>
                     <span @click="changePack(item.id,item.price)">
                       <span class="checkbox"><i class="iconfont icon-icon1" v-if="packInfo.selectedId==item.id"></i></span>
-                      <span class="title">{{item.title}}</span>
+                      <span class="title">{{item.giftName}}</span>
                     </span>
                     <span class="fr">
-                      优惠价￥<span class="price">{{item.price/100}}</span>
+                      优惠价￥<span class="price">{{item.price}}</span>
                     </span>
                   </p>
                   <ul class="gift-group dflex">
-                    <li class="gift-list" v-for="(item1,key1) in item.item">
+                    <li class="gift-list" v-for="(item1,key1) in item.goods" :key="key1">
                       <p class="img">
-                        <img :src="item1.img">
+                        <img :src="item1.image">
                       </p>
                       <p class="info tc">{{item1.price}} {{item1.title}}</p>
                     </li>

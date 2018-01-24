@@ -4,8 +4,8 @@
       <div class="black"></div>
       <div class="user-box" >
         <div class="user-text">
-          <p class="txt-dian">{{userInfo.nickName}}</p>
-          <div class="user-img" @click="$router.push('/user/userInfo')" :style="{backgroundImage: 'url('+userInfo.headImg+')'}">
+          <p class="txt-dian">{{userInfo.nickname}}</p>
+          <div class="user-img" @click="$router.push('/user/userInfo')" :style="{backgroundImage: 'url('+userInfo.userImage+')'}">
             <i class="iconfont icon-edit"></i>
           </div>
         </div>
@@ -24,7 +24,7 @@
           </div>
           <p>我的课程</p>
         </li>
-        <li class="group-list">
+        <li class="group-list" @click="$router.push({path:'/lesson/myVotes',query:{userId: userInfo.id}})">
           <div class="img-icon">
             <i class="iconfont icon-liebiao9"></i>
           </div>
@@ -49,32 +49,29 @@
       <span>我的赛事</span>
       <i class="iconfont icon-arrow fr"></i>
     </p>
-    <section class="my-race">
-
-    </section>
+    <section class="my-race"></section>
     <p class="title" style="color: #ccc;">
       <i class="iconfont icon-gouwu"></i>
       <span>我的商品</span>
       <i class="iconfont icon-arrow fr"></i>
     </p>
-    <section class="my-shop">
-
-    </section>
-    <div v-show="!isLogined" class="blank-div"></div>
+    <section class="my-shop"></section>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import {Toast} from "mint-ui"
-  import {mapState,mapActions} from 'vuex'
+  import {mapState,mapActions,mapMutations} from 'vuex'
+  import {getCache,setCache} from "../../config/cache"
   import axios from "axios";
   export default {
     data() {
       return {
-        userImg:require("../../assets/images/userImg.jpg")
+        userImg:require("../../assets/images/userImg.jpg"),
       }
     },
     methods:{
       ...mapActions("user",['getUserInfo']),
+      ...mapMutations("user",["setUserInfo"]),
       text() {
         axios.get("ucenter/manage/coupon/coupons",{
           params:{
@@ -87,22 +84,30 @@
         }).catch(res=>{
           console.log("失败"+res)
         })
+      },
+      //获取用户数据
+      getUserData() {
+        this.getUserInfo().then(res=>{
+          console.log(res);
+          if(res.status === 0) {
+            if(res.data.result === 0) {
+              this.setUserInfo(res.data.user);
+              setCache("user", JSON.stringify(res.data.user));
+            }else{
+              Toast(res.msg);
+            }
+          }else{
+            Toast(res.msg);
+            this.$router.push("/user/login")
+          }
+        });
       }
     },
     computed:{
-      ...mapState("user",['userInfo']),
-      ...mapState(["isLogined"])
+      ...mapState("user",['userInfo'])
     },
     created() {
-      if(this.isLogined){
-        this.getUserInfo();
-      }else{
-        Toast({message:"未登录,请先登录!",duration: 1000})
-        setTimeout(()=>{
-          let nowUrl = encodeURIComponent(window.location.hash.substr(1));
-          this.$router.push({path:"/user/login",query:{nowUrl:nowUrl}});
-        },1000)
-      }
+      this.$checkLogin(this.getUserData);
     }
   }
 </script>

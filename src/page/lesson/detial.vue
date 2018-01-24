@@ -41,7 +41,7 @@
       </div>
       <!--价格-->
       <div class="price-box">
-        <p class="fl">￥<span class="price">{{lessonDetial.course.price / 100}}</span>起</p>
+        <p class="fl">￥<span class="price">{{lessonDetial.course.price }}</span>起</p>
         <div class="fr sign-group">
           <ul>
             <li v-for="(item,key) in lessonDetial.course.signList" :style="{backgroundImage:`url(${item})`}" :key="key"></li>
@@ -55,7 +55,7 @@
             <i class="iconfont icon-note"></i><span>关于课程</span>
           </li>
           <li class="nav-list tc" :class="index==1?'active':''" @click="changeTab(1)">
-            <i class="iconfont icon-edit"></i><span>查看评价</span>
+            <i class="iconfont icon-edit"></i><span>家长感悟</span>
           </li>
         </ul>
       </div>
@@ -108,11 +108,11 @@
                   <li class="item" v-if="item!==null" v-for="(item,key) in lessonDetial.coursewares" :key="key">
                     <p class="head clear">
                       <span class="index fl">{{key + 1}}</span>
-                      <span class="price fr">价值<span>{{item.price / 100}}</span>元</span>
+                      <span class="price fr">价值<span>{{item.price }}</span>元</span>
                     </p>
                     <ul>
-                      <li v-for="(item1,key1) in item.item">
-                        {{item1.price}}&nbsp;&nbsp;{{item1.title}}
+                      <li v-for="(item1,key1) in item.goods" :key="key1">
+                        {{item1.price}}&nbsp;&nbsp;{{item1.goodsName}}
                       </li>
                     </ul>
                   </li>
@@ -126,7 +126,7 @@
               </h2>
               <div class="content">
                 <ul class="group">
-                  <li class="item dflex" v-if="item!==null" v-for="(item,key) in lessonDetial.coachs" :key="item.id">
+                  <li class="item dflex" v-if="item!==null" v-for="item in lessonDetial.coachs" :key="item.id">
                     <div class="left">
                       <div class="img" :style="{backgroundImage: `url(${item.headImage})`}"></div>
                     </div>
@@ -157,13 +157,13 @@
               <ul class="group">
                 <li class="item" v-for="(item,key) in commentList.list" :key="key">
                   <p class="head-box">
-                    <span class="head" :style="{backgroundImage:`url(${item.headImg})`}"></span>
+                    <span class="head" :style="{backgroundImage:`url(${item.user.userImage})`}"></span>
                   </p>
-                  <p class="tc name">{{item.name}}</p>
-                  <p class="tc date">{{item.date}}</p>
+                  <p class="tc name">{{item.user.nickname}}</p>
+                  <p class="tc date">{{item.createDate}}</p>
                   <p class="text">{{item.content}}</p>
                   <ul class="img-group clear">
-                    <li class="img-list fl" v-for="(item1,key1) in item.imgList" :key="key1"
+                    <li class="img-list fl" v-for="(item1,key1) in item.images" :key="key1"
                         :style="{backgroundImage:`url(${item1})`}">
                     </li>
                   </ul>
@@ -198,6 +198,7 @@
   import Vue from "vue";
   import {mapState, mapActions, mapMutations} from 'vuex';
   import {Popup,Toast} from 'mint-ui';
+import { getCache } from '../../config/cache';
 
   Vue.component(Popup.name, Popup);
 
@@ -207,6 +208,7 @@
         index: 0,//当前显示课程介绍还是评价的定位,0是课程介绍,1是评价
         loading: true,
         slideType:"slide-right",
+        courseId: "",
         kefuShow: false,//客服弹框是否显示
         commentList: {
           list: []
@@ -222,17 +224,53 @@
         "getCommentList",
         "getKefuData"
       ]),
-      goSign() {
-        if(this.isLogined) {
-          this.$router.push({path:'/lesson/sign',query:{lessonId:this.lessonDetial.id}});
+      getSessionId() {
+        let sId = getCache("sessionId");
+        if(sId) {
+          return true;
         }else{
-          Toast({message:"未登录,请先登录!",duration: 1000})
-          setTimeout(()=>{
-            let nowUrl = encodeURIComponent(window.location.hash.substr(1));
-            this.$router.push({path:"/user/login",query:{nowUrl:nowUrl}});
-          },1000)
+          return false;
         }
-      }
+      },
+      goSign() {
+       if(this.getSessionId()) {
+          this.$router.push({path:'/lesson/sign',query:{lessonId:this.lessonDetial.course.id}});
+       }else{
+         Toast({message:"未登录,请先登录!",duration: 1000})
+         setTimeout(()=>{
+           let nowUrl = encodeURIComponent(window.location.hash.substr(1));
+           this.$router.push({path:"/user/login",query:{nowUrl:nowUrl}});
+         },1000)
+       }
+      },
+      getDetialFn() {
+        this.getLessonDetial({
+          "courseId":this.$route.query.lessonId
+        }).then(res=>{
+          this.loading = false;
+          console.log(this.lessonDetial);
+          this.getCommentFn();
+        }).catch(res=>{
+          this.loading = false;
+          Toast("网络错误");
+          this.$router.push("/index/lesson");
+        });
+      },
+      getCommentFn() {
+        this.getCommentList({
+          courseId: this.courseId
+        }).then(res=>{
+          console.log(res);
+          if(res.status == 0) {
+            this.commentList = res.data;
+          }else{
+            Toast(res.msg);
+          }
+        }).catch(err=>{
+          Toast("网络错误!获取感悟列表失败");
+          console.log(err);
+        });
+      },
     },
     computed:{
       ...mapState("lesson",["lessonDetial","kefuData"]),
@@ -248,21 +286,13 @@
       }
     },
     created() {
-      console.log(this.isLogined)
-      this.getLessonDetial({
-        "courseId":this.$route.query.lessonId
-      }).then(res=>{
-        this.loading = false;
-        console.log(this.lessonDetial);
-//        this.getCommentList().then(res => {
-//          this.commentList = res.data;
-//          this.loading = false;
-//        });
-      }).catch(res=>{
-        this.loading = false;
-        Toast("网络错误");
-      });
-
+      if("lessonId" in this.$route.query) {
+        this.courseId = this.$route.query.lessonId;
+        this.getDetialFn();
+        this.getCommentFn();
+      }else{
+        alert("未知的课程id");
+      }
     }
   }
 </script>

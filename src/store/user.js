@@ -68,19 +68,50 @@ export default {
       res = await fetch("post","findPwAjax",data);
       return res;
     },
+    //绑定手机接口
+    async userBindPhone(context, data) {
+      let res;
+      res = await fetch("post", "bindPhone", data);
+      return res;
+    },
     //获取用户数据
-    getUserInfo(context) {
-      axios.get("lessonDatas/userInfo.json").then(res=>{
-        console.log(res.data.data);
-        context.commit("setUserInfo",res.data.data);
-      })
+    async getUserInfo(context,data) {
+      let res;
+      res = await fetch("post","getUserInfo",data);
+      return res;
+    },
+    //修改用户资料
+    async changeUserInfo(context,data) {
+      let res;
+      res = await fetch("post","editUserInfo",data);
+      return res;
     },
     //获取宝宝列表
-    getMyBabyList(context) {
-      axios.get("lessonDatas/babyList.json").then(res=>{
-        console.log(res.data.data);
-        context.commit("setMyBabyList",res.data.data)
-      })
-    }
+    async getMyBabyList(context, data) {
+      let res;
+      res = await fetch("post","getMyBabyList",data);
+      return res;
+    },
+    //增加宝宝
+    async saveBabyAjax(context, data) {
+      console.log(data);
+      let res;
+      res = await fetch("post", "addMyBaby", data);
+      return res;
+    },
+    //修改宝宝
+    async updateBabyAjax(context, data) {
+      console.log(data);
+      let res;
+      res = await fetch("post", "updateMyBaby", data);
+      return res;
+    },
+    //删除宝宝
+    async deleteBabyAjax(context, data) {
+      console.log(data);
+      let res;
+      res = await fetch("post", "delMyBaby", data);
+      return res;
+    },
   }
 }

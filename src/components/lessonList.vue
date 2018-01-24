@@ -7,7 +7,7 @@
           <h2 class="fw">{{item.courseName}}</h2>
           <p><i class="iconfont icon-icon"></i>课程时间: {{item.enrollBeginDate}}</p>
           <p><i class="iconfont icon-ren"></i>适用年龄: {{item.ageMin}}-{{item.ageMax}}岁</p>
-          <p class="fl">￥<span class="item-price">{{item.price / 100}}</span>起</p>
+          <p class="fl">￥<span class="item-price">{{item.price}}</span>起</p>
           <p class="fr item-status finish" v-show="item.state==0">已结束</p>
           <p class="fr item-status doing" v-show="item.state==1">进行中</p>
           <p class="fr item-status signing" v-show="item.state==2">报名中</p>

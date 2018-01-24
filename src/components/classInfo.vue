@@ -2,24 +2,36 @@
   <div class="classInfo clear">
     <div class="point-box fl">
       <ul>
-        <li v-for="(item,key) in myLessonList.list[index].classInfo" :key="key">
-          <span v-if="item.status==2"><i class="done"></i></span>
-          <span v-if="item.status==1"><i class="miss"></i></span>
-          <span v-if="item.status==0"><i class="unstart"></i></span>
+        <li v-for="(item,key) in classInfo" :key="key">
+          <span v-if="item.state==2"><i class="done"></i></span>
+          <span v-if="item.state==1"><i class="miss"></i></span>
+          <span v-if="item.state==0"><i class="unstart"></i></span>
+        </li>
+      </ul>
+      <ul>
+        <li v-for="(item,key) in classLeave" :key="key">
+          <span><i class="unstart"></i></span>
         </li>
       </ul>
     </div>
     <div class="info-box fr">
       <ul>
-        <li class="clear" v-for="(item,key) in myLessonList.list[index].classInfo" :key="key">
+        <li class="clear" v-for="(item,key) in classInfo" :key="key">
           <span class="sanjiao"></span>
           <p class="text">
             <span class="title">{{key+1}}</span>
             <span class="date">{{item.date}}</span>
             <span class="time">{{item.time}}</span>
-            <span class="class-btn fr done" v-if="item.status==2">照片</span>
-            <span class="class-btn fr miss" v-if="item.status==1">已请假</span>
-            <span class="class-btn fr unstart" v-if="item.status==0">请假</span>
+            <span class="class-btn fr done" v-if="item.state==2">照片</span>
+            <span class="class-btn fr miss" v-if="item.state==1">已请假</span>
+            <span class="class-btn fr unstart" v-if="item.state==0">请假</span>
+          </p>
+        </li>
+        <li class="clear" v-for="(item,key) in classLeave" :key="key">
+          <span class="sanjiao"></span>
+          <p class="text bs" style="padding-left: 20px;">
+            <span class="date">{{item.date}} 顺延课时</span>
+            <span class="class-btn fr unstart">请假</span>
           </p>
         </li>
       </ul>
@@ -29,17 +41,14 @@
 <script type="text/ecmascript-6">
   import {mapState} from "vuex";
   export default {
-    props:["index"],
+    props:["classInfo","classLeave"],
     data() {
       return {
 
       }
     },
-    computed:{
-      ...mapState("lesson",["myLessonList"])
-    },
     created() {
-      console.log(this.index);
+      
     }
   }
 </script>

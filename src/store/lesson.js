@@ -129,6 +129,11 @@ export default {
       res = await fetch("post", "createVotes",data);
       return res;
     },
-    
+    //获取我的订单订单
+    async getVoteList(context, data) {
+      let res;
+      res = await fetch("post", "getVoteList", data);
+      return res;
+    },
   }
 }

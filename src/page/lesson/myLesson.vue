@@ -41,14 +41,10 @@
               <span><i class="iconfont icon-riqi"></i>课时详情 <i class="iconfont icon-icon2"></i></span>
             </div>
           </div>
-          <div class="classInfo-box" v-show="showData[key]">
+          <div class="classInfo-box" v-show="showData[key].show">
             <transition name="slide-down">
-              <class-info :index="key" :classInfo="item.classInfo" :classLeave="item.classLeave"></class-info>
+              <class-info :index="key" :itemId="item.id" :classInfo="item.classInfo" :classLeave="item.classLeave"></class-info>
             </transition>
-          </div>
-          <div class="comment-btn" @click="$router.push({path:'/lesson/comment',query:{'courseId': item.id}})">
-            <i class="iconfont icon-liaotian1"></i>
-            课后评价
           </div>
         </li>
       </ul>
@@ -67,28 +63,29 @@ import myVotesVue from './myVotes.vue';
         myLessonList:{
           list:[]
         },
-        showData:{}
+        showData:[]
       }
     },
     methods: {
       ...mapActions("lesson",["getMyLessonList"]),
       getListFn() {   //获取课程列表
         this.getMyLessonList().then(res=>{
-          console.log(res);
           this.myLessonList = res.data;
-          this.setShowData(this.myLessonList);
+          this.setShowData(this.myLessonList.list);
         }).catch(err=>{
           console.log(err);
         });
       },
       setShowData(data) {   //设置显示与隐藏的数据
-        for(let i = 0; i < data.list.length;i++) {
-          this.showData[i] = false;
+        for(let i = 0; i < data.length;i++) {
+          this.showData.push({
+            show: false
+          });
         }
-        console.log(this.showData);
+        this.showData[0].show = true;
       },
       changeClassShow(i) {
-        this.showData[i] = !this.showData[i];
+        this.showData[i].show = !this.showData[i].show;
       }
     },
     components: {
@@ -117,12 +114,17 @@ import myVotesVue from './myVotes.vue';
     }
     .comment-btn{
       text-align: center;
-      background: red;
+      background: #f00;
       color: #fff;
       line-height: 40px;
+      height: 40px;
       width: 150px;
       margin: 0 auto;
       border-radius: 5px;
+      position: absolute;
+      bottom: 0px;
+      left: 0;
+      right: 0;
     }
     .group {
       .item {

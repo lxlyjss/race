@@ -20,6 +20,7 @@ import payResult from '@/page/lesson/payResult'
 import classInfo from '@/page/lesson/classInfo'
 import myLesson from '@/page/lesson/myLesson'
 import myVotes from '@/page/lesson/myVotes'
+import voteDetial from "@/page/lesson/voteDetial"
 import search from '@/page/lesson/search'
 import comment from '@/page/lesson/comment'
 
@@ -122,6 +123,11 @@ let lessonRoute = [
     path: '/lesson/myVotes',
     name: 'myVotes',
     component: myVotes
+  },
+  {
+    path: '/lesson/voteDetial',
+    name: 'voteDetial',
+    component: voteDetial
   },
   {
     path: '/lesson/search',

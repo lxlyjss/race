@@ -36,12 +36,16 @@
         </li>
       </ul>
     </div>
+    <div class="comment-btn" @click="$router.push({path:'/lesson/comment',query:{'courseId': itemId}})">
+      <i class="iconfont icon-liaotian1"></i>
+      课后评价
+    </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import {mapState} from "vuex";
   export default {
-    props:["classInfo","classLeave"],
+    props:["classInfo","classLeave","itemId"],
     data() {
       return {
 
@@ -54,9 +58,10 @@
 </script>
 <style lang="stylus">
   .classInfo{
-    padding: 20px 15px;
+    padding: 20px 15px 50px;
     background: #f7f7f7;
     transition: all .3s;
+    position: relative;
     .point-box{
       width: 10%;
       ul{

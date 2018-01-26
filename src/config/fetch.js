@@ -15,6 +15,7 @@ const ajaxURL = {
   getBanner: "open/bannerTraining/banners",//获取 轮播图
   getLessonList: "open/course/courses",//获取课程列表
   getLessonDetial: "open/course/courseInfo",//获取课程详情
+  getVoteList: "open/order/orders",//获取我的订单列表
   getCommentList:"/open/graduation/perceptions",//获取评论列表
   getKefuData:"open/customerService/getCustomer",//获取客服信息
   getBranchList: "open/organization/organizations",//获取省份和分部列表

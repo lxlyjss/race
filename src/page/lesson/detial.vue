@@ -241,7 +241,7 @@ export default {
     },
     goSignDone(done) {
       if(done) {
-        this.$router.push({path:'/lesson/sign',query:{'courseId':this.courseId}});
+        this.$router.push({path:'/lesson/sign',query:{'lessonId':this.courseId}});
       }
     },
     getDetialFn() {

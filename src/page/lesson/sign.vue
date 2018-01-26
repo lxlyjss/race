@@ -302,8 +302,8 @@
         }
       },
       getCourseId() {
-        if("courseId" in this.$route.query) {
-          this.courseId = this.$route.query.courseId;
+        if("lessonId" in this.$route.query) {
+          this.courseId = this.$route.query.lessonId;
         }else{
           alert("没有课程id");
           this.$router.push("/index/lesson");

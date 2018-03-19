@@ -7,6 +7,7 @@
 </template>
 
 <script>
+  import {mapActions} from "vuex";
   export default {
     name: 'app',
     data() {
@@ -15,6 +16,7 @@
       }
     },
     methods: {
+      ...mapActions("user",["getShareConfig"]),
       setFontSize() {
         let WIDTH = document.body.clientWidth || document.documentElement.clientWidth;
         document.querySelector("html").style.fontSize = (WIDTH / 10) + "px";
@@ -22,6 +24,63 @@
           let WIDTH = document.body.clientWidth || document.documentElement.clientWidth;
           document.querySelector("html").style.fontSize = (WIDTH / 10) + "px";
         };
+      },
+      wxShare() {
+        let imgUrl = "http://www.72bike.com/img/72-logo.png";
+        let link = location.href.split('#')[0];
+        this.getShareConfig({url: link}).then(res=>{
+          if(res.status == "0") {
+            weixin(res.data.sign);
+          }else{
+            alert('获取配置信息错误');
+          }
+        });
+        function weixin(data) {
+          wx.config({
+            debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来
+            appId: data.appId, // 必填，公众号的唯一标识
+            timestamp: data.timestamp, // 必填，生成签名的时间戳
+            nonceStr: data.nonceStr, // 必填，生成签名的随机串
+            signature: data.signature,// 必填，签名，见附录1
+            jsApiList: [
+              "onMenuShareTimeline",
+              "onMenuShareAppMessage"
+            ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+          });
+          wx.ready(function (res) {
+            wx.onMenuShareAppMessage({
+              title: "骑二无比滑步车课程报名开始啦~",
+              desc: "骑二无比滑步车课程报名开始啦~",
+              link: link,
+              imgUrl: imgUrl,
+              trigger: function (res) {
+              },
+              success: function (res) {
+              },
+              cancel: function (res) {
+              },
+              fail: function (res) {
+              }
+            });
+            wx.onMenuShareTimeline({
+              title: "骑二无比滑步车课程报名开始啦~",
+              desc: "骑二无比滑步车课程报名开始啦~",
+              link: link,
+              imgUrl: imgUrl,
+              trigger: function (res) {
+              },
+              success: function (res) {
+              },
+              cancel: function (res) {
+              },
+              fail: function (res) {
+              }
+            });
+            wx.error(function (res) {
+              alert(res);
+            });
+          });
+        }
       }
     },
     watch: {
@@ -42,6 +101,7 @@
     },
     mounted() {
       this.setFontSize();
+      this.wxShare();
     }
   }
 </script>

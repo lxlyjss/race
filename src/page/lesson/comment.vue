@@ -44,7 +44,7 @@
         <ul class="clear">
           <li class="img-list" v-for="item in comment.imgList" :style="{backgroundImage: `url(${item.img})`}" :key="item.id"><span
             class="delete" @click="deleteImg(item.id)"><i class="iconfont icon-guanbi"></i></span></li>
-          <li class="add-img"><input style="display: none;" id="file" type="file" accept="image/*"/><i
+          <li class="add-img" v-if="comment.imgList.length<9"><input style="display: none;" id="file" type="file" accept="image/*"/><i
             class="iconfont icon-zengjia" @click="chooseImg"></i></li>
         </ul>
       </div>
@@ -52,7 +52,7 @@
       <div class="history-w">
         <ul class="group">
           <li class="list" v-for="(item,key) in commentsData.list" :key="key">
-            <h1>{{item.createDate}}</h1>
+            <h1>{{item.createDate}} <span class="fr delete-btn" @click="deleteCommentFn(item.id)">删除</span></h1>
             <p class="star-b">
               <i class="iconfont icon-star star_a" v-if="item.score>0"></i>
               <i class="iconfont icon-star star_a" v-if="item.score>1"></i>
@@ -93,8 +93,8 @@ export default {
   data() {
     return {
       branchId: "1",
-      courseId: "",
-      sessionId: "",
+      courseId: "",//我的课程id
+      lessonId: "",//参加的此课程id
       tagData: {
         list: []
       },
@@ -111,7 +111,7 @@ export default {
   },
   methods: {
     ...mapActions(["uploadImgAjax", "deleteImgAjax"]),
-    ...mapActions("lesson", ["getTagList", "getHistoryComment","submitComment"]),
+    ...mapActions("lesson", ["getTagList", "getHistoryComment","submitComment","deleteComment"]),
     chooseStar(n) {
       this.comment.score = n;
     },
@@ -159,7 +159,7 @@ export default {
         score: this.comment.score,
         orgId: this.branchId,
         imageIds: ids
-      }
+      };
       console.log(send_data);
       this.submitComment(send_data).then(res=>{
         console.log(res);
@@ -273,7 +273,6 @@ export default {
     //获取标签列表
     getTagListFn() {
       this.getTagList({
-        sessionId: this.sessionId,
         branchId: this.branchId
       })
         .then(res => {
@@ -297,10 +296,12 @@ export default {
     },
     //获取历史评价列表
     getHistCommentFn() {
+      Indicator.open({ spinnerType: "fading-circle" });
       this.getHistoryComment({
-        courseId: this.courseId
+        courseId: this.lessonId
       })
         .then(res => {
+          Indicator.close();
           console.log(res);
           if (res.status === 0) {
             this.commentsData = res.data;
@@ -315,28 +316,27 @@ export default {
           this.$router.push("/index/lesson");
         });
     },
-    getBranchData() {
-      let branchData = JSON.parse(getCache("branchData"));
-      if (branchData) {
-        this.branchId = branchData.branchId;
-      } else {
-        Toast("未找到分舵信息");
-        this.$router.push("/index/lesson");
-      }
-    },
-    getSessionId() {
-      let sId = getCache("sessionId");
-      if (sId) {
-        this.sessionId = sId;
-        console.log(this.sessionId);
-      } else {
-        alert("未登录");
-        this.$router.push("/user/login");
-      }
+    deleteCommentFn(id) {
+      let send = {
+        evaluationId: id
+      };
+      Indicator.open({ spinnerType: "fading-circle" });
+      this.deleteComment(send).then(res=>{
+        Indicator.close();
+        if(res.status == "0") {
+          Toast("删除评价成功!");
+          this.getHistCommentFn();
+        }
+      }).catch(err=>{
+        Indicator.close();
+        console.log(err);
+        Toast("删除评价失败!");
+      })
     },
     setCourseId() {
-      if ("courseId" in this.$route.query) {
+      if ("courseId" in this.$route.query && "lessonId" in this.$route.query) {
         this.courseId = this.$route.query.courseId;
+        this.lessonId = this.$route.query.lessonId;
       } else {
         alert("未找到课程id");
         this.$router.push("/index/user");
@@ -484,7 +484,12 @@ export default {
     font-size: 12px;
     padding: 10px 0;
     color: #777;
-
+    .delete-btn{
+      background-color: #f00;
+      padding: 0px 5px;
+      color: #fff;
+      border-radius: 2px;
+    }
     .group {
       .list {
         border-bottom: 1px solid #ddd;

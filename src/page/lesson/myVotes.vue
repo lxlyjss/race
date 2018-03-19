@@ -16,6 +16,9 @@
             <span class="fr" style="color: #777" v-show="item.state==1">已付款</span>
             <span class="fr" style="color: #777" v-show="item.state==0">未付款</span>
             <span class="fr" style="color: #777" v-show="item.state==2">已失效</span>
+            <span class="fr" style="color: #777" v-show="item.state==3">退款中</span>
+            <span class="fr" style="color: #777" v-show="item.state==4">退款成功</span>
+            <span class="fr" style="color: #777" v-show="item.state==5">退款失败</span>
           </p>
           <div class="bs clear list-box">
             <div class="fl img" :style="{backgroundImage: `url(${item.image})`}"></div>

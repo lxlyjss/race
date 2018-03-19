@@ -36,7 +36,9 @@
           其他登录方式
         </p>
         <p>
-          <i class="iconfont icon-weixin1"></i>
+          <a href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf509754d3d6886a6&redirect_uri=http%3a%2f%2fsport.72bike.com%2fucenter%2fopen%2fwxLogin&response_type=code&scope=snsapi_login&state=STATE">
+            <i class="iconfont icon-weixin1"></i>
+          </a>
         </p>
       </div>
     </div>
@@ -107,7 +109,6 @@
           Indicator.close();
           if(res.status == 0) {
             setCache("access_token", res.data.token);
-            setCache("sessionId", res.data.sessionId);
             setCache("user", JSON.stringify(res.data.user));
             if("nowUrl" in this.$route.query) {
               this.isBack = true;
@@ -154,7 +155,7 @@
     height: auto;
     background: #fff;
     .login-box{
-      padding: 1rem 1.5rem 0;
+      padding: 0.5rem 1.5rem 0;
       .input-box{
         line-height: 28px;
         margin-top: 20px;
@@ -167,7 +168,7 @@
       text-align: left;
     }
     .top-img{
-      height: 6.7rem;
+      height: 5.7rem;
       background-size: cover;
       position: relative;
       color: #fff;
@@ -202,7 +203,7 @@
       color: #777;
     }
     p{
-      line-height: 40px;
+      line-height: 30px;
       text-align: center;
     }
     .input-box{
@@ -232,7 +233,7 @@
     }
     .icon-weixin1{
       font-size: 24px;
-      color: #555;
+      color: #6bc32a;
     }
   }
 </style>

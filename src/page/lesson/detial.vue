@@ -36,9 +36,27 @@
           </tr>
           </tbody>
         </table>
-        <p class="fr item-status finish" v-show="lessonDetial.course.state==0">已结束</p>
-        <p class="fr item-status doing" v-show="lessonDetial.course.state==1">进行中</p>
-        <p class="fr item-status signing" v-show="lessonDetial.course.state==2">报名中</p>
+        <!--报名状态-->
+        <p class="fr item-status unstart"
+           v-if="lessonDetial.course.enrollStatus==0&&lessonDetial.course.state==0">
+          未开始
+        </p>
+        <p class="fr item-status doing"
+           v-show="lessonDetial.course.enrollStatus==1&&(lessonDetial.course.state==0||lessonDetial.course.state==1)">
+          报名中
+        </p>
+        <p class="fr item-status finish"
+           v-show="(lessonDetial.course.enrollStatus==2||lessonDetial.course.enrollStatus==3)&&lessonDetial.course.state==0">
+          报名结束
+        </p>
+        <p class="fr item-status signing"
+           v-show="lessonDetial.course.state==1&&lessonDetial.course.enrollStatus>1">
+          进行中
+        </p>
+        <p class="fr item-status signing"
+           v-show="lessonDetial.course.state==2&&lessonDetial.course.enrollStatus>1">
+          已结束
+        </p>
       </div>
       <!--价格-->
       <div class="price-box">
@@ -94,7 +112,11 @@
               <div class="content">
                 <ul class="clear">
                   <li class="bs" v-if="item!==null" v-for="(item, key) in lessonDetial.periods" :key="key">
-                    <p><span class="h1">{{key}}</span><i class="iconfont icon-shijian"></i><span>{{item}}</span></p>
+                    <p>
+                      <i class="iconfont icon-shijian"></i>
+                      <span>{{item.date}}{{item.time}}</span>
+                      <span>{{item.periodName}}</span>
+                    </p>
                   </li>
                 </ul>
               </div>
@@ -113,7 +135,7 @@
                     </p>
                     <ul>
                       <li v-for="(item1,key1) in item.goods" :key="key1">
-                        {{item1.price}}&nbsp;&nbsp;{{item1.goodsName}}
+                        {{item1.price}}元&nbsp;&nbsp;{{item1.goodsName}}
                       </li>
                     </ul>
                   </li>
@@ -208,10 +230,10 @@ export default {
   data() {
     return {
       index: 0, //当前显示课程介绍还是评价的定位,0是课程介绍,1是评价
-      loading: true,
+      loading: false,
       slideType: "slide-right",
       courseId: "",
-      branchId: 1,
+      branchId: "",
       kefuShow: false, //客服弹框是否显示
       kefuData: {
         customerService: {}
@@ -224,7 +246,8 @@ export default {
       },
       commentList: {
         list: []
-      }
+      },
+      shareImg:""
     };
   },
   methods: {
@@ -236,7 +259,12 @@ export default {
       "getCommentList",
       "getKefuData"
     ]),
+    ...mapActions("user",["getShareConfig"]),
     goSign() {
+      if(this.lessonDetial.course.enrollStatus>1) {
+        Toast("报名已结束!");
+        return;
+      }
       this.$checkLogin(this.goSignDone);
     },
     goSignDone(done) {
@@ -250,16 +278,19 @@ export default {
       })
         .then(res => {
           console.log(res);
-          this.loading = false;
           if (res.status == 0) {
             this.lessonDetial = res.data;
+            setTimeout(()=>{
+              this.wxShare(res.data.course.image,res.data.course.courseName);
+            },1000);
+            this.branchId = this.lessonDetial.course.orgId;
+            this.getKefuFn();
           } else {
             Toast(res.msg);
           }
           console.log(this.lessonDetial);
         })
-        .catch(res => {
-          this.loading = false;
+        .catch(err => {
           Toast("网络错误");
           this.$router.push("/index/lesson");
         });
@@ -299,6 +330,63 @@ export default {
           Toast("网络错误!获取客服信息失败");
           console.log(err);
         });
+    },
+    wxShare(imgUrl,title) {
+      let link = location.href.split('#')[0];
+      this.getShareConfig({url: link}).then(res=>{
+        console.log(res);
+        if(res.status == "0") {
+          weixin(res.data.sign);
+        }else{
+          alert('获取配置信息错误');
+        }
+      });
+      function weixin(data) {
+        wx.config({
+          debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来
+          appId: data.appId, // 必填，公众号的唯一标识
+          timestamp: data.timestamp, // 必填，生成签名的时间戳
+          nonceStr: data.nonceStr, // 必填，生成签名的随机串
+          signature: data.signature,// 必填，签名，见附录1
+          jsApiList: [
+            "onMenuShareTimeline",
+            "onMenuShareAppMessage"
+          ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+        });
+        wx.ready(function (res) {
+          wx.onMenuShareAppMessage({
+            title: "骑二无比课程报名开始啦#"+title,
+            desc: "快来参加骑二无比"+title,
+            link: location.href,
+            imgUrl: imgUrl,
+            trigger: function (res) {
+            },
+            success: function (res) {
+            },
+            cancel: function (res) {
+            },
+            fail: function (res) {
+            }
+          });
+          wx.onMenuShareTimeline({
+            title: "骑二无比课程报名开始啦#"+title,
+            desc: "快来参加骑二无比"+title,
+            link: location.href,
+            imgUrl: imgUrl,
+            trigger: function (res) {
+            },
+            success: function (res) {
+            },
+            cancel: function (res) {
+            },
+            fail: function (res) {
+            }
+          });
+          wx.error(function (res) {
+            alert(res);
+          });
+        });
+      }
     }
   },
   watch: {
@@ -310,12 +398,15 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
+    let branchData = getCache("branchData");
+    if(branchData) {
+      this.branchId = JSON.parse(getCache("branchData")).branchId;
+    }
     if ("lessonId" in this.$route.query) {
       this.courseId = this.$route.query.lessonId;
       this.getDetialFn();
       this.getCommentFn();
-      this.getKefuFn();
     } else {
       alert("未知的课程id");
     }
@@ -516,19 +607,21 @@ export default {
       .date-info {
         .content {
           padding: 20px 0;
-
           ul {
             li {
-              width: 50%;
+              width: 100%;
               background: #33b9f6;
               color: #fff;
               float: left;
               padding: 10px 0;
               text-align: center;
               margin-bottom: 10px;
+              border-radius: 5px;
 
               p {
                 line-height: 25px;
+                text-align: left;
+                padding-left: 10px;
 
                 .h1 {
                   font-size: 20px;
@@ -536,39 +629,10 @@ export default {
                 }
 
                 i {
-                  font-size: 12px;
+                  font-size: 18px;
                   margin-right: 5px;
                 }
               }
-            }
-
-            li:nth-of-type(2n+1) {
-              -webkit-border-top-left-radius: 10px;
-              -moz-border-top-left-radius: 10px;
-              border-top-left-radius: 10px;
-              -webkit-border-bottom-left-radius: 10px;
-              -moz-border-bottom-left-radius: 10px;
-              border-bottom-left-radius: 10px;
-
-              p {
-                &::after {
-                  display: block;
-                  float: right;
-                  content: '';
-                  width: 1px;
-                  height: 28px;
-                  background: #ddd;
-                }
-              }
-            }
-
-            li:nth-of-type(2n) {
-              -webkit-border-top-right-radius: 10px;
-              -moz-border-top-right-radius: 10px;
-              border-top-right-radius: 10px;
-              -webkit-border-bottom-right-radius: 10px;
-              -moz-border-bottom-right-radius: 10px;
-              border-bottom-right-radius: 10px;
             }
           }
         }

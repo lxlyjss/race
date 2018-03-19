@@ -362,7 +362,7 @@
       height: 42px;
     }
     .get-code{
-      width: 60px;
+      width: 70px;
       border: 1px solid $red;
       color: $red;
       font-size: 12px;
@@ -409,10 +409,6 @@
     .other-title{
       font-size: 12px;
       color: #777;
-    }
-    .icon-weixin1{
-      font-size: 24px;
-      color: #555;
     }
   }
 </style>

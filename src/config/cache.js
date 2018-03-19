@@ -11,7 +11,7 @@ export const setCache = (name, content) => {
 };
 export const removeCache = (name) => {
   if(!name) return;
-  window.sessionStorage.removeItem(name);
+  window.localStorage.removeItem(name);
 };
 export const getLocalCache = name => {
   if(!name) return;

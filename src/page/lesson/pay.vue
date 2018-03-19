@@ -7,9 +7,9 @@
     <tab-list :index="signIndex"></tab-list>
     <div class="vote-info">
       <p class="title">订单提交成功!</p>
-      <p>您的订单: 201845656867454656</p>
+      <p>您的订单: {{voteInfo.orderNum}}</p>
       <p>请您在30分钟内完成付款!</p>
-      <p>总金额￥<span class="price">7900.00</span></p>
+      <p>总金额￥<span class="price">{{voteInfo.totalPrice}}</span></p>
     </div>
     <ul class="pay-way">
       <li @click="payType=0">
@@ -18,18 +18,18 @@
           <span class="checkbox fr"><i class="iconfont icon-icon1" v-if="payType==0"></i></span>
         </p>
       </li>
-      <li @click="payType=1">
-        <p>
-          <img src="../../assets/images/aliPay.png">
-          <span class="checkbox fr"><i class="iconfont icon-icon1" v-if="payType==1"></i></span>
-        </p>
-      </li>
+      <!--<li @click="payType=1">-->
+        <!--<p>-->
+          <!--<img src="../../assets/images/aliPay.png">-->
+          <!--<span class="checkbox fr"><i class="iconfont icon-icon1" v-if="payType==1"></i></span>-->
+        <!--</p>-->
+      <!--</li>-->
     </ul>
     <div class="pay-content" v-html="htmlData">
 
     </div>
     <div class="btn-group">
-      <div class="btn" @click="$router.push('/user/myVoteList')">
+      <div class="btn" @click="$router.push('/lesson/myVotes')">
         <span>查看订单</span>
       </div>
       <div class="btn red-btn" @click="gopay">
@@ -41,20 +41,51 @@
 <script type="text/ecmascript-6">
   import axios from "axios"
   import tabList from "@/components/tabList";
+  import { mapActions } from 'vuex';
   export default {
     data() {
       return {
         signIndex: 2,
         payType: 0,//支付方式id,默认0为微信支付
-        htmlData: ""
+        htmlData: "",
+        orderId: "",
+        branchId: "",
+        voteInfo:{}
       }
     },
     components:{
       tabList
     },
     methods:{
+      ...mapActions("lesson",["getOrderPay","getPayCode"]),
+       //根据订单id获取订单信息
+      getOrderInfo(data) {
+        this.getOrderPay(data).then(res=>{
+          console.log(res);
+          this.voteInfo = res.data.order;
+        }).catch(err=>{
+          console.log(err);
+        });
+      },
       gopay() {
-        this.$router.push("/lesson/payResult")
+        let send_data = {
+          orderId: this.voteInfo.id,
+          branchId: this.voteInfo.orgId
+        };
+        window.location.href="http://sport.72bike.com/ucenter/wechatPay/getCode?orderId="+this.voteInfo.id+"&branchId="+this.voteInfo.orgId
+//        this.getPayCode(send_data).then(res=>{
+//          console.log(res);
+//        }).catch(err=>{
+//          conosle.log(err);
+//        })
+        //this.$router.push("/lesson/payResult")
+      }
+    },
+    mounted() {
+      if("orderId" in this.$route.query) {
+        this.getOrderInfo({
+          orderId: this.$route.query.orderId
+        })
       }
     }
   }

@@ -34,7 +34,7 @@
             </p>
           </div>
           <div class="lesson-btn clear">
-            <div class="left fl bs">
+            <div class="left fl bs" @click="toLessonDetial(item.courseId)">
               <span><i class="iconfont icon-note"></i>课程详情</span>
             </div>
             <div class="right fr bs" @click="changeClassShow(key)">
@@ -43,7 +43,7 @@
           </div>
           <div class="classInfo-box" v-show="showData[key].show">
             <transition name="slide-down">
-              <class-info :index="key" :itemId="item.id" :classInfo="item.classInfo" :classLeave="item.classLeave"></class-info>
+              <class-info @reload="reloadLesson" :index="key" :itemId="item.id" :classInfo="item.classInfo" :classLeave="item.classLeave" :lessonId="item.courseId"></class-info>
             </transition>
           </div>
         </li>
@@ -54,7 +54,8 @@
 <script type="text/ecmascript-6">
   import classInfo from '@/components/classInfo';
   import {mapState, mapActions, mapMutations} from "vuex";
-import myVotesVue from './myVotes.vue';
+  import myVotesVue from './myVotes.vue';
+  import {Toast, Indicator} from "mint-ui";
 
   export default {
     data() {
@@ -69,10 +70,15 @@ import myVotesVue from './myVotes.vue';
     methods: {
       ...mapActions("lesson",["getMyLessonList"]),
       getListFn() {   //获取课程列表
+        Indicator.open({spinnerType: "fading-circle"});
         this.getMyLessonList().then(res=>{
+          console.log(res)
+          Indicator.close()
           this.myLessonList = res.data;
           this.setShowData(this.myLessonList.list);
         }).catch(err=>{
+          Indicator.close()
+          Toast("获取我的课程列表失败!")
           console.log(err);
         });
       },
@@ -86,6 +92,21 @@ import myVotesVue from './myVotes.vue';
       },
       changeClassShow(i) {
         this.showData[i].show = !this.showData[i].show;
+      },
+      toLessonDetial(id) {
+        if(id==null||id=="") {
+          alert("找不到该课程!")
+          return;
+        }
+        this.$router.push({
+          path: "/lesson/detial",
+          query:{
+            lessonId: id
+          }
+        })
+      },
+      reloadLesson() {
+        this.getListFn();
       }
     },
     components: {
@@ -112,24 +133,31 @@ import myVotesVue from './myVotes.vue';
       height: auto;
       overflow: hidden;
     }
-    .comment-btn{
+    .comment-btn,.video-btn{
       text-align: center;
       background: #f00;
       color: #fff;
       line-height: 40px;
       height: 40px;
-      width: 150px;
-      margin: 0 auto;
+      width: 120px;
       border-radius: 5px;
       position: absolute;
       bottom: 0px;
-      left: 0;
-      right: 0;
+    }
+    .comment-btn{
+      left: 15px;
+    }
+    .video-btn{
+      right: 15px;
+    }
+    .gray-btn{
+      background-color: #9a9494;
     }
     .group {
       .item {
         position: relative;
         background: #f7f7f7;
+        padding-bottom: 15px;
         .img {
           width: 100%;
           height: 4rem;
@@ -199,6 +227,7 @@ import myVotesVue from './myVotes.vue';
         width: 100%;
         height: 1.2rem;
         line-height: 1.2rem;
+        background: #fff;
         .left, .right {
           width: 50%;
           text-align: center;

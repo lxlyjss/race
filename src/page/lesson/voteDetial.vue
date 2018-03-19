@@ -11,99 +11,166 @@
       <div class="detial-top" :style="{backgroundImage: `url(http://www.72bike.com/img/activitys/a1/2.jpg)`}">
         <div class="black"></div>
         <div class="detial-text bs">
-          <h1>骑二无比北京总部</h1>
+          <h1>{{voteDetial.organization.organizationName}}</h1>
           <p>
             <i class="iconfont icon-shuben"></i>
-            滑步车课程初级班(三期)
+            {{voteDetial.course.courseName}}
           </p>
           <p>
             <i class="iconfont icon-lesson1"></i>
-            课件包(含车)
+            {{voteDetial.orderInfo.itemName}}
           </p>
           <p>
-            ￥3855
+            ￥{{voteDetial.orderInfo.price}}
           </p>
-          <span class="fr status-btn success">已完成</span>
-          <span class="fr status-btn ready" v-show="false">未完成</span>
-          <span class="fr status-btn lose" v-show="false">已失效</span>
+          <span class="fr status-btn success" v-if="voteDetial.state==1">已支付</span>
+          <span class="fr status-btn ready" v-if="voteDetial.state==0">未支付</span>
+          <span class="fr status-btn lose" v-if="voteDetial.state==2">已失效</span>
+          <span class="fr status-btn ready" v-if="voteDetial.state==3">退款中</span>
+          <span class="fr status-btn ready" v-if="voteDetial.state==4">退款成功</span>
+          <span class="fr status-btn ready" v-if="voteDetial.state==5">退款失败</span>
         </div>
       </div>
       <div class="section">
         <h1><span>订单信息</span></h1>
         <p>
           <i class="iconfont icon-biaoqian"></i>
-          订单号码: 8785656565646
+          订单号码: {{voteDetial.orderNum}}
         </p>
         <p>
           <i class="iconfont icon-icon--"></i>
-          订单状态: 已支付
+          订单状态: <span v-if="voteDetial.state==1">已支付</span>
+          <span v-if="voteDetial.state==0">未支付</span>
+          <span v-if="voteDetial.state==2">已失效</span>
         </p>
         <p>
           <i class="iconfont icon-riqi"></i>
-          订单日期: 2017.12.14 14:52
+          订单日期: {{voteDetial.createDate}}
         </p>
-        <p>
+        <p v-if="voteDetial.state==1">
           <i class="iconfont icon-weixin"></i>
           支付方式: 微信支付
         </p>
-        
       </div>
       <div class="section">
         <h1><span>报名资料</span></h1>
         <p>
           <i class="iconfont icon-biaoqian"></i>
-          家长姓名: 刘琦
+          家长姓名: {{voteDetial.adult.userName}}
         </p>
         <p>
           <i class="iconfont icon-dianhua"></i>
-          联系电话: 15456568565
+          联系电话: {{voteDetial.adult.phone}}
         </p>
         <p>
           <i class="iconfont icon-weixin"></i>
-          微信号: dkfjk
+          微信号: {{voteDetial.adult.wechatNum}}
         </p>
         <p>
           <i class="iconfont icon-biaoqian"></i>
-          宝宝姓名: 刘祥祥
+          宝宝姓名: {{voteDetial.baby.babyRealname}}
         </p>
         <p>
           <i class="iconfont icon-ren"></i>
-          宝宝小名: 刘琦
+          宝宝小名: {{voteDetial.baby.babyPetName}}
         </p>
         <p>
           <i class="iconfont icon-riqi"></i>
-          出生日期: 1992-12-23
+          出生日期: {{voteDetial.baby.birthday}}
         </p>
         <p>
           <i class="iconfont icon-edit"></i>
-          备注信息: 孩子还没有满岁,请在交的时候细心一点
+          备注信息: {{voteDetial.remark}}
         </p>
       </div>
       <div class="price-box">
-        <p class="clear">商品价格<span class="fr">￥ <span class="price">3698</span></span></p>
-        <p class="clear">优惠券使用<span class="fr">￥ <span class="price">172</span></span></p>
+        <p class="clear">商品价格<span class="fr">￥ <span class="price">{{voteDetial.totalPrice}}</span></span></p>
+        <p class="clear">优惠券使用<span class="fr">￥ <span class="price">{{voteDetial.refundPrice}}</span></span></p>
         <p class="clear">优惠券<span class="fr">滑步车初级课程优惠券</span></p>
         <hr>
-        <p class="real-price clear"> <span class="fr">实际付款 <span class="price">￥3800</span></span></p>
+        <p class="real-price clear"> <span class="fr">实际付款 <span class="price">{{voteDetial.totalPrice}}</span></span></p>
       </div>
     </div>
-    <div class="btn red-btn tuikuan">
+    <div class="btn red-btn tuikuan" @click="openRounder" v-if="voteDetial.state==1">
       <i class="iconfont icon-tuikuan"></i>
       申请退款
+    </div>
+    <div class="btn red-btn tuikuan" @click="toPay" v-if="voteDetial.state==0">
+      <i class="iconfont icon-tuikuan"></i>
+      立即支付
+    </div>
+    <div class="btn red-btn tuikuan" @click="toLessonDetial" v-if="voteDetial.state==3">
+      <i class="iconfont icon-tuikuan"></i>
+      重新报名
     </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import {mapActions} from "vuex"
+  import {MessageBox} from "mint-ui"
   export default{
     data() {
       return {
-
+        voteDetial:{
+          adult:{},
+          organization:{},
+          baby:{},
+          orderInfo:{},
+          course:{}
+        }
       }
     },
     methods:{
+      ...mapActions("lesson",["getOrderPay","refundOrder"]),
       goVoteList() {
         this.$router.isBack = true;
         this.$router.push("/lesson/myVotes");
+      },
+      getVoteDetial() {
+        this.getOrderPay({
+          orderId: this.$route.query.voteId
+        }).then(res=>{
+          console.log(res);
+          if(res.status == 0) {
+            this.voteDetial = res.data.order;
+          }else{
+            alert("获取订单信息失败,请联系管理员");
+          }
+        })
+      },
+      openRounder() {
+        let self = this;
+        MessageBox.confirm('确定要退款吗?').then(action => {
+          self.setRoundOrder();
+        });
+      },
+      setRoundOrder() {
+        let send = {
+          orderId: this.voteDetial.id
+        };
+        this.refundOrder(send).then(res=>{
+          console.log(res);
+          if(res.status==0) {
+            alert("提交退款申请成功!客服审核通过后费用会退回您原账户!");
+          }else{
+            alert("提交退款失败!请联系客服");
+          }
+        })
+      },
+      toPay() {
+        let orderId = this.voteDetial.id;
+        let branchId = this.voteDetial.organization.id;
+        window.location.href = "http://sport.72bike.com/ucenter/wechatPay/getCode?orderId="+orderId+"&branchId="+branchId;
+      },
+      toLessonDetial() {
+        this.$router.push({path: "/lesson/detial",query:{lessonId: this.voteDetial.course.id}});
+      }
+    },
+    mounted() {
+      if("voteId" in this.$route.query) {
+        this.getVoteDetial();
+      }else{
+        this.goVoteList();
       }
     }
   }

@@ -22,13 +22,13 @@ Vue.component(myLoading.name, myLoading);
 Vue.prototype.$http = axios;
 //注册全局检查登录方法;
 Vue.prototype.$checkLogin = (fn) =>{
-  Indicator.open({
-    spinnerType: 'fading-circle',
-    text:"获取数据中..."
-  });
   let self = this;
   let token = getCache("access_token");
   if(token){
+    Indicator.open({
+      spinnerType: 'fading-circle',
+      text:"获取数据中..."
+    });
     axios.get("open/isLogin",{
       params:{
         token: token
@@ -54,12 +54,28 @@ Vue.prototype.$checkLogin = (fn) =>{
       Toast("网络错误,请重新刷新")
     });
   }else{
-    Indicator.close();
     Toast({message:"当前未登录!请登录!",duration: 1000})
     setTimeout(()=>{
       router.push("/user/login");
     },1000);
   }
+};
+
+//注册date对象的全局方法
+Date.prototype.format = function(fmt) {
+  var o = {
+    "M+" : this.getMonth()+1,                 //月份
+    "d+" : this.getDate(),                    //日
+  };
+  if(/(y+)/.test(fmt)) {
+    fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+  }
+  for(var k in o) {
+    if(new RegExp("("+ k +")").test(fmt)){
+      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+    }
+  }
+  return fmt;
 };
 
 Vue.config.productionTip = false

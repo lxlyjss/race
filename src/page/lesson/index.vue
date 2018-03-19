@@ -16,7 +16,10 @@
       <mt-swipe :auto="2000">
         <mt-swipe-item v-if="banner.list" v-for="item in banner.list"
                        :style="{backgroundImage:`url(${item.image})`,backgroundSize:'cover'}"
-                       :key="item.courseId"></mt-swipe-item>
+                       :key="item.courseId">
+          <router-link v-if="item.courseId" :to="{path:'/lesson/detial',query:{lessonId: item.courseId}}" style="width: 100%;height: 100%;display: block;"></router-link>
+          <a :href="item.url" v-if="item.courseId==null" style="width: 100%;height: 100%;display: block;"></a>
+        </mt-swipe-item>
       </mt-swipe>
     </div>
     <div class="nav-tab">
@@ -83,7 +86,7 @@ import { setCache,getCache } from '../../config/cache';
       setDate(time) {
         var temp = new Date();
         temp.setTime(time * 1000);
-        return temp.toLocaleDateString().replace(/\//g, "-") + temp.toLocaleTimeString()
+        return temp.toLocaleDateString().replace(/\//g, "-") + temp.toLocaleTimeString();
       },
       onValuesChange(picker, values) {
         picker.setSlotValues(1, this.formatBranchList[values[0]]);
@@ -98,11 +101,15 @@ import { setCache,getCache } from '../../config/cache';
           setCache("branchData",JSON.stringify({
             "branch":this.branchData.branch,
             "branchId": this.branchData.branchId
-          }))
+          }));
+          this.getLessonData();
         }
       },
       setProvienceArr(list) {//将省份和分部列表存储;
-        let tempObj = {};
+        console.log(list)
+        let tempObj = {
+          "全部": ["全部"]
+        };
         if(list instanceof Array) {
           for(let i = 0; i < list.length;i++) {
             let arr = [];
@@ -150,6 +157,25 @@ import { setCache,getCache } from '../../config/cache';
           this.setBranchData({type:"branch",value:branchData.branch});
           this.setBranchData({type:"branchId",value:branchData.branchId});
         }
+      },
+      getLessonData() {
+        //获取固定首页数据
+        this.getIndexData({
+          "branchId": this.branchData.branchId,
+          "type": 1,
+          "page": 1,
+          "pageSize": 10
+        }).then(res=>{
+          res[0].status==0?(this.lessonList = res[0].data):(this.lessonList);
+          res[1].status==0?(this.banner = res[1].data):(this.banner);
+          this.loading = false;
+        });
+        //获取分部列表
+        this.getBranchList().then(res=>{
+          //获取到分部列表之后,需要将所有省份和分部按照固定格式存储起来,
+          this.setFormatBranch(this.setProvienceArr(this.branchList.list));
+          this.setSlotsByLxl(this.setSlotsValues(this.formatBranchList));
+        });
       }
     },
     watch: {
@@ -160,25 +186,7 @@ import { setCache,getCache } from '../../config/cache';
     created() {
       this.changeTab(this.lessonType);
       this.setBranchFn();
-      //获取固定首页数据
-      this.getIndexData({
-        "branchId": 1,
-        "type": 1,
-        "page": 1,
-        "pageSize": 10
-      }).then(res=>{
-        res[0].status==0?(this.lessonList = res[0].data):(this.lessonList);
-        res[1].status==0?(this.banner = res[1].data):(this.banner);
-        this.loading = false;
-      });
-      //获取分部列表
-      this.getBranchList().then(res=>{
-        console.log(this.branchList);
-        //获取到分部列表之后,需要将所有省份和分部按照固定格式存储起来,
-        this.setFormatBranch(this.setProvienceArr(this.branchList.list));
-        this.setSlotsByLxl(this.setSlotsValues(this.formatBranchList));
-        console.log(this.formatBranchList);
-      });
+      this.getLessonData();
     }
   }
 </script>
@@ -351,6 +359,9 @@ import { setCache,getCache } from '../../config/cache';
           border-left: 1px solid #ddd;
         }
       }
+    }
+    .picker-slot-wrapper{
+      font-size: 12px;
     }
   }
 </style>

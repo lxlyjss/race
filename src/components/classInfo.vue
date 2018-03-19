@@ -24,7 +24,7 @@
             <span class="time">{{item.time}}</span>
             <span class="class-btn fr done" v-if="item.state==2">照片</span>
             <span class="class-btn fr miss" v-if="item.state==1">已请假</span>
-            <span class="class-btn fr unstart" v-if="item.state==0">请假</span>
+            <span class="class-btn fr unstart" v-if="item.state==0" @click="leaveLesson(item)">请假</span>
           </p>
         </li>
         <li class="clear" v-for="(item,key) in classLeave" :key="key">
@@ -36,23 +36,58 @@
         </li>
       </ul>
     </div>
-    <div class="comment-btn" @click="$router.push({path:'/lesson/comment',query:{'courseId': itemId}})">
+    <div class="comment-btn" @click="$router.push({path:'/lesson/comment',query:{'courseId': itemId,'lessonId': lessonId}})">
       <i class="iconfont icon-liaotian1"></i>
       课后评价
+    </div>
+    <div class="video-btn gray-btn" @click="getVideo">
+      <i class="iconfont icon-liaotian1"></i>
+      结业视频
     </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import {mapState} from "vuex";
+  import {Toast,Indicator} from "mint-ui";
+  import {mapState, mapActions} from "vuex";
   export default {
-    props:["classInfo","classLeave","itemId"],
+    props:["classInfo","classLeave","itemId","lessonId"],
     data() {
       return {
 
       }
     },
+    methods:{
+      ...mapActions("lesson",["setLeaveLesson","getLessonVideo"]),
+      leaveLesson(item) {
+        console.log(item);
+        let send = {
+          periodId: item.id,
+          myCourseId: this.itemId
+        };
+        Indicator.open({spinnerType: "fading-circle"});
+        this.setLeaveLesson(send).then(res=>{
+          console.log(res);
+          Indicator.close();
+          if(res.status == "0") {
+            Toast({message:"请假成功!",duration: 1000});
+            this.reloadLesson();
+          }else{
+            Toast({message: res.msg,duration: 1000});
+          }
+        }).catch(err=>{
+          Indicator.close();
+          console.log(err);
+        });
+      },
+      reloadLesson() {
+        this.$emit("reload");
+      },
+      getVideo() {
+        window.location.href="http://sport.72bike.com/72ucenter/video.html?videoId="+this.itemId;
+      }
+    },
     created() {
-      
+
     }
   }
 </script>
@@ -116,7 +151,7 @@
       background: #33b9f6!important;
     }
     .info-box{
-      width: 85%;
+      width: 88%;
       li{
         position: relative;
         margin: 4px 0;
@@ -129,8 +164,9 @@
         border-width: 8px;
         border-color: transparent;
         border-right-color: #fff;
+        border-left-width: 0;
         position: absolute;
-        left: -16px;
+        left: -8px;
         top: 12px;
       }
       .text{
@@ -155,10 +191,10 @@
         }
         .title{
           font-size: 24px;
-          padding: 0 10px;
+          padding: 0 5px;
         }
         .date{
-          font-size: 16px;
+          font-size: 12px;
         }
         .time{
           font-size: 12px;

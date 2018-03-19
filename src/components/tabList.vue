@@ -10,7 +10,7 @@
         填写资料
       </li>
       <li class="nav-list tc">
-        <hr>
+        <hr style="margin-top: 22px;">
       </li>
       <li class="nav-list tc" :class="signIndex>0?'active':''">
         <p>
@@ -20,7 +20,7 @@
         确认订单
       </li>
       <li class="nav-list tc">
-        <hr>
+        <hr style="margin-top: 22px;">
       </li>
       <li class="nav-list tc">
         <p>

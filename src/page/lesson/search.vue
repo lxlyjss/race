@@ -10,12 +10,12 @@
     <div class="container">
       <div class="search-box">
         <input type="text" placeholder="快来看看从这里你能搜索出什么吧...">
-        <i class="iconfont icon-sousuo"></i>
+        <i class="iconfont icon-sousuo" @click="searchContent"></i>
       </div>
       <p class="tc search-title">搜索结果</p>
       <div class="result-box">
         <ul class="lesson-list bs">
-          <li class="list-item dflex" v-for="(item1,key1) in item.list" :key="key1" @click="goDetial(item1.typeId,key1)">
+          <li class="list-item dflex" v-for="(item1,key1) in lesson.list" :key="key1" @click="goDetial(item1.typeId,key1)">
             <div class="item-img" :style="{backgroundImage:`url(${item1.imgUrl})`}"></div>
             <div class="item-detial">
               <h2 class="fw">{{item1.title}}</h2>
@@ -33,52 +33,34 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import {mapActions} from "vuex";
   export default {
     data() {
       return {
-        item: {
-          list: [
-            {
-              "id": 1,
-              "title": "滑步车课程初级班一期",
-              "status": "0",
-              "type": "滑步车初级课程",
-              "typeId": 1,
-              "date": "2017.12.13-2018.02.25",
-              "school": "北京是朝阳区来广营西路26号",
-              "totalCount": "12",
-              "currentCount": "5",
-              "price": "297200",
-              "minAge": "2",
-              "maxAge": "6",
-              "imgUrl": "http://www.72bike.com/img/activitys/a1/2.jpg",
-              "longitude": "223.122335",
-              "latitude": "212.232355",
-              "signList": [
-                "http://lxlin.top/test/img/1.jpg",
-                "http://lxlin.top/test/img/2.jpg",
-                "http://lxlin.top/test/img/3.jpg"
-              ],
-              "desc": "课程介绍",
-              "notice": "注意事项"
-            }
-          ]
+        lesson: {
+          list:[]
         }
       }
     },
     methods:{
-      goDetial(key, key1) {
-        this.$router.push({path: '/lesson/detial', query: {'lessonType': key, 'lessonId': key1}});
-        for (var i = 0; i < this.lessonList.list.length; i++) {
-          if (i == key) {
-            for (var j = 0; j < this.lessonList.list[i].list.length; j++) {
-              if (j == key1) {
-                this.setDetial(this.lessonList.list[i].list[j]);
-              }
-            }
-          }
-        }
+      ...mapActions("lesson",["getLessonList"]),
+      goDetial(id) {
+        this.$router.push({path: '/lesson/detial', query: {'lessonType': key, 'lessonId': id}});
       },
+      getLessonList() {
+        let send = {
+
+        };
+        this.getLessonList(send).then(res=>{
+          console.log(res);
+          if(res.status == 0) {
+            this.lesson.list = res.list;
+          }
+        })
+      },
+      searchContent() {
+        this.getLessonList();
+      }
     }
   }
 </script>

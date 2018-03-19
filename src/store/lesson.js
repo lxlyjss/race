@@ -84,9 +84,19 @@ export default {
       }
       return arr;
     },
+    //获取课程列表数据
+    async getLessonList(context,data) {
+      let res = await fetch("get","getLessonList",data);
+      return res;
+    },
     //获取课程详情
     async getLessonDetial(context,data) {
       let res = await fetch("get","getLessonDetial",data);
+      return res;
+    },
+    //结业视频
+    async getLessonVideo(context,data) {
+      let res = await fetch("get","getLessonVideo",data);
       return res;
     },
     //获取评价列表
@@ -111,6 +121,12 @@ export default {
       res = await fetch("post","getHistoryCommentList",data);
       return res;
     },
+    //获取评价页面历史评价
+    async deleteComment(context,data) {
+      let res;
+      res = await fetch("post","deleteComment",data);
+      return res;
+    },
     //提交评价
     async submitComment(context, data) {
       let res;
@@ -123,6 +139,12 @@ export default {
       res = await fetch("post","getMyLessonList");
       return res;
     },
+    //获取我的课程信息
+    async setLeaveLesson(context,data) {
+      let res;
+      res = await fetch("post","setLeaveLesson",data);
+      return res;
+    },
     //提交订单
     async submitVoteAjax(context, data) {
       let res;
@@ -133,6 +155,42 @@ export default {
     async getVoteList(context, data) {
       let res;
       res = await fetch("post", "getVoteList", data);
+      return res;
+    },
+    //根据订单id获取订单详情
+    async getOrderAjax(context, data) {
+      let res;
+      res = await fetch("post", "getOrderAjax", data);
+      return res;
+    },
+    //查看该用户有没有匹配的优惠券
+    async getCouponAjax() {
+      let res;
+      res = await fetch("post", "getCoupon", data);
+      return res;
+    },
+    //根据订单id获取支付订单信息
+    async getOrderPay(context, data) {
+      let res;
+      res = await fetch("post", "getOrderPay", data);
+      return res;
+    },
+    //支付获取code接口
+    async refundOrder(context, data) {
+      let res;
+      res = await fetch("post", "refundOrder", data);
+      return res;
+    },
+    //根据订单id获取支付订单信息
+    async getOrderPay(context, data) {
+      let res;
+      res = await fetch("post", "getOrderPay", data);
+      return res;
+    },
+    //支付成功之后获取赠送的优惠券
+    async getCouponData(context, data) {
+      let res;
+      res = await fetch("post", "getCouponData", data);
       return res;
     },
   }

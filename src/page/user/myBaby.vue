@@ -40,7 +40,6 @@
   export default {
     data() {
       return {
-        sessionId: "",
         myBabyList: {
           list: []
         }
@@ -60,7 +59,6 @@
           return
         }
         this.deleteBabyAjax({
-          sessionId: this.sessionId,
           babyId: id
         }).then(res=>{
           console.log(res);
@@ -81,12 +79,10 @@
       },
       getList() {
         let uId = JSON.parse(getCache("user")).id;
-        let sId = getCache("sessionId");
         if (uId) {
           Indicator.open({spinnerType: "fading-circle"});
           this.getMyBabyList({
-            userId: uId,
-            sessionId: sId
+            userId: uId
           }).then(res => {
             console.log(res)
             Indicator.close();
@@ -110,19 +106,9 @@
           Toast("未登录,请重新登录");
           this.$router.push("/user/login");
         }
-      },
-      getSessionId() {
-        let sId = getCache("sessionId");
-        if(sId) {
-          this.sessionId = sId;
-        }else{
-          alert("未登录");
-          this.$router.push("/user/login");
-        }
       }
     },
     created() {
-      this.getSessionId();
       this.getList();
     }
   }

@@ -28,6 +28,7 @@ import shopDetial from '@/page/shop/detial'
 
 import userInfo from '@/page/user/userInfo'
 import myBaby from '@/page/user/myBaby'
+import myCoupon from '@/page/user/myCoupons'
 import addBaby from '@/page/user/addBaby'
 import login from '@/page/user/login'
 import register from '@/page/user/register'
@@ -172,6 +173,11 @@ let userRoute = [
     path: '/user/myBaby',
     name: 'myBaby',
     component: myBaby
+  },
+  {
+    path: '/user/myCoupon',
+    name: 'myCoupon',
+    component: myCoupon
   },
   {
     path: '/user/addBaby',

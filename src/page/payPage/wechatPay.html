@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+  <title>订单详情</title>
+  <script src="http://www.72bike.com/js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+  <style>
+    html,body,p,div{
+      margin: 0;
+      padding: 0;
+    }
+    html,body{
+      background: #f7f7f7;
+    }
+    #content{
+      width: 100%;
+    }
+    .header{
+      width: 100%;
+      height: 40px;
+      background: #fff;
+      text-align: center;
+      line-height: 40px;
+    }
+    .body{
+      margin-top: 10px;
+      background: #fff;
+      padding: 15px;
+      height: calc(100vh - 80px);
+    }
+    .body p{
+      margin-bottom: 10px;
+      padding-left: 30px;
+    }
+    .body .zhifu,.body .return-home{
+      text-align: center;
+      padding-left: 0;
+      margin-top: 50px;
+    }
+    .body .zhifu input,.body .return-home input{
+      width: 90%;
+      line-height: 40px;
+      border: 0;
+      outline: none;
+      border-radius: 10px;
+      color: #fff;
+      background: #3cdc20;
+    }
+    .body .return-home{
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+<div id="content" style="display: none;">
+  <div class="header">
+    <p>微信支付</p>
+  </div>
+  <div class="body">
+    <p>订单编号: <span id="orderId"></span></p>
+    <p>课程名称: <span id="lessonName"></span></p>
+    <p>报名儿童: <span id="babyName"></span></p>
+    <p>课程价格: ￥<span id="price"></span></p>
+    <p class="zhifu">
+      <input type="button" id="payBtn" onclick="$.fn.submit()" value="立即支付">
+    </p>
+    <p class="return-home">
+      <input type="button" onclick="goHome()" value="返回首页">
+    </p>
+  </div>
+</div>
+</body>
+<script>
+  function goHome() {
+    window.location.href = "http://sport.72bike.com/72ucenter/index.html#/index/user";
+  }
+  $(function (){
+    var getUrlData = function (name) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) {
+        return r[2];
+      }
+      return '';
+    };
+    function getOrderInfo() {
+      var orderId = getUrlData("orderId");
+      var branchId = getUrlData("branchId");
+      if(!orderId){
+        alert("未获取到订单id!");
+        return;
+      }
+      if (!branchId) {
+        alert("未获取到分部id!");
+        return;
+      }
+      $.ajax({
+        url:"http://sport.72bike.com/ucenter/open/order/toPay",
+        data:{
+          orderId: orderId,
+          branchId: branchId
+        },
+        dataType: "json",
+        type: "post",
+        success:function (res){
+          console.log(res);
+          if(res.status == "0") {
+            setOrderInfo(res.data.order);
+          }
+        },
+        error:function (){
+          alert("服务器出错了,请联系管理员!")
+        }
+      })
+    }
+    //设置订单信息
+    function setOrderInfo(data) {
+      console.log(data);
+      $("#orderId").text(data.orderNum);
+      $("#lessonName").text(data.course.courseName);
+      $("#babyName").text(data.baby.babyRealname);
+      $("#price").text(data.totalPrice);
+      $("#content").fadeIn(200);
+    }
+    //获取信息
+    getOrderInfo();
+    $.fn.submit = function() {
+      var orderId = getUrlData("orderId");
+      var branchId = getUrlData("branchId");
+      var openId = getUrlData("openId");
+      if (!orderId) {
+        alert("未获取到订单id!");
+        return;
+      }
+      if (!branchId) {
+        alert("未获取到分部id!");
+        return;
+      }
+      if (!openId) {
+        alert("未获取到openId!");
+        return;
+      }
+      $.ajax({
+        type: 'POST',
+        url: 'http://sport.72bike.com/ucenter/wechatPay/jsOarder',
+        data: {
+          orderId: orderId,
+          branchId: branchId,
+          openId: openId
+        },
+        beforeSend: function () {
+          $("#payBtn").val("支付中...");
+        },
+        dataType: "json",
+        success: function (data) {
+          var appId = data.obj.appId;
+          var timeStamp = data.obj.timeStamp;
+          var nonceStr = data.obj.nonceStr;
+          var Package = data.obj.Package;
+          var paySign = data.obj.paySign;
+          WeixinJSBridge.invoke(
+            'getBrandWCPayRequest', {
+              "appId": appId,     //公众号名称，由商户传入
+              "timeStamp": timeStamp,         //时间戳，自1970年以来的秒数
+              "nonceStr": nonceStr, //随机串
+              "package": Package,
+              "signType": "MD5",         //微信签名方式：
+              "paySign": paySign //微信签名
+            },
+            function (res) {
+              WeixinJSBridge.log(res.err_msg);
+              if (res.err_msg == "get_brand_wcpay_request:ok") {
+                alert("支付成功")
+                $("#payBtn").val("支付完成");
+                window.location.href="http://sport.72bike.com/72ucenter/#/lesson/payResult?orderId="+orderId
+              } else if (res.err_msg == "get_brand_wcpay_request:cancel") {
+                alert("取消支付")
+                $("#payBtn").val("立即支付");
+              } else {
+                alert("参数错误" + res.err_msg);
+              }
+            }
+          );
+        },
+        error: function () {
+          alert("支付失败!请检查网络");
+          window.location.href = "http://sport.72bike.com/72ucenter/";
+        }
+      });
+    }
+  })
+</script>
+</html>

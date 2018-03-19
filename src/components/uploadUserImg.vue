@@ -89,7 +89,7 @@
 <style lang="stylus">
   #clipPhoto {
     #clipArea {
-      height: 440px;
+      height: 330px;
       margin-top: 40px;
     }
     .chooseBtn {

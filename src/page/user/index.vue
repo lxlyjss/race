@@ -1,6 +1,7 @@
 <template>
   <div id="user">
     <div class="user-info" :style="{backgroundImage:`url(${userImg})`}">
+      <p id="logout" @click="logout">退出</p>
       <div class="black"></div>
       <div class="user-box" >
         <div class="user-text">
@@ -36,7 +37,7 @@
           </div>
           <p>我的宝宝</p>
         </li>
-        <li class="group-list">
+        <li class="group-list" @click="$router.push({path:'/user/myCoupon',query:{userId: userInfo.id}})">
           <div class="img-icon">
             <i class="iconfont icon-quan_3"></i>
           </div>
@@ -61,7 +62,7 @@
 <script type="text/ecmascript-6">
   import {Toast} from "mint-ui"
   import {mapState,mapActions,mapMutations} from 'vuex'
-  import {getCache,setCache} from "../../config/cache"
+  import {getCache,setCache,removeCache} from "../../config/cache"
   import axios from "axios";
   export default {
     data() {
@@ -98,9 +99,17 @@
             }
           }else{
             Toast(res.msg);
-            this.$router.push("/user/login")
+            this.$router.push("/user/login");
           }
         });
+      },
+      logout() {
+        //退出登录
+        Toast("已退出登录");
+        removeCache("access_token");
+        this.setUserInfo({});
+        removeCache("user");
+        this.$router.push("/user/login");
       }
     },
     computed:{
@@ -130,6 +139,13 @@
       background: #000;
       background-size: cover;
     }
+    #logout{
+      position: absolute;
+      color: #fff;
+      z-index: 9;
+      right: 15px;
+      top: 10px;
+    }
     .black{
       width: 100%;
       height: 100%;
@@ -148,6 +164,7 @@
         width: 2rem;
         height: 2rem;
         margin: 20px auto;
+        background-color: #ccc;
         background-position: center;
         background-size: cover;
         -webkit-border-radius: 5px;

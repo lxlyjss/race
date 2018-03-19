@@ -38,6 +38,12 @@ export default {
     },
   },
   actions:{
+    //分享
+    async getShareConfig(context,data) {
+      let res;
+      res = await fetch("post","shareConfig",data);
+      return res;
+    },
     //登录接口
     async userLogin(context,data) {
       let res;
@@ -111,6 +117,13 @@ export default {
       console.log(data);
       let res;
       res = await fetch("post", "delMyBaby", data);
+      return res;
+    },
+    //删除宝宝
+    async getCouponList(context, data) {
+      console.log(data);
+      let res;
+      res = await fetch("post", "getMyCouponList", data);
       return res;
     },
   }

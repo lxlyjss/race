@@ -284,7 +284,7 @@
     padding: 40px 0 50px;
     background: #fff;
     .register-box{
-      padding: 1rem 1.5rem;
+      padding: 0.5rem 1.5rem;
     }
     .alert-info{
       line-height: 18px;
@@ -347,7 +347,7 @@
       height: 42px;
     }
     .get-code{
-      width: 60px;
+      width: 70px;
       border: 1px solid $red;
       color: $red;
       font-size: 12px;
@@ -380,7 +380,7 @@
     }
     .icon-weixin1{
       font-size: 24px;
-      color: #555;
+      color: #6bc32a;
     }
   }
 </style>

@@ -22,7 +22,7 @@
         <p class="alert-info" v-show="alertInfo.pHas">*该手机已被注册过,请换另一个手机号码</p>
         <p class="input-box clear">
           <input type="number" oninput="if(value.length>6)value=value.slice(0,6)" class="fl code-input" v-model="findInfo.code" @blur="checkCode" placeholder="输入验证码" />
-          <span class="get-code fr" @click="getCode" v-show="codeInfo.unclick">{{codeInfo.codeText}}</span>
+          <span class="get-code fr" :class="codeInfo.click==false?'gray-btn':''" @click="getCode" v-show="codeInfo.unclick">{{codeInfo.codeText}}</span>
           <span class="get-code fr get-code-gray" v-show="!codeInfo.unclick">{{codeInfo.codeTime}} s</span>
         </p>
         <p class="alert-info" v-show="alertInfo.codeError">*请输入6位数验证码</p>
@@ -46,6 +46,7 @@
           code:""
         },
         codeInfo:{
+          click: false, //是否可以点击
           codeText: "获取验证码",
           codeTime: 60,//60秒的时间
           unclick: true//是否能点击获取验证码,true为可以点击
@@ -102,12 +103,11 @@
           });
           return;
         }
-        // if(this.alertInfo.pHas) {
-        //   return;
-        // }
+        if(this.codeInfo.click === false) {
+          return;
+        }
         this.sendCode();
         this.codeInfo.unclick = false;
-        this.seconds();
       },
       //发送手机验证码函数
       sendCode() {
@@ -117,7 +117,7 @@
         });
         this.getCodeAjax({
           "phone":this.findInfo.phone,
-          "type": 1
+          "type": 2
         }).then(res=>{
           console.log(res);
           Indicator.close()
@@ -174,9 +174,26 @@
         console.log(this.findInfo);
         if(this.checkAll()){//检查所有数据都通过
           //调用绑定接口
-          this.userBindPhone(this.findInfo).then(res=>{
+          Indicator.open({
+            spinnerType: 'fading-circle',
+            text:"绑定中..."
+          });
+          let send = {
+            mobile: this.findInfo.phone,
+            code: this.findInfo.code
+          };
+          this.userBindPhone(send).then(res=>{
             console.log(res);
+            Indicator.close();
+            if(res.status == "0") {
+              Toast("绑定成功!");
+              this.$router.push("/index/user");
+            }else{
+              Toast(res.msg);
+            }
           }).catch(err=>{
+            Toast("绑定失败");
+            Indicator.close();
             console.log(err)
           })
         }else{
@@ -201,8 +218,10 @@
               //判断手机号码有没有被注册过,0是有,1是没有
               if(res.data.hasUser == 0) {
                 this.alertInfo.pHas = true;
+                this.codeInfo.click = false;
               }else{
                 this.alertInfo.pHas = false;
+                this.codeInfo.click = true;
               }
             }
           }).catch(res=>{
@@ -302,7 +321,7 @@
       height: 42px;
     }
     .get-code{
-      width: 60px;
+      width: 70px;
       border: 1px solid $red;
       color: $red;
       font-size: 12px;
@@ -311,6 +330,10 @@
       -moz-border-radius: 5px;
       border-radius: 5px;
       line-height: 24px;
+    }
+    .gray-btn{
+      color: #ccc;
+      border-color: #ccc;
     }
     .get-code-gray{
       border: 1px solid gray;
@@ -349,10 +372,6 @@
     .other-title{
       font-size: 12px;
       color: #777;
-    }
-    .icon-weixin1{
-      font-size: 24px;
-      color: #555;
     }
   }
 </style>

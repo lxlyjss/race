@@ -1,13 +1,45 @@
 <template>
   <div id="footer">
     <ul class="nav-bar">
-      <li class="nav-item" v-for="(item,k) in footer.tabList" @click="selectFn(item.limit)">
-        <router-link :to="{path: item.path}">
+      <li class="nav-item" @click="selectFn(0)">
+        <router-link to="/index/lesson">
           <div class="item-icon">
-            <i class="iconfont" :class="item.icon"></i>
+            <img width="28" v-if="index!==0" :src="imgList.lesson.normal" alt="">
+            <img width="28" v-if="index===0" :src="imgList.lesson.active" alt="">
           </div>
           <p class="text">
-            {{item.name}}
+            课程
+          </p>
+        </router-link>
+      </li>
+      <li class="nav-item" @click="">
+        <a href="javascript:;">
+          <div class="item-icon">
+            <img width="24" :src="imgList.event.normal" alt="">
+          </div>
+          <p class="text">
+            活动
+          </p>
+        </a>
+      </li>
+      <li class="nav-item" @click="">
+        <a href="javascript:;">
+        <div class="item-icon">
+          <img width="24" :src="imgList.shop.normal" alt="">
+        </div>
+        <p class="text">
+          商城
+        </p>
+        </a>
+      </li>
+      <li class="nav-item" @click="selectFn(3)">
+        <router-link to="/index/user">
+          <div class="item-icon">
+            <img width="22" v-if="index!==3" :src="imgList.user.normal" alt="">
+            <img width="22" v-if="index===3" :src="imgList.user.active" alt="">
+          </div>
+          <p class="text">
+            我的
           </p>
         </router-link>
       </li>
@@ -15,16 +47,35 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import {mapState,mapMutations} from 'vuex'
   export default {
-    methods:{
-      ...mapMutations(["changeFooter"]),
-      selectFn(i) {
-        this.changeFooter(i);
+    data() {
+      return {
+        index: 0,
+        imgList:{
+          event:{
+            normal: require("@/assets/images/event_gray.png"),
+            active: require("@/assets/images/event_red.png")
+          },
+          lesson:{
+            normal: require("@/assets/images/lesson_black.png"),
+            active: require("@/assets/images/lesson_red.png")
+          },
+          shop:{
+            normal: require("@/assets/images/shop_gray.png"),
+            active: require("@/assets/images/shop_red.png")
+          },
+          user:{
+            normal: require("@/assets/images/user_black.png"),
+            active: require("@/assets/images/user_red.png")
+          }
+        }
       }
     },
-    computed:{
-      ...mapState(["footer"])
+    methods:{
+      selectFn(i) {
+        this.index = i;
+        console.log(this.index)
+      }
     }
   }
 </script>
@@ -51,7 +102,8 @@
           text-align: center;
           .item-icon{
             height: 20px;
-            padding-top: 5px;
+            padding-top: 4px;
+            padding-bottom: 4px;
             .iconfont{
               font-size: 24px;
             }

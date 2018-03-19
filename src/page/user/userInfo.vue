@@ -168,7 +168,6 @@
       },
       //将用户数据赋给临时存储对象;
       setUpdateUserInfo(data) {
-        this.updateUserInfo.sessionId = getCache("sessionId");
         this.updateUserInfo.id = data.id;
         this.updateUserInfo.userImage = data.userImage;
         this.updateUserInfo.nickname = data.nickname;

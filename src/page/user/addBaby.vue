@@ -134,7 +134,7 @@ export default {
       this.$refs.picker.open();
     },
     selectedDate(value) {
-      this.tempDate = value.toLocaleDateString().replace(/\//g, "-");
+      this.tempDate = value.format('yyyy-MM-dd');
       this.updateBabyInfo.birthday = this.tempDate;
     },
     changeTab(n) {
@@ -230,7 +230,7 @@ export default {
       this.updateBabyInfo.babyRealname = data.babyRealname;
       this.updateBabyInfo.babyPetName = data.babyPetName;
       this.updateBabyInfo.paperType = data.paperType;
-      this.updateBabyInfo.birthday = data.birthday;
+      this.updateBabyInfo.birthday = new Date(data.birthday).format("yyyy-MM-dd");
       this.updateBabyInfo.phoneNumber = data.phoneNumber;
       this.updateBabyInfo.paperNum = data.paperNum;
       this.updateBabyInfo.gender = data.gender;
